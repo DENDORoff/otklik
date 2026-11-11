@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Отклик — концепт лого: линза и красная точка">
+  <title>Отклик — концепт лого</title>
+  <rect x="0.5" y="0.5" width="127" height="127" rx="28" fill="#FFFFFF" stroke="#D1D5DD"/>
+  <path d="M20 64 C38 28 90 28 108 64" fill="none" stroke="#082742" stroke-width="9" stroke-linecap="round"/>
+  <path d="M20 64 C38 100 90 100 108 64" fill="none" stroke="#082742" stroke-width="9" stroke-linecap="round"/>
+  <circle cx="64" cy="64" r="12" fill="#ED1111"/>
+</svg>
