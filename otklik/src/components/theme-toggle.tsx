@@ -1,5 +1,40 @@
 "use client";
 
+import { useEffect, useLayoutEffect } from "react";
+
+/**
+ * Синхронизация темы после гидрации.
+ *
+ * Инлайн-скрипт в <head> ставит класс .dark до первой отрисовки, но React при
+ * гидрации может переписать атрибуты <html> и снять класс. Этот компонент
+ * переподтверждает выбор пользователя сразу после коммита (useLayoutEffect
+ * выполняется до отрисовки — вспышки нет).
+ */
+const useIsomorphicLayoutEffect =
+  typeof window !== "undefined" ? useLayoutEffect : useEffect;
+
+export function ThemeSync() {
+  useIsomorphicLayoutEffect(() => {
+    const root = document.documentElement;
+    let saved: string | null = null;
+    try {
+      saved = window.localStorage.getItem("theme");
+    } catch {
+      saved = null;
+    }
+    const theme =
+      saved === "dark" || saved === "light"
+        ? saved
+        : window.matchMedia("(prefers-color-scheme: dark)").matches
+          ? "dark"
+          : "light";
+    root.classList.toggle("dark", theme === "dark");
+    root.style.colorScheme = theme;
+  }, []);
+
+  return null;
+}
+
 /**
  * Переключатель светлой и тёмной темы.
  * Тема хранится в localStorage и cookie; класс .dark ставится на <html>.

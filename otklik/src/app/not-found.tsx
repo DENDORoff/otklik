@@ -5,7 +5,7 @@ import { ThemeToggle } from "@/components/theme-toggle";
 export default function NotFound() {
   return (
     <div className="flex min-h-screen flex-col">
-      <header className="bg-brand text-white">
+      <header className="sticky top-0 z-30 bg-brand text-white shadow-[0_2px_10px_rgba(8,39,66,0.22)]">
         <div className="mx-auto flex min-h-16 max-w-6xl items-center justify-between px-4">
           <Link href="/" aria-label="Отклик — на главную">
             <Logo />

@@ -6,7 +6,7 @@ import { ThemeToggle } from "@/components/theme-toggle";
 export default function LegalLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex min-h-screen flex-col bg-canvas">
-      <header className="border-b border-line bg-brand text-white">
+      <header className="sticky top-0 z-30 border-b border-line bg-brand text-white shadow-[0_2px_10px_rgba(8,39,66,0.22)]">
         <div className="mx-auto flex min-h-16 w-full max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-3 sm:px-6">
           <Link href="/" aria-label="Отклик — на главную">
             <Logo />
@@ -38,7 +38,7 @@ export default function LegalLayout({ children }: { children: React.ReactNode })
         </div>
       </header>
 
-      <main id="main" className="mx-auto w-full max-w-3xl flex-1 px-4 py-12 sm:px-6">
+      <main id="main" className="mx-auto w-full max-w-3xl flex-1 scroll-mt-20 px-4 py-12 sm:px-6">
         {children}
       </main>
 
