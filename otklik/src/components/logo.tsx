@@ -1,10 +1,12 @@
-export function Logo({
+import { getTranslator } from "@/lib/i18n/server";
+export async function Logo({
   compact = false,
   tone = "light",
 }: {
   compact?: boolean;
   tone?: "light" | "dark";
 }) {
+  const t = await getTranslator();
   return (
     <span className="inline-flex items-center gap-2.5">
       <svg width="30" height="30" viewBox="0 0 32 32" fill="none" aria-hidden="true">
@@ -19,7 +21,7 @@ export function Logo({
             tone === "light" ? "text-white" : "text-brand-ink",
           ].join(" ")}
         >
-          отклик
+          {t("отклик")}
         </span>
       )}
     </span>

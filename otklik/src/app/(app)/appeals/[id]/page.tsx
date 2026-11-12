@@ -13,6 +13,7 @@ import {
   type StatusKey,
 } from "@/lib/constants";
 import { deadlineState, formatDate, formatDateTime } from "@/lib/format";
+import { getTranslator } from "@/lib/i18n/server";
 
 function MetaRow({ label, children }: { label: string; children: React.ReactNode }) {
   return (
@@ -30,6 +31,7 @@ export default async function AppealPage({
   params: Promise<{ id: string }>;
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
+  const t = await getTranslator();
   const user = await requireUser();
   const { id } = await params;
   const query = await searchParams;
@@ -60,7 +62,7 @@ export default async function AppealPage({
     <div>
       <div className="mb-4 flex flex-wrap items-center gap-3 text-sm">
         <Link href="/appeals" className="text-muted hover:text-link">
-          ← Все обращения
+          {t("← Все обращения")}
         </Link>
         <span className="text-line">/</span>
         <span className="font-semibold text-brand-ink">{appeal.code}</span>
@@ -71,9 +73,8 @@ export default async function AppealPage({
 
       {created ? (
         <div className="info-block mb-5 text-sm text-ink">
-          Обращение <strong>{appeal.code}</strong> зарегистрировано и направлено в{" "}
-          <strong>{appeal.department?.name ?? "очередь «Неназначенные»"}</strong>. Следите за
-          статусом на этой странице.
+          {t("Обращение")} <strong>{appeal.code}</strong> {t("зарегистрировано и направлено в")}{" "}
+          <strong>{appeal.department?.name ?? t("очередь «Неназначенные»")}</strong>{t(". Следите за статусом на этой странице.")}
         </div>
       ) : null}
 
@@ -92,18 +93,17 @@ export default async function AppealPage({
             </h1>
             {appeal.customCategory ? (
               <p className="mt-1 text-xs text-muted">
-                Своя категория · базовая: {appeal.category.name} · направлено администратору
-                для маршрутизации
+                {t("Своя категория · базовая:")} {appeal.category.name} {t("· направлено администратору для маршрутизации")}
               </p>
             ) : null}
             <p className="mt-1 text-sm text-muted">
               {appeal.author.name}
               {appeal.author.department ? ` · ${appeal.author.department.name}` : ""} ·{" "}
-              {formatDateTime(appeal.publishedAt)}
+              {formatDateTime(appeal.publishedAt, t.locale)}
             </p>
 
             <div className="mt-5">
-              <h2 className="label">Описание</h2>
+              <h2 className="label">{t("Описание")}</h2>
               <ExpandableText
                 text={appeal.text}
                 className="text-[15px] leading-relaxed text-ink"
@@ -112,7 +112,7 @@ export default async function AppealPage({
 
             {appeal.type === "proposal" && appeal.proposal ? (
               <div className="mt-5">
-                <h2 className="label">Предложенное решение</h2>
+                <h2 className="label">{t("Предложенное решение")}</h2>
                 <ExpandableText
                   text={appeal.proposal}
                   className="text-[15px] leading-relaxed text-ink"
@@ -122,12 +122,12 @@ export default async function AppealPage({
 
             {appeal.attachments.length > 0 ? (
               <div className="mt-5">
-                <h2 className="label">Вложения</h2>
+                <h2 className="label">{t("Вложения")}</h2>
                 <ul className="space-y-1 text-sm">
                   {appeal.attachments.map((file) => (
                     <li key={file.id}>
                       <span className="text-ink">{file.fileName}</span>{" "}
-                      <span className="text-muted">({Math.ceil(file.size / 1024)} КБ)</span>
+                      <span className="text-muted">({Math.ceil(file.size / 1024)} {t("КБ)")}</span>
                     </li>
                   ))}
                 </ul>
@@ -136,14 +136,14 @@ export default async function AppealPage({
 
             {appeal.result ? (
               <div className="info-block mt-5">
-                <h2 className="label">Итог рассмотрения</h2>
+                <h2 className="label">{t("Итог рассмотрения")}</h2>
                 <ExpandableText
                   text={appeal.result}
                   className="text-[15px] leading-relaxed text-ink"
                 />
                 {appeal.resolvedAt ? (
                   <p className="mt-2 text-xs text-muted">
-                    Зафиксировано {formatDateTime(appeal.resolvedAt)}
+                    {t("Зафиксировано")} {formatDateTime(appeal.resolvedAt, t.locale)}
                   </p>
                 ) : null}
               </div>
@@ -151,27 +151,27 @@ export default async function AppealPage({
 
             {appeal.status === "rejected" && appeal.rejectReason ? (
               <div className="danger-block mt-5">
-                <h2 className="label">Мотивированный отказ</h2>
+                <h2 className="label">{t("Мотивированный отказ")}</h2>
                 <p className="text-[15px] leading-relaxed text-ink">{appeal.rejectReason}</p>
               </div>
             ) : null}
 
             {appeal.duplicateOf ? (
               <div className="info-block mt-5">
-                <h2 className="label">Дубликат</h2>
+                <h2 className="label">{t("Дубликат")}</h2>
                 <p className="text-sm text-ink">
-                  Обращение повторяет{" "}
+                  {t("Обращение повторяет")}{" "}
                   <Link href={`/appeals/${appeal.duplicateOf.id}`} className="font-semibold">
                     {appeal.duplicateOf.code}
                   </Link>
-                  . Автор подписан на обновления оригинала.
+                  {t(". Автор подписан на обновления оригинала.")}
                 </p>
               </div>
             ) : null}
 
             {appeal.duplicates.length > 0 ? (
               <div className="mt-5 text-sm text-muted">
-                Дубликаты:{" "}
+                {t("Дубликаты:")}{" "}
                 {appeal.duplicates.map((dup, index) => (
                   <span key={dup.id}>
                     {index > 0 ? ", " : ""}
@@ -184,22 +184,22 @@ export default async function AppealPage({
 
           <section className="card p-6">
             <div className="mb-4 flex items-center justify-between">
-              <h2 className="text-lg font-bold text-brand-ink">Комментарии</h2>
+              <h2 className="text-lg font-bold text-brand-ink">{t("Комментарии")}</h2>
               <span className="text-xs text-muted">{appeal.comments.length}</span>
             </div>
 
             {appeal.comments.length === 0 ? (
-              <p className="text-sm text-muted">Комментариев пока нет.</p>
+              <p className="text-sm text-muted">{t("Комментариев пока нет.")}</p>
             ) : (
               <ul className="space-y-4">
                 {appeal.comments.map((comment) => (
                   <li key={comment.id} className="border-l-2 border-line pl-4">
                     <div className="flex flex-wrap items-center gap-2 text-xs text-muted">
                       <span className="font-semibold text-ink">{comment.author.name}</span>
-                      <span>{formatDateTime(comment.createdAt)}</span>
+                      <span>{formatDateTime(comment.createdAt, t.locale)}</span>
                       {comment.isClarification ? (
                         <span className="badge bg-[#FFF6E5] text-[#8A5A00] dark:bg-[#33270F] dark:text-[#F0C36B]">
-                          Запрос уточнения
+                          {t("Запрос уточнения")}
                         </span>
                       ) : null}
                     </div>
@@ -213,7 +213,7 @@ export default async function AppealPage({
           </section>
 
           <section className="card p-6">
-            <h2 className="mb-4 text-lg font-bold text-brand-ink">История</h2>
+            <h2 className="mb-4 text-lg font-bold text-brand-ink">{t("История")}</h2>
             <ol className="space-y-4">
               {appeal.history.map((event) => {
                 const dot =
@@ -235,7 +235,7 @@ export default async function AppealPage({
                           {STATUS_META[event.toStatus as StatusKey]?.label ?? event.toStatus}
                         </span>
                       ) : null}
-                      <span className="text-xs text-muted">{formatDateTime(event.createdAt)}</span>
+                      <span className="text-xs text-muted">{formatDateTime(event.createdAt, t.locale)}</span>
                       {event.actor ? (
                         <span className="text-xs text-muted">· {event.actor.name}</span>
                       ) : null}
@@ -253,38 +253,54 @@ export default async function AppealPage({
         <aside className="space-y-5">
           <section className="card p-5">
             <h2 className="mb-2 text-sm font-bold uppercase tracking-wide text-brand-ink">
-              Карточка
+              {t("Карточка")}
             </h2>
             <dl>
-              <MetaRow label="Автор">{appeal.author.name}</MetaRow>
-              <MetaRow label="Отдел">{appeal.department?.name ?? "Не назначен"}</MetaRow>
-              <MetaRow label="Ответственный">
+              <MetaRow label={t("Автор")}>{appeal.author.name}</MetaRow>
+              <MetaRow label={t("Отдел")}>{appeal.department?.name ?? t("Не назначен")}</MetaRow>
+              <MetaRow label={t("Ответственный")}>
                 {appeal.responsible?.name ?? "—"}
               </MetaRow>
-              <MetaRow label="Исполнитель">{appeal.assignee?.name ?? "—"}</MetaRow>
-              <MetaRow label="Приоритет">
+              <MetaRow label={t("Исполнитель")}>{appeal.assignee?.name ?? "—"}</MetaRow>
+              <MetaRow label={t("Приоритет")}>
                 <PriorityBadge priority={appeal.priority} />
               </MetaRow>
-              <MetaRow label="Создано">{formatDate(appeal.publishedAt)}</MetaRow>
-              <MetaRow label="Первый ответ">
-                {appeal.firstResponseAt ? formatDate(appeal.firstResponseAt) : "—"}
+              <MetaRow label={t("Создано")}>{formatDate(appeal.publishedAt, t.locale)}</MetaRow>
+              <MetaRow label={t("Первый ответ")}>
+                {appeal.firstResponseAt ? formatDate(appeal.firstResponseAt, t.locale) : "—"}
               </MetaRow>
-              <MetaRow label="Срок">
+              <MetaRow label={t("Срок")}>
                 {appeal.deadline ? (
                   <span className={state === "overdue" ? "font-semibold text-[#D40000] dark:text-[#FF7A7A]" : ""}>
-                    {formatDate(appeal.deadline)}
-                    {state === "overdue" ? " · просрочено" : ""}
+                    {formatDate(appeal.deadline, t.locale)}
+                    {state === "overdue" ? t("· просрочено") : ""}
                   </span>
                 ) : (
                   "—"
                 )}
               </MetaRow>
+              {appeal.bitrixTaskId ? (
+                <MetaRow label={t("Задача в портале")}>
+                  {appeal.bitrixTaskUrl ? (
+                    <a
+                      href={appeal.bitrixTaskUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-medium underline underline-offset-2"
+                    >
+                      {t("открыть в Битрикс24")}
+                    </a>
+                  ) : (
+                    <span className="text-xs text-muted">{appeal.bitrixTaskId}</span>
+                  )}
+                </MetaRow>
+              ) : null}
             </dl>
           </section>
 
           <section className="card p-5">
             <h2 className="mb-3 text-sm font-bold uppercase tracking-wide text-brand-ink">
-              Оценка автора
+              {t("Оценка автора")}
             </h2>
             {appeal.rating ? (
               <div>
@@ -293,14 +309,14 @@ export default async function AppealPage({
                   <span className="text-line">{"★".repeat(5 - appeal.rating.score)}</span>
                 </div>
                 <p className="mt-1 text-sm text-muted">
-                  {appeal.rating.score} из 5 · {formatDate(appeal.rating.createdAt)}
+                  {appeal.rating.score} {t("из 5 ·")} {formatDate(appeal.rating.createdAt, t.locale)}
                 </p>
                 {appeal.rating.comment ? (
                   <p className="mt-2 text-sm text-ink">«{appeal.rating.comment}»</p>
                 ) : null}
               </div>
             ) : (
-              <p className="text-sm text-muted">Оценка появится после реализации.</p>
+              <p className="text-sm text-muted">{t("Оценка появится после реализации.")}</p>
             )}
           </section>
         </aside>

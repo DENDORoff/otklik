@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useT } from "@/components/i18n-provider";
 
 export function ExpandableText({
   text,
@@ -11,6 +12,7 @@ export function ExpandableText({
   limit?: number;
   className?: string;
 }) {
+  const t = useT();
   const [open, setOpen] = useState(false);
   const long = text.length > limit;
 
@@ -29,7 +31,7 @@ export function ExpandableText({
         aria-expanded={open}
         className="mt-2 inline-flex min-h-11 items-center text-sm font-semibold text-link hover:underline"
       >
-        {open ? "Свернуть" : "Читать далее"}
+        {open ? t("Свернуть") : t("Читать далее")}
       </button>
     </div>
   );

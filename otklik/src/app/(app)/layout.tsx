@@ -3,12 +3,15 @@ import { Logo } from "@/components/logo";
 import { Nav } from "@/components/nav";
 import { SiteFooter } from "@/components/site-footer";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { LanguageSwitcher } from "@/components/language-switcher";
 import { logout } from "@/app/login/actions";
 import { requireUser } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { roleLabel } from "@/lib/constants";
+import { getTranslator } from "@/lib/i18n/server";
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
+  const t = await getTranslator();
   const user = await requireUser();
 
   const unread = await prisma.notification.count({
@@ -16,18 +19,18 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   });
 
   const items = [
-    { href: "/appeals", label: "Обращения" },
-    ...(user.role === "head" ? [{ href: "/inbox", label: "Входящие" }] : []),
-    { href: "/improvements", label: "Улучшения" },
-    { href: "/analytics", label: "Аналитика" },
-    ...(user.role === "admin" ? [{ href: "/admin", label: "Администрирование" }] : []),
+    { href: "/appeals", label: t("Обращения") },
+    ...(user.role === "head" ? [{ href: "/inbox", label: t("Входящие") }] : []),
+    { href: "/improvements", label: t("Улучшения") },
+    { href: "/analytics", label: t("Аналитика") },
+    ...(user.role === "admin" ? [{ href: "/admin", label: t("Администрирование") }] : []),
   ];
 
   return (
     <div className="flex min-h-screen flex-col">
       <header className="sticky top-0 z-30 bg-brand text-white shadow-[0_2px_10px_rgba(8,39,66,0.22)]">
         <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center gap-x-6 gap-y-2 px-4 py-2 sm:px-6">
-          <Link href="/appeals" aria-label="Отклик — на главную" className="shrink-0">
+          <Link href="/appeals" aria-label={t("Отклик — на главную")} className="shrink-0">
             <Logo />
           </Link>
 
@@ -36,15 +39,16 @@ export default async function AppLayout({ children }: { children: React.ReactNod
           </div>
 
           <div className="ml-auto flex items-center gap-3">
+            <LanguageSwitcher />
             <ThemeToggle />
             <Link
               href="/notifications"
               className="inline-flex min-h-11 items-center text-sm text-white/75 transition-colors hover:text-white"
               aria-label={
-                unread > 0 ? `Уведомления, непрочитанных: ${unread}` : "Уведомления"
+                unread > 0 ? `Уведомления, непрочитанных: ${unread}` : t("Уведомления")
               }
             >
-              <span aria-hidden="true">Уведомления</span>
+              <span aria-hidden="true">{t("Уведомления")}</span>
               {unread > 0 ? (
                 <span className="ml-1.5 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-brand-action px-1 text-[11px] font-bold text-white">
                   {unread}
@@ -55,7 +59,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
             <Link
               href="/settings"
               className="hidden text-right sm:block"
-              aria-label="Настройки профиля и уведомлений"
+              aria-label={t("Настройки профиля и уведомлений")}
             >
               <span className="block text-sm font-medium leading-tight text-white hover:underline">
                 {user.name}
@@ -71,7 +75,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
                 type="submit"
                 className="inline-flex min-h-11 items-center rounded border border-white/30 px-3 py-1.5 text-[11px] uppercase tracking-wide text-white/80 transition-colors hover:border-white/70 hover:text-white"
               >
-                Выйти
+                {t("Выйти")}
               </button>
             </form>
           </div>

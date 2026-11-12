@@ -2,14 +2,16 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useT } from "@/components/i18n-provider";
 
 type NavItem = { href: string; label: string; badge?: number };
 
 export function Nav({ items }: { items: NavItem[] }) {
+  const t = useT();
   const pathname = usePathname();
 
   return (
-    <nav aria-label="Основная навигация" className="flex flex-nowrap items-center gap-1">
+    <nav aria-label={t("Основная навигация")} className="flex flex-nowrap items-center gap-1">
       {items.map((item) => {
         const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
         return (

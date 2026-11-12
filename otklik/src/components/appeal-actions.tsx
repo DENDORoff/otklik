@@ -16,6 +16,7 @@ import {
   resolveAppeal,
   returnToHead,
 } from "@/app/(app)/appeals/[id]/actions";
+import { getTranslator } from "@/lib/i18n/server";
 
 const DAY = 86_400_000;
 
@@ -44,7 +45,7 @@ function ActionBox({
   );
 }
 
-export function AppealActions({
+export async function AppealActions({
   appeal,
   user,
   executors,
@@ -55,6 +56,7 @@ export function AppealActions({
   executors: { id: string; name: string }[];
   departments: { id: string; name: string }[];
 }) {
+  const t = await getTranslator();
   const manage = canManageAppeal(user, appeal);
   const author = isAuthor(user, appeal);
   const assignee = isAssignee(user, appeal);
@@ -66,11 +68,11 @@ export function AppealActions({
     blocks.push(
       <form key="accept" action={acceptAppeal}>
         <input type="hidden" name="appealId" value={appeal.id} />
-        <SubmitButton className="btn btn-primary w-full" pendingText="Принимаем…">
-          Принять в рассмотрение
+        <SubmitButton className="btn btn-primary w-full" pendingText={t("Принимаем…")}>
+          {t("Принять в рассмотрение")}
         </SubmitButton>
         <p className="mt-2 text-xs text-muted">
-          Автор получит уведомление, обращение перейдёт в статус «На рассмотрении».
+          {t("Автор получит уведомление, обращение перейдёт в статус «На рассмотрении».")}
         </p>
       </form>,
     );
@@ -78,15 +80,15 @@ export function AppealActions({
 
   if (manage && appeal.status === "review") {
     blocks.push(
-      <ActionBox key="assign" title="Назначить исполнителя и срок">
+      <ActionBox key="assign" title={t("Назначить исполнителя и срок")}>
         <form action={assignAppeal} className="space-y-2">
           <input type="hidden" name="appealId" value={appeal.id} />
           <div>
             <label className="label" htmlFor={`assignee-${appeal.id}`}>
-              Исполнитель
+              {t("Исполнитель")}
             </label>
             <select id={`assignee-${appeal.id}`} name="assigneeId" required className="input">
-              <option value="">Выберите сотрудника отдела</option>
+              <option value="">{t("Выберите сотрудника отдела")}</option>
               {executors.map((executor) => (
                 <option key={executor.id} value={executor.id}>
                   {executor.name}
@@ -96,7 +98,7 @@ export function AppealActions({
           </div>
           <div>
             <label className="label" htmlFor={`deadline-${appeal.id}`}>
-              Срок (по умолчанию +{slaDays} дн. по приоритету)
+              {t("Срок (по умолчанию +")}{slaDays} {t("дн. по приоритету)")}
             </label>
             <input
               id={`deadline-${appeal.id}`}
@@ -106,15 +108,15 @@ export function AppealActions({
               className="input"
             />
           </div>
-          <SubmitButton className="btn btn-primary w-full" pendingText="Назначаем…">
-            Взять в работу
+          <SubmitButton className="btn btn-primary w-full" pendingText={t("Назначаем…")}>
+            {t("Взять в работу")}
           </SubmitButton>
         </form>
       </ActionBox>,
     );
 
     blocks.push(
-      <ActionBox key="clarify" title="Запросить уточнение у автора">
+      <ActionBox key="clarify" title={t("Запросить уточнение у автора")}>
         <form action={requestClarification} className="space-y-2">
           <input type="hidden" name="appealId" value={appeal.id} />
           <textarea
@@ -123,17 +125,17 @@ export function AppealActions({
             minLength={5}
             rows={3}
             className="input resize-y"
-            placeholder="Какой информации не хватает?"
+            placeholder={t("Какой информации не хватает?")}
           />
-          <SubmitButton className="btn btn-secondary w-full" pendingText="Отправляем…">
-            Отправить запрос
+          <SubmitButton className="btn btn-secondary w-full" pendingText={t("Отправляем…")}>
+            {t("Отправить запрос")}
           </SubmitButton>
         </form>
       </ActionBox>,
     );
 
     blocks.push(
-      <ActionBox key="reject" title="Отклонить с мотивированным отказом" tone="danger">
+      <ActionBox key="reject" title={t("Отклонить с мотивированным отказом")} tone="danger">
         <form action={rejectAppeal} className="space-y-2">
           <input type="hidden" name="appealId" value={appeal.id} />
           <textarea
@@ -142,26 +144,26 @@ export function AppealActions({
             minLength={5}
             rows={3}
             className="input resize-y"
-            placeholder="Причина отказа, которую увидит автор"
+            placeholder={t("Причина отказа, которую увидит автор")}
           />
           <ConfirmSubmit
             className="btn btn-secondary w-full"
-            pendingText="Отклоняем…"
-            title="Отклонить обращение?"
-            description="Автор увидит причину отказа, обращение закроется без реализации. Отменить это действие нельзя — при необходимости автор создаст новое обращение."
-            confirmLabel="Отклонить"
+            pendingText={t("Отклоняем…")}
+            title={t("Отклонить обращение?")}
+            description={t("Автор увидит причину отказа, обращение закроется без реализации. Отменить это действие нельзя — при необходимости автор создаст новое обращение.")}
+            confirmLabel={t("Отклонить")}
           >
-            Отклонить обращение
+            {t("Отклонить обращение")}
           </ConfirmSubmit>
         </form>
       </ActionBox>,
     );
     blocks.push(
-      <ActionBox key="redirect" title="Перенаправить в другой отдел">
+      <ActionBox key="redirect" title={t("Перенаправить в другой отдел")}>
         <form action={redirectDepartment} className="space-y-2">
           <input type="hidden" name="appealId" value={appeal.id} />
           <select name="departmentId" required className="input" defaultValue="">
-            <option value="">Выберите подразделение</option>
+            <option value="">{t("Выберите подразделение")}</option>
             {departments
               .filter((department) => department.id !== appeal.departmentId)
               .map((department) => (
@@ -174,39 +176,39 @@ export function AppealActions({
             name="comment"
             rows={2}
             className="input resize-y"
-            placeholder="Комментарий для нового отдела (необязательно)"
+            placeholder={t("Комментарий для нового отдела (необязательно)")}
           />
-          <SubmitButton className="btn btn-secondary w-full" pendingText="Передаём…">
-            Передать обращение
+          <SubmitButton className="btn btn-secondary w-full" pendingText={t("Передаём…")}>
+            {t("Передать обращение")}
           </SubmitButton>
           <p className="text-xs text-muted">
-            Лимит — 3 перехода между отделами, дальше эскалация администратору.
+            {t("Лимит — 3 перехода между отделами, дальше эскалация администратору.")}
           </p>
         </form>
       </ActionBox>,
     );
 
     blocks.push(
-      <ActionBox key="duplicate" title="Пометить дубликатом" tone="danger">
+      <ActionBox key="duplicate" title={t("Пометить дубликатом")} tone="danger">
         <form action={markDuplicate} className="space-y-2">
           <input type="hidden" name="appealId" value={appeal.id} />
           <input
             name="duplicateCode"
             required
             className="input"
-            placeholder="Номер оригинала, например A-004"
+            placeholder={t("Номер оригинала, например A-004")}
           />
           <ConfirmSubmit
             className="btn btn-secondary w-full"
-            pendingText="Помечаем…"
-            title="Пометить обращение дубликатом?"
-            description="Автор получит уведомление и подпишется на обновления оригинала. Собственное обращение закроется как дубликат."
-            confirmLabel="Пометить дубликатом"
+            pendingText={t("Помечаем…")}
+            title={t("Пометить обращение дубликатом?")}
+            description={t("Автор получит уведомление и подпишется на обновления оригинала. Собственное обращение закроется как дубликат.")}
+            confirmLabel={t("Пометить дубликатом")}
           >
-            Пометить дубликатом
+            {t("Пометить дубликатом")}
           </ConfirmSubmit>
           <p className="text-xs text-muted">
-            Автор получит уведомление и подпишется на обновления оригинала.
+            {t("Автор получит уведомление и подпишется на обновления оригинала.")}
           </p>
         </form>
       </ActionBox>,
@@ -215,7 +217,7 @@ export function AppealActions({
 
   if ((assignee || user.role === "admin") && appeal.status === "in_work") {
     blocks.push(
-      <ActionBox key="resolve" title="Зафиксировать итог и завершить">
+      <ActionBox key="resolve" title={t("Зафиксировать итог и завершить")}>
         <form action={resolveAppeal} className="space-y-2">
           <input type="hidden" name="appealId" value={appeal.id} />
           <textarea
@@ -224,10 +226,10 @@ export function AppealActions({
             minLength={5}
             rows={3}
             className="input resize-y"
-            placeholder="Что сделано и какой результат достигнут?"
+            placeholder={t("Что сделано и какой результат достигнут?")}
           />
-          <SubmitButton className="btn btn-primary w-full" pendingText="Сохраняем итог…">
-            Отметить выполненным
+          <SubmitButton className="btn btn-primary w-full" pendingText={t("Сохраняем итог…")}>
+            {t("Отметить выполненным")}
           </SubmitButton>
         </form>
       </ActionBox>,
@@ -235,7 +237,7 @@ export function AppealActions({
 
     if (assignee) {
       blocks.push(
-        <ActionBox key="return" title="Вернуть начальнику">
+        <ActionBox key="return" title={t("Вернуть начальнику")}>
           <form action={returnToHead} className="space-y-2">
             <input type="hidden" name="appealId" value={appeal.id} />
             <textarea
@@ -244,10 +246,10 @@ export function AppealActions({
               minLength={5}
               rows={3}
               className="input resize-y"
-              placeholder="Почему не хватает данных для выполнения?"
+              placeholder={t("Почему не хватает данных для выполнения?")}
             />
-            <SubmitButton className="btn btn-secondary w-full" pendingText="Возвращаем…">
-              Вернуть с комментарием
+            <SubmitButton className="btn btn-secondary w-full" pendingText={t("Возвращаем…")}>
+              {t("Вернуть с комментарием")}
             </SubmitButton>
           </form>
         </ActionBox>,
@@ -259,7 +261,7 @@ export function AppealActions({
     blocks.push(
       <div key="reply">
         <p className="mb-2 text-sm text-ink">
-          Начальник отдела запросил уточнение — ответьте, чтобы вернуть обращение в рассмотрение.
+          {t("Начальник отдела запросил уточнение — ответьте, чтобы вернуть обращение в рассмотрение.")}
         </p>
         <form action={replyClarification} className="space-y-2">
           <input type="hidden" name="appealId" value={appeal.id} />
@@ -269,10 +271,10 @@ export function AppealActions({
             minLength={3}
             rows={3}
             className="input resize-y"
-            placeholder="Ваш ответ"
+            placeholder={t("Ваш ответ")}
           />
-          <SubmitButton className="btn btn-primary w-full" pendingText="Отправляем ответ…">
-            Отправить ответ
+          <SubmitButton className="btn btn-primary w-full" pendingText={t("Отправляем ответ…")}>
+            {t("Отправить ответ")}
           </SubmitButton>
         </form>
       </div>,
@@ -283,25 +285,25 @@ export function AppealActions({
     blocks.push(
       <div key="rate">
         <p className="mb-2 text-sm text-ink">
-          Итог зафиксирован. Оцените результат — обращение закроется.
+          {t("Итог зафиксирован. Оцените результат — обращение закроется.")}
         </p>
         <form action={rateAppeal} className="space-y-2">
           <input type="hidden" name="appealId" value={appeal.id} />
           <select name="score" className="input" defaultValue="5">
-            <option value="5">5 — отлично</option>
-            <option value="4">4 — хорошо</option>
-            <option value="3">3 — нормально</option>
-            <option value="2">2 — слабо</option>
-            <option value="1">1 — плохо</option>
+            <option value="5">{t("5 — отлично")}</option>
+            <option value="4">{t("4 — хорошо")}</option>
+            <option value="3">{t("3 — нормально")}</option>
+            <option value="2">{t("2 — слабо")}</option>
+            <option value="1">{t("1 — плохо")}</option>
           </select>
           <ConfirmSubmit
             className="btn btn-primary w-full"
-            pendingText="Закрываем…"
-            title="Оценить и закрыть обращение?"
-            description="Оценка попадёт в аналитику и закроет обращение. Изменить оценку после отправки нельзя."
-            confirmLabel="Оценить и закрыть"
+            pendingText={t("Закрываем…")}
+            title={t("Оценить и закрыть обращение?")}
+            description={t("Оценка попадёт в аналитику и закроет обращение. Изменить оценку после отправки нельзя.")}
+            confirmLabel={t("Оценить и закрыть")}
           >
-            Оценить и закрыть
+            {t("Оценить и закрыть")}
           </ConfirmSubmit>
         </form>
       </div>,
@@ -312,11 +314,11 @@ export function AppealActions({
 
   return (
     <section className="card p-5">
-      <h2 className="mb-3 text-sm font-bold uppercase tracking-wide text-brand-ink">Действия</h2>
+      <h2 className="mb-3 text-sm font-bold uppercase tracking-wide text-brand-ink">{t("Действия")}</h2>
       <div className="space-y-3">{blocks}</div>
       {manage ? (
         <p className="mt-3 text-xs text-muted">
-          Доступно начальнику отдела-получателя и администратору.
+          {t("Доступно начальнику отдела-получателя и администратору.")}
         </p>
       ) : null}
     </section>

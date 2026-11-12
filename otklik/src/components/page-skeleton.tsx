@@ -1,13 +1,15 @@
-export function PageSkeleton({
+import { getTranslator } from "@/lib/i18n/server";
+export async function PageSkeleton({
   rows = 6,
   withFilters = true,
 }: {
   rows?: number;
   withFilters?: boolean;
 }) {
+  const t = await getTranslator();
   return (
     <div aria-busy="true" aria-live="polite">
-      <span className="sr-only">Загружаем данные…</span>
+      <span className="sr-only">{t("Загружаем данные…")}</span>
       <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
         <div>
           <div className="skeleton h-7 w-48" />

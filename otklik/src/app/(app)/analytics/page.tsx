@@ -3,6 +3,7 @@ import { visibleWhere } from "@/lib/appeals";
 import { requireUser } from "@/lib/auth";
 import { STATUS_META, TYPE_META } from "@/lib/constants";
 import { prisma } from "@/lib/db";
+import { getTranslator } from "@/lib/i18n/server";
 
 const DAY = 86_400_000;
 
@@ -22,6 +23,7 @@ function Metric({ label, value, hint }: { label: string; value: string; hint?: s
 }
 
 export default async function AnalyticsPage() {
+  const t = await getTranslator();
   const user = await requireUser();
   const where = visibleWhere(user);
 
@@ -98,40 +100,40 @@ export default async function AnalyticsPage() {
   return (
     <div>
       <div className="mb-5">
-        <h1 className="text-[26px] font-bold leading-tight text-brand-ink">Аналитика</h1>
+        <h1 className="text-[26px] font-bold leading-tight text-brand-ink">{t("Аналитика")}</h1>
         <p className="mt-1 text-sm text-muted">
           {user.role === "admin"
-            ? "Сводка по всем обращениям компании"
+            ? t("Сводка по всем обращениям компании")
             : user.role === "head"
-              ? "Сводка по вашему отделу и личным обращениям"
-              : "Обезличенные агрегаты и ваши обращения"}
+              ? t("Сводка по вашему отделу и личным обращениям")
+              : t("Обезличенные агрегаты и ваши обращения")}
         </p>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        <Metric label="Всего обращений" value={String(total)} hint="за всё время" />
+        <Metric label={t("Всего обращений")} value={String(total)} hint={t("за всё время")} />
         <Metric
-          label="Доля рассмотренных"
+          label={t("Доля рассмотренных")}
           value={total ? `${Math.round((reviewCount / total) * 100)}%` : "—"}
           hint={`${reviewCount} из ${total} вышли из статуса «Новое»`}
         />
         <Metric
-          label="Доля с результатом"
+          label={t("Доля с результатом")}
           value={total ? `${Math.round((withResult / total) * 100)}%` : "—"}
           hint={`${withResult} реализовано или закрыто`}
         />
         <Metric
-          label="Время первого ответа"
+          label={t("Время первого ответа")}
           value={avgFirstResponse == null ? "—" : `${avgFirstResponse.toFixed(1)} дн.`}
-          hint="среднее от публикации до первого действия"
+          hint={t("среднее от публикации до первого действия")}
         />
         <Metric
-          label="Среднее время решения"
+          label={t("Среднее время решения")}
           value={avgResolution == null ? "—" : `${avgResolution.toFixed(1)} дн.`}
-          hint="для реализованных обращений"
+          hint={t("для реализованных обращений")}
         />
         <Metric
-          label="Удовлетворённость"
+          label={t("Удовлетворённость")}
           value={avgScore == null ? "—" : `${avgScore.toFixed(1)} / 5`}
           hint={`${scores.length} оценок авторов`}
         />
@@ -140,38 +142,38 @@ export default async function AnalyticsPage() {
       <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <div className="card p-5">
           <div className="text-[11px] font-semibold uppercase tracking-wide text-muted">
-            Просроченные
+            {t("Просроченные")}
           </div>
           <div className="mt-2 text-3xl font-bold leading-none text-[#D40000] dark:text-[#FF7A7A]">{overdueCount}</div>
-          <div className="mt-2 text-xs text-muted">дедлайн прошёл, обращение ещё в работе</div>
+          <div className="mt-2 text-xs text-muted">{t("дедлайн прошёл, обращение ещё в работе")}</div>
         </div>
         <div className="card p-5">
           <div className="text-[11px] font-semibold uppercase tracking-wide text-muted">
-            Дубликаты
+            {t("Дубликаты")}
           </div>
           <div className="mt-2 text-3xl font-bold leading-none text-brand-ink">{duplicateCount}</div>
-          <div className="mt-2 text-xs text-muted">повторяющиеся обращения</div>
+          <div className="mt-2 text-xs text-muted">{t("повторяющиеся обращения")}</div>
         </div>
         <div className="card p-5">
           <div className="text-[11px] font-semibold uppercase tracking-wide text-muted">
-            В работе сейчас
+            {t("В работе сейчас")}
           </div>
           <div className="mt-2 text-3xl font-bold leading-none text-brand-ink">
             {(statusCounts.in_work ?? 0) + (statusCounts.review ?? 0)}
           </div>
-          <div className="mt-2 text-xs text-muted">в рассмотрении и работе</div>
+          <div className="mt-2 text-xs text-muted">{t("в рассмотрении и работе")}</div>
         </div>
       </div>
 
       <div className="mt-6 grid gap-5 lg:grid-cols-2">
         <section className="card p-6">
-          <h2 className="mb-4 text-lg font-bold text-brand-ink">По типам</h2>
+          <h2 className="mb-4 text-lg font-bold text-brand-ink">{t("По типам")}</h2>
           <table className="w-full">
             <thead>
               <tr className="border-b border-line">
-                <th className="th">Тип</th>
-                <th className="th text-right">Количество</th>
-                <th className="th text-right">Доля</th>
+                <th className="th">{t("Тип")}</th>
+                <th className="th text-right">{t("Количество")}</th>
+                <th className="th text-right">{t("Доля")}</th>
               </tr>
             </thead>
             <tbody>
@@ -191,7 +193,7 @@ export default async function AnalyticsPage() {
         </section>
 
         <section className="card p-6">
-          <h2 className="mb-4 text-lg font-bold text-brand-ink">По статусам</h2>
+          <h2 className="mb-4 text-lg font-bold text-brand-ink">{t("По статусам")}</h2>
           <ul className="space-y-2">
             {Object.entries(STATUS_META).map(([status, meta]) => {
               const count = statusCounts[status] ?? 0;
@@ -208,7 +210,7 @@ export default async function AnalyticsPage() {
         </section>
 
         <section className="card p-6 lg:col-span-2">
-          <h2 className="mb-4 text-lg font-bold text-brand-ink">По категориям</h2>
+          <h2 className="mb-4 text-lg font-bold text-brand-ink">{t("По категориям")}</h2>
           <ul className="space-y-3">
             {categoryRows.map((row) => (
               <li key={row.name}>
@@ -228,9 +230,9 @@ export default async function AnalyticsPage() {
         </section>
 
         <section className="card p-6 lg:col-span-2">
-          <h2 className="mb-4 text-lg font-bold text-brand-ink">Повторяющиеся проблемы</h2>
+          <h2 className="mb-4 text-lg font-bold text-brand-ink">{t("Повторяющиеся проблемы")}</h2>
           {topDuplicates.length === 0 ? (
-            <p className="text-sm text-muted">Дубликатов пока нет.</p>
+            <p className="text-sm text-muted">{t("Дубликатов пока нет.")}</p>
           ) : (
             <ul className="space-y-2">
               {topDuplicates.map(([name, count]) => (

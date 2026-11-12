@@ -3,8 +3,10 @@ import Link from "next/link";
 import { Logo } from "@/components/logo";
 import { SiteFooter } from "@/components/site-footer";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { LanguageSwitcher } from "@/components/language-switcher";
 import { COMPANY } from "@/lib/company";
 import { submitDataRequest } from "./actions";
+import { getTranslator } from "@/lib/i18n/server";
 
 export const metadata: Metadata = {
   title: "Запрос на доступ или удаление данных",
@@ -26,21 +28,22 @@ export default async function DataRequestPage({
 }: {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
+  const t = await getTranslator();
   const params = await searchParams;
   const sent = params.sent === "1";
   const error = typeof params.error === "string" ? params.error : "";
   const errorText =
     error === "rate"
-      ? "Слишком много запросов с этого адреса. Попробуйте через час."
+      ? t("Слишком много запросов с этого адреса. Попробуйте через час.")
       : error === "server"
-        ? "Не удалось сохранить запрос. Попробуйте ещё раз или напишите на почту."
+        ? t("Не удалось сохранить запрос. Попробуйте ещё раз или напишите на почту.")
         : error;
 
   return (
     <div className="flex min-h-screen flex-col bg-canvas">
       <header className="sticky top-0 z-30 border-b border-line bg-brand text-white shadow-[0_2px_10px_rgba(8,39,66,0.22)]">
         <div className="mx-auto flex min-h-16 w-full max-w-6xl items-center justify-between gap-3 px-4 sm:px-6">
-          <Link href="/" aria-label="Отклик — на главную">
+          <Link href="/" aria-label={t("Отклик — на главную")}>
             <Logo />
           </Link>
           <div className="flex items-center gap-2">
@@ -48,11 +51,12 @@ export default async function DataRequestPage({
               href="/legal/privacy"
               className="rounded px-3 py-2 text-sm text-white/75 hover:bg-white/10 hover:text-white"
             >
-              Политика
+              {t("Политика")}
             </Link>
             <Link href="/login" className="btn btn-secondary normal-case">
-              Войти
+              {t("Войти")}
             </Link>
+            <LanguageSwitcher />
             <ThemeToggle />
           </div>
         </div>
@@ -60,22 +64,20 @@ export default async function DataRequestPage({
 
       <main id="main" className="mx-auto w-full max-w-3xl flex-1 scroll-mt-20 px-4 py-12 sm:px-6">
         <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-muted">
-          Персональные данные
+          {t("Персональные данные")}
         </p>
         <h1 className="mt-2 text-[32px] font-bold leading-tight text-brand-ink">
-          Запрос на доступ или удаление данных
+          {t("Запрос на доступ или удаление данных")}
         </h1>
         <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted">
-          Один запрос — один ответ. Мы подтвердим получение и сообщим решение в течение
-          10 рабочих дней. Для удаления аккаунта доступ в систему прекратится.
+          {t("Один запрос — один ответ. Мы подтвердим получение и сообщим решение в течение 10 рабочих дней. Для удаления аккаунта доступ в систему прекратится.")}
         </p>
 
         {sent ? (
           <div className="mt-8 rounded border border-[#B7E4C7] border-l-4 border-l-[#198754] bg-[#F1FBF5] p-5 dark:border-[#2C5A3F] dark:border-l-[#3FBF7F] dark:bg-[#102A1D]">
-            <h2 className="text-base font-bold text-[#136C4A] dark:text-[#5FD3A3]">Запрос отправлен</h2>
+            <h2 className="text-base font-bold text-[#136C4A] dark:text-[#5FD3A3]">{t("Запрос отправлен")}</h2>
             <p className="mt-2 text-sm leading-relaxed text-ink">
-              Мы записали обращение и уведомили ответственного. Ответ придёт на указанную почту.
-              Если ответа нет дольше 10 рабочих дней, напишите на{" "}
+              {t("Мы записали обращение и уведомили ответственного. Ответ придёт на указанную почту. Если ответа нет дольше 10 рабочих дней, напишите на")}{" "}
               <a href={`mailto:${COMPANY.privacyEmail}`} className="font-medium underline">
                 {COMPANY.privacyEmail}
               </a>
@@ -83,10 +85,10 @@ export default async function DataRequestPage({
             </p>
             <div className="mt-4 flex flex-wrap gap-3">
               <Link href="/" className="btn btn-primary">
-                На главную
+                {t("На главную")}
               </Link>
               <Link href="/legal/privacy" className="btn btn-secondary">
-                Политика конфиденциальности
+                {t("Политика конфиденциальности")}
               </Link>
             </div>
           </div>
@@ -101,7 +103,7 @@ export default async function DataRequestPage({
             <div className="grid gap-4 sm:grid-cols-2">
               <div>
                 <label htmlFor="name" className="label">
-                  Имя и фамилия *
+                  {t("Имя и фамилия *")}
                 </label>
                 <input
                   id="name"
@@ -111,12 +113,12 @@ export default async function DataRequestPage({
                   maxLength={120}
                   autoComplete="name"
                   className="input"
-                  placeholder="Как к вам обращаться"
+                  placeholder={t("Как к вам обращаться")}
                 />
               </div>
               <div>
                 <label htmlFor="email" className="label">
-                  Почта для ответа *
+                  {t("Почта для ответа *")}
                 </label>
                 <input
                   id="email"
@@ -134,12 +136,12 @@ export default async function DataRequestPage({
 
             <div>
               <label htmlFor="kind" className="label">
-                Что нужно сделать *
+                {t("Что нужно сделать *")}
               </label>
               <select id="kind" name="kind" required className="input" defaultValue="access">
                 {KINDS.map((kind) => (
                   <option key={kind.value} value={kind.value}>
-                    {kind.label}
+                    {t(kind.label)}
                   </option>
                 ))}
               </select>
@@ -147,7 +149,7 @@ export default async function DataRequestPage({
 
             <div>
               <label htmlFor="message" className="label">
-                Детали запроса *
+                {t("Детали запроса *")}
               </label>
               <textarea
                 id="message"
@@ -157,16 +159,16 @@ export default async function DataRequestPage({
                 maxLength={4000}
                 rows={5}
                 className="input resize-y"
-                placeholder="Укажите рабочую почту или номер обращения, если он есть. Не прикладывайте пароли и документы."
+                placeholder={t("Укажите рабочую почту или номер обращения, если он есть. Не прикладывайте пароли и документы.")}
               />
               <p className="mt-1 text-xs text-muted">
-                Минимум 10 символов. Не отправляйте пароли, номера карт и лишние документы.
+                {t("Минимум 10 символов. Не отправляйте пароли, номера карт и лишние документы.")}
               </p>
             </div>
 
             <fieldset className="space-y-3 rounded border border-line p-4">
               <legend className="px-1 text-sm font-semibold text-ink">
-                Подтверждения
+                {t("Подтверждения")}
               </legend>
               <label className="flex cursor-pointer items-start gap-3 text-sm text-ink">
                 <input
@@ -176,21 +178,21 @@ export default async function DataRequestPage({
                   className="mt-0.5 h-5 w-5 shrink-0 accent-[#ED1111]"
                 />
                 <span>
-                  Я ознакомился с{" "}
+                  {t("Я ознакомился с")}{" "}
                   <Link
                     href="/legal/consent"
                     className="font-medium underline underline-offset-2"
                   >
-                    согласием на обработку данных
+                    {t("согласием на обработку данных")}
                   </Link>{" "}
-                  и{" "}
+                  {t("и")}{" "}
                   <Link
                     href="/legal/privacy"
                     className="font-medium underline underline-offset-2"
                   >
-                    политикой конфиденциальности
+                    {t("политикой конфиденциальности")}
                   </Link>
-                  . Согласие можно отозвать.
+                  {t(". Согласие можно отозвать.")}
                 </span>
               </label>
               <label className="flex cursor-pointer items-start gap-3 text-sm text-ink">
@@ -200,33 +202,33 @@ export default async function DataRequestPage({
                   required
                   className="mt-0.5 h-5 w-5 shrink-0 accent-[#ED1111]"
                 />
-                <span>Мне 18 лет или больше.</span>
+                <span>{t("Мне 18 лет или больше.")}</span>
               </label>
             </fieldset>
 
             <div className="flex flex-wrap items-center gap-3 border-t border-line pt-5">
               <button type="submit" className="btn btn-primary">
-                Отправить запрос
+                {t("Отправить запрос")}
               </button>
               <Link href="/" className="btn btn-secondary">
-                Отмена
+                {t("Отмена")}
               </Link>
               <span className="text-xs text-muted">
-                Ответ — до 10 рабочих дней
+                {t("Ответ — до 10 рабочих дней")}
               </span>
             </div>
           </form>
         )}
 
         <section className="mt-12 border-t border-line pt-6">
-          <h2 className="text-sm font-bold text-brand-ink">Что произойдёт дальше</h2>
+          <h2 className="text-sm font-bold text-brand-ink">{t("Что произойдёт дальше")}</h2>
           <ol className="mt-3 space-y-2 text-sm text-muted">
-            <li>1. Мы подтвердим получение на указанную почту.</li>
-            <li>2. Проверим, что запрос относится к вашим данным.</li>
-            <li>3. Выполним доступ, исправление или удаление и сообщим результат.</li>
+            <li>{t("1. Мы подтвердим получение на указанную почту.")}</li>
+            <li>{t("2. Проверим, что запрос относится к вашим данным.")}</li>
+            <li>{t("3. Выполним доступ, исправление или удаление и сообщим результат.")}</li>
           </ol>
           <p className="mt-4 text-xs text-muted">
-            Если удобнее письмо —{" "}
+            {t("Если удобнее письмо —")}{" "}
             <a href={`mailto:${COMPANY.privacyEmail}`} className="underline underline-offset-2">
               {COMPANY.privacyEmail}
             </a>

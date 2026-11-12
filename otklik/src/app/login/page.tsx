@@ -3,8 +3,10 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Logo } from "@/components/logo";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { LanguageSwitcher } from "@/components/language-switcher";
 import { getCurrentUser } from "@/lib/auth";
 import { login, quickLogin } from "./actions";
+import { getTranslator } from "@/lib/i18n/server";
 
 export const metadata: Metadata = {
   title: "Вход в систему",
@@ -25,6 +27,7 @@ export default async function LoginPage({
 }: {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
+  const t = await getTranslator();
   const user = await getCurrentUser();
   if (user) redirect("/appeals");
 
@@ -40,24 +43,23 @@ export default async function LoginPage({
         <Logo />
         <div className="relative z-10 max-w-md">
           <p className="mb-4 text-xs font-semibold uppercase tracking-[0.2em] text-white/50">
-            Хакатон ГК «Модус Трейд»
+            {t("Хакатон ГК «Модус Трейд»")}
           </p>
           <h1 className="text-balance text-4xl font-bold leading-tight">
-            Каждому обращению —<br />
-            <span className="text-[#ED1111]">итог</span>
+            {t("Каждому обращению —")}<br />
+            <span className="text-[#ED1111]">{t("итог")}</span>
           </h1>
           <p className="mt-5 text-sm leading-relaxed text-white/75">
-            Сотрудник подаёт обращение, начальник отдела назначает исполнителя, автор видит
-            результат и оценивает его. Обращение не теряется в переписке.
+            {t("Сотрудник подаёт обращение, начальник отдела назначает исполнителя, автор видит результат и оценивает его. Обращение не теряется в переписке.")}
           </p>
           <ul className="mt-8 space-y-3 text-sm text-white/85">
-            <li>• Маршрутизация по категориям — структура компании как данные</li>
-            <li>• Срок по приоритету: 3, 7 или 14 дней, просрочка подсвечивается</li>
-            <li>• Аналитика повторов, сроков и удовлетворённости</li>
+            <li>{t("• Маршрутизация по категориям — структура компании как данные")}</li>
+            <li>{t("• Срок по приоритету: 3, 7 или 14 дней, просрочка подсвечивается")}</li>
+            <li>{t("• Аналитика повторов, сроков и удовлетворённости")}</li>
           </ul>
         </div>
         <div className="relative z-10 text-xs text-white/45">
-          Демо-стенд · синтетические данные из датасета
+          {t("Демо-стенд · синтетические данные из датасета")}
         </div>
         {/* Контрастная подложка: текст поверх декоративных фигур остаётся читаемым. */}
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#04182A]/60 via-transparent to-transparent" />
@@ -71,20 +73,21 @@ export default async function LoginPage({
             <div className="lg:hidden">
               <Logo tone="dark" />
             </div>
-            <div className="ml-auto">
+            <div className="ml-auto flex items-center gap-2">
+              <LanguageSwitcher variant="onSurface" />
               <ThemeToggle variant="onSurface" />
             </div>
           </div>
 
-          <h2 className="text-2xl font-bold text-brand-ink">Вход в систему</h2>
+          <h2 className="text-2xl font-bold text-brand-ink">{t("Вход в систему")}</h2>
           <p className="mt-1 text-sm text-muted">
-            Введите рабочую почту и пароль. Для демо есть быстрый вход ниже.
+            {t("Введите рабочую почту и пароль. Для демо есть быстрый вход ниже.")}
           </p>
 
           <form action={login} className="mt-6 space-y-3" aria-describedby="login-status">
             <div>
               <label className="label" htmlFor="email">
-                Рабочая почта
+                {t("Рабочая почта")}
               </label>
               <input
                 id="email"
@@ -100,7 +103,7 @@ export default async function LoginPage({
             </div>
             <div>
               <label className="label" htmlFor="password">
-                Пароль
+                {t("Пароль")}
               </label>
               <input
                 id="password"
@@ -119,57 +122,56 @@ export default async function LoginPage({
             <div id="login-status" aria-live="polite">
               {error === "rate" ? (
                 <p className="rounded border border-[#F5C2C7] bg-[#FFF5F5] px-3 py-2 text-sm text-[#C00000] dark:border-[#5C2A30] dark:bg-[#2B1A1F] dark:text-[#FF9A9A]">
-                  Слишком много попыток. Вход временно ограничен
-                  {retryMinutes ? ` — попробуйте через ${retryMinutes} мин.` : "."} Это защита
-                  от подбора пароля, данные не потеряны.
+                  {t("Слишком много попыток. Вход временно ограничен")}
+                  {retryMinutes ? ` — попробуйте через ${retryMinutes} мин.` : "."} {t("Это защита от подбора пароля, данные не потеряны.")}
                 </p>
               ) : error === "credentials" ? (
                 <p className="rounded border border-[#F5C2C7] bg-[#FFF5F5] px-3 py-2 text-sm text-[#C00000] dark:border-[#5C2A30] dark:bg-[#2B1A1F] dark:text-[#FF9A9A]">
-                  Почта и пароль не совпали. Проверьте раскладку и попробуйте ещё раз.
-                  {left ? ` Осталось попыток: ${left}.` : ""} Для демо пароль —{" "}
+                  {t("Почта и пароль не совпали. Проверьте раскладку и попробуйте ещё раз.")}
+                  {left ? ` Осталось попыток: ${left}.` : ""} {t("Для демо пароль —")}{" "}
                   <strong>demo1234</strong>.
                 </p>
               ) : error === "demo" ? (
                 <p className="rounded border border-[#F5C2C7] bg-[#FFF5F5] px-3 py-2 text-sm text-[#C00000] dark:border-[#5C2A30] dark:bg-[#2B1A1F] dark:text-[#FF9A9A]">
-                  Демо-аккаунт недоступен. Выберите другую роль ниже.
+                  {t("Демо-аккаунт недоступен. Выберите другую роль ниже.")}
                 </p>
               ) : null}
             </div>
 
             <button type="submit" className="btn btn-primary w-full">
-              Войти
+              {t("Войти")}
             </button>
           </form>
 
           <p className="mt-3 text-xs leading-relaxed text-muted">
-            Входя, вы подтверждаете, что ознакомились с{" "}
+            {t("Входя, вы подтверждаете, что ознакомились с")}{" "}
             <Link href="/legal/terms" className="underline underline-offset-2">
-              условиями
+              {t("условиями")}
             </Link>{" "}
-            и{" "}
+            {t("и")}{" "}
             <Link href="/legal/privacy" className="underline underline-offset-2">
-              политикой конфиденциальности
+              {t("политикой конфиденциальности")}
             </Link>
-            . Обработка данных — по{" "}
+            {t(". Обработка данных — по")}{" "}
             <Link href="/legal/consent" className="underline underline-offset-2">
-              согласию
+              {t("согласию")}
             </Link>
             .
           </p>
 
           <div className="mt-8 border-t border-line pt-5">
-            <p className="label">Быстрый вход для демо</p>
+            <p className="label">{t("Быстрый вход для демо")}</p>
             <div className="grid gap-2 sm:grid-cols-2">
               {DEMO_ACCOUNTS.map((account) => (
                 <form key={account.email} action={quickLogin}>
                   <input type="hidden" name="email" value={account.email} />
                   <button type="submit" className="btn btn-secondary w-full normal-case">
-                    {account.label}
+                    {t(account.label)}
                   </button>
                 </form>
               ))}
             </div>
-            <p className="mt-3 text-xs text-muted">Пароль всех демо-аккаунтов: demo1234</p>
+            <p className="mt-3 text-xs text-muted">{t("Пароль всех демо-аккаунтов: demo1234")}</p>
           </div>
         </div>
       </section>

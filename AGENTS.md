@@ -26,6 +26,7 @@ D:\DW\hackathon
 ├── ЧЕК-ЛИСТ_ТЗ.md             ← покрытие ТЗ и приёмочные сценарии
 ├── ДЕМО-СЦЕНАРИЙ.md           ← защита на 6–7 минут: тайминг, клики, запасные варианты, Q&A
 ├── ДИЗАЙН-КОД.md              ← бренд, палитра, лого, шаблон презентации
+├── ИНТЕГРАЦИЯ-БИТРИКС24.md    ← модуль интеграции: настройка, схема, риски, план пилота
 ├── README.md                  ← обзор репозитория и быстрые ссылки
 ├── дизайн/лого-концепт.svg
 ├── screenshots/               ← 01-login … 05-admin (сняты с production-сборки)
@@ -33,8 +34,8 @@ D:\DW\hackathon
     ├── prisma/schema.prisma   ← схема SQLite
     ├── prisma/seed.js         ← синтетические данные (7 отделов, 24 пользователя, 19 категорий, 21 обращение)
     ├── src/app/               ← App Router: login, appeals, admin, analytics, improvements, settings, notifications, legal, data-request, api
-    ├── src/components/        ← UI: мастер, карточка, действия, модалки, бейджи, навигация, лого, cookie-баннер, переключатель темы
-    └── src/lib/               ← auth, permissions, appeals, security (rate limit, аудит, загрузки), company, constants, format, db
+    ├── src/components/        ← UI: мастер, карточка, действия, модалки, бейджи, навигация, лого, cookie-баннер, переключатели темы и языка
+    └── src/lib/               ← auth, permissions, appeals, security (rate limit, аудит, загрузки), bitrix24, i18n, company, constants, format, db
 ```
 
 ## Стек и почему
@@ -97,6 +98,10 @@ npm.cmd run start -- --port 3000
 - **Тема оформления**: светлая и тёмная, переключатель в шапке. Тема — класс `.dark` на `<html>`,
   палитра — CSS-переменные в `globals.css` (`:root` / `.dark`). Выбор в `localStorage["theme"]`
   и в cookie `theme`; приоритет у сохранённого выбора над системной настройкой.
+- **Язык интерфейса**: RU (по умолчанию) / EN / KZ. Ключ перевода — исходная русская строка,
+  словари в `src/lib/i18n/{en,kz}.ts`. Сервер: `await getTranslator()` из `@/lib/i18n/server`,
+  клиент: `useT()` из `@/components/i18n-provider`. Новые строки оборачивать в `t("...")`
+  и сразу добавлять в оба словаря; клиентские строки — в `src/lib/i18n/client-keys.ts`.
 
 ## Что уже проверено
 

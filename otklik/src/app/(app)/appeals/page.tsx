@@ -5,6 +5,7 @@ import { requireUser } from "@/lib/auth";
 import { PRIORITY_OPTIONS, STATUS_OPTIONS, TYPE_OPTIONS } from "@/lib/constants";
 import { prisma } from "@/lib/db";
 import { deadlineState, formatDate } from "@/lib/format";
+import { getTranslator } from "@/lib/i18n/server";
 
 function queryString(filters: ListFilters, overrides: Record<string, string | undefined> = {}) {
   const params = new URLSearchParams();
@@ -38,6 +39,7 @@ export default async function AppealsPage({
 }: {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
+  const t = await getTranslator();
   const user = await requireUser();
   const filters = parseFilters(await searchParams);
 
@@ -63,27 +65,27 @@ export default async function AppealsPage({
     <div>
       <div className="mb-6 flex flex-wrap items-start justify-between gap-4">
         <div>
-          <h1 className="text-[26px] font-bold leading-tight text-brand-ink">Обращения</h1>
+          <h1 className="text-[26px] font-bold leading-tight text-brand-ink">{t("Обращения")}</h1>
           <p className="mt-1 text-sm text-muted">
             {user.role === "admin"
-              ? "Все обращения компании"
+              ? t("Все обращения компании")
               : user.role === "head"
-                ? "Обращения вашего отдела и личные"
-                : "Ваши обращения и назначенные на вас"}
-            {" · "}найдено: <span className="font-semibold text-ink">{appeals.length}</span>
+                ? t("Обращения вашего отдела и личные")
+                : t("Ваши обращения и назначенные на вас")}
+            {" · "}{t("найдено:")} <span className="font-semibold text-ink">{appeals.length}</span>
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <a href={exportHref} className="btn btn-secondary" download>
-            Выгрузить CSV
+            {t("Выгрузить CSV")}
           </a>
           <Link href="/appeals/new" className="btn btn-primary">
-            Новое обращение
+            {t("Новое обращение")}
           </Link>
         </div>
       </div>
 
-      <nav aria-label="Быстрые выборки" className="mb-4 border-b border-line">
+      <nav aria-label={t("Быстрые выборки")} className="mb-4 border-b border-line">
         <ul className="flex gap-1 overflow-x-auto no-scrollbar">
           {TABS.map((tab) => {
             const active = activeTab === tab.key;
@@ -99,7 +101,7 @@ export default async function AppealsPage({
                       : "border-transparent text-muted hover:border-line hover:text-ink",
                   ].join(" ")}
                 >
-                  {tab.label}
+                  {t(tab.label)}
                 </Link>
               </li>
             );
@@ -109,11 +111,11 @@ export default async function AppealsPage({
 
       <details open={hasFilters} className="group mb-6 border-b border-line pb-4">
         <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-3 text-sm font-semibold text-ink">
-          <span>Фильтры{hasFilters ? " · применены" : ""}</span>
+          <span>{t("Фильтры")}{hasFilters ? t("· применены") : ""}</span>
           <span className="text-xs font-normal text-muted group-open:hidden">
-            Поиск, статус, категория, отдел
+            {t("Поиск, статус, категория, отдел")}
           </span>
-          <span className="hidden text-xs font-normal text-muted group-open:inline">Свернуть</span>
+          <span className="hidden text-xs font-normal text-muted group-open:inline">{t("Свернуть")}</span>
         </summary>
 
         <form method="get" className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -122,7 +124,7 @@ export default async function AppealsPage({
 
           <div className="sm:col-span-2 lg:col-span-1">
             <label className="label" htmlFor="q">
-              Поиск
+              {t("Поиск")}
             </label>
             <input
               id="q"
@@ -130,19 +132,19 @@ export default async function AppealsPage({
               type="search"
               defaultValue={filters.q ?? ""}
               className="input"
-              placeholder="Номер или текст обращения"
+              placeholder={t("Номер или текст обращения")}
             />
           </div>
 
           <div>
             <label className="label" htmlFor="status">
-              Статус
+              {t("Статус")}
             </label>
             <select id="status" name="status" defaultValue={filters.status ?? ""} className="input">
-              <option value="">Все статусы</option>
+              <option value="">{t("Все статусы")}</option>
               {STATUS_OPTIONS.map((option) => (
                 <option key={option.value} value={option.value}>
-                  {option.label}
+                  {t(option.label)}
                 </option>
               ))}
             </select>
@@ -150,7 +152,7 @@ export default async function AppealsPage({
 
           <div>
             <label className="label" htmlFor="categoryId">
-              Категория
+              {t("Категория")}
             </label>
             <select
               id="categoryId"
@@ -158,7 +160,7 @@ export default async function AppealsPage({
               defaultValue={filters.categoryId ?? ""}
               className="input"
             >
-              <option value="">Все категории</option>
+              <option value="">{t("Все категории")}</option>
               {categories.map((category) => (
                 <option key={category.id} value={category.id}>
                   {category.name}
@@ -169,7 +171,7 @@ export default async function AppealsPage({
 
           <div>
             <label className="label" htmlFor="departmentId">
-              Подразделение
+              {t("Подразделение")}
             </label>
             <select
               id="departmentId"
@@ -177,7 +179,7 @@ export default async function AppealsPage({
               defaultValue={filters.departmentId ?? ""}
               className="input"
             >
-              <option value="">Все подразделения</option>
+              <option value="">{t("Все подразделения")}</option>
               {departments.map((department) => (
                 <option key={department.id} value={department.id}>
                   {department.name}
@@ -188,13 +190,13 @@ export default async function AppealsPage({
 
           <div>
             <label className="label" htmlFor="type">
-              Тип
+              {t("Тип")}
             </label>
             <select id="type" name="type" defaultValue={filters.type ?? ""} className="input">
-              <option value="">Все типы</option>
+              <option value="">{t("Все типы")}</option>
               {TYPE_OPTIONS.map((option) => (
                 <option key={option.value} value={option.value}>
-                  {option.label}
+                  {t(option.label)}
                 </option>
               ))}
             </select>
@@ -202,7 +204,7 @@ export default async function AppealsPage({
 
           <div>
             <label className="label" htmlFor="priority">
-              Приоритет
+              {t("Приоритет")}
             </label>
             <select
               id="priority"
@@ -210,10 +212,10 @@ export default async function AppealsPage({
               defaultValue={filters.priority ?? ""}
               className="input"
             >
-              <option value="">Любой приоритет</option>
+              <option value="">{t("Любой приоритет")}</option>
               {PRIORITY_OPTIONS.map((option) => (
                 <option key={option.value} value={option.value}>
-                  {option.label}
+                  {t(option.label)}
                 </option>
               ))}
             </select>
@@ -221,11 +223,11 @@ export default async function AppealsPage({
 
           <div className="flex items-end gap-2 sm:col-span-2 lg:col-span-3">
             <button type="submit" className="btn btn-primary">
-              Применить
+              {t("Применить")}
             </button>
             {hasFilters ? (
               <Link href="/appeals" className="btn btn-secondary">
-                Сбросить
+                {t("Сбросить")}
               </Link>
             ) : null}
           </div>
@@ -234,20 +236,20 @@ export default async function AppealsPage({
 
       {appeals.length === 0 ? (
         <div className="border-y border-line py-16 text-center">
-          <p className="text-sm font-medium text-ink">Обращений не найдено</p>
+          <p className="text-sm font-medium text-ink">{t("Обращений не найдено")}</p>
           <p className="mt-1 text-sm text-muted">
             {hasFilters
-              ? "Измените фильтры — возможно, обращение в другом статусе или отделе."
-              : "Создайте первое обращение: оно пройдёт маршрутизацию и получит итог."}
+              ? t("Измените фильтры — возможно, обращение в другом статусе или отделе.")
+              : t("Создайте первое обращение: оно пройдёт маршрутизацию и получит итог.")}
           </p>
           <div className="mt-5 flex flex-wrap justify-center gap-2">
             {hasFilters ? (
               <Link href="/appeals" className="btn btn-secondary">
-                Сбросить фильтры
+                {t("Сбросить фильтры")}
               </Link>
             ) : null}
             <Link href="/appeals/new" className="btn btn-primary">
-              Новое обращение
+              {t("Новое обращение")}
             </Link>
           </div>
         </div>
@@ -274,10 +276,10 @@ export default async function AppealsPage({
                   </Link>
                   <p className="mt-2 text-xs text-muted">
                     {appeal.customCategory ?? appeal.category.name} ·{" "}
-                    {appeal.department?.name ?? "Неназначенные"} ·{" "}
-                    {formatDate(appeal.createdAt)}
+                    {appeal.department?.name ?? t("Неназначенные")} ·{" "}
+                    {formatDate(appeal.createdAt, t.locale)}
                     {state === "overdue" ? (
-                      <span className="font-semibold text-[#C00000] dark:text-[#FF9A9A]"> · просрочено</span>
+                      <span className="font-semibold text-[#C00000] dark:text-[#FF9A9A]"> {t("· просрочено")}</span>
                     ) : null}
                   </p>
                 </li>
@@ -290,14 +292,14 @@ export default async function AppealsPage({
             <table className="w-full min-w-[840px] border-collapse">
               <thead className="border-b border-line bg-subtle">
                 <tr>
-                  <th className="th">Номер</th>
-                  <th className="th">Обращение</th>
-                  <th className="th">Автор</th>
-                  <th className="th">Отдел</th>
-                  <th className="th">Статус</th>
-                  <th className="th">Приоритет</th>
-                  <th className="th">Создано</th>
-                  <th className="th">Срок</th>
+                  <th className="th">{t("Номер")}</th>
+                  <th className="th">{t("Обращение")}</th>
+                  <th className="th">{t("Автор")}</th>
+                  <th className="th">{t("Отдел")}</th>
+                  <th className="th">{t("Статус")}</th>
+                  <th className="th">{t("Приоритет")}</th>
+                  <th className="th">{t("Создано")}</th>
+                  <th className="th">{t("Срок")}</th>
                 </tr>
               </thead>
               <tbody>
@@ -341,15 +343,15 @@ export default async function AppealsPage({
                         <PriorityBadge priority={appeal.priority} />
                       </td>
                       <td className="td whitespace-nowrap text-muted">
-                        {formatDate(appeal.createdAt)}
+                        {formatDate(appeal.createdAt, t.locale)}
                       </td>
                       <td className="td whitespace-nowrap">
                         {appeal.deadline ? (
                           <span
                             className={state === "overdue" ? "font-semibold text-[#C00000] dark:text-[#FF9A9A]" : ""}
                           >
-                            {formatDate(appeal.deadline)}
-                            {state === "overdue" ? " · просрочено" : ""}
+                            {formatDate(appeal.deadline, t.locale)}
+                            {state === "overdue" ? t("· просрочено") : ""}
                           </span>
                         ) : (
                           <span className="text-muted">—</span>

@@ -4,6 +4,7 @@ import { NewAppealForm } from "@/components/new-appeal-form";
 import { requireUser } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { createAppeal } from "./actions";
+import { getTranslator } from "@/lib/i18n/server";
 
 export const metadata: Metadata = {
   title: "Новое обращение",
@@ -15,12 +16,13 @@ export default async function NewAppealPage({
 }: {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
+  const t = await getTranslator();
   await requireUser();
   const params = await searchParams;
   const error = typeof params.error === "string" ? params.error : "";
 
   const categories = await prisma.category.findMany({
-    where: { isActive: true, name: { not: "Другое" } },
+    where: { isActive: true, name: { not: t("Другое") } },
     orderBy: { name: "asc" },
   });
 
@@ -28,12 +30,11 @@ export default async function NewAppealPage({
     <div className="mx-auto max-w-3xl">
       <div className="mb-5">
         <Link href="/appeals" className="text-sm text-muted hover:text-link">
-          ← Все обращения
+          {t("← Все обращения")}
         </Link>
-        <h1 className="mt-3 text-[26px] font-bold leading-tight text-brand-ink">Новое обращение</h1>
+        <h1 className="mt-3 text-[26px] font-bold leading-tight text-brand-ink">{t("Новое обращение")}</h1>
         <p className="mt-1 text-sm text-muted">
-          Три шага: что случилось, подробности, срок и отправка. Номер вида A-XXX присвоится
-          автоматически.
+          {t("Три шага: что случилось, подробности, срок и отправка. Номер вида A-XXX присвоится автоматически.")}
         </p>
       </div>
 

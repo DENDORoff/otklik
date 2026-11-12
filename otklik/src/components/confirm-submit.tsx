@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useFormStatus } from "react-dom";
+import { useT } from "@/components/i18n-provider";
 
 /**
  * Необратимое действие: сначала подтверждение в модальном окне,
@@ -9,7 +10,7 @@ import { useFormStatus } from "react-dom";
  */
 export function ConfirmSubmit({
   children,
-  pendingText = "Выполняем…",
+  pendingText,
   className = "btn btn-secondary w-full",
   title,
   description,
@@ -26,6 +27,7 @@ export function ConfirmSubmit({
   tone?: "danger" | "primary";
   disabled?: boolean;
 }) {
+  const t = useT();
   const { pending } = useFormStatus();
   const [open, setOpen] = useState(false);
   const formRef = useRef<HTMLFormElement | null>(null);
@@ -53,7 +55,7 @@ export function ConfirmSubmit({
           setOpen(true);
         }}
       >
-        {pending ? pendingText : children}
+        {pending ? (pendingText ?? t("Выполняем…")) : children}
       </button>
 
       {open ? (
@@ -83,7 +85,7 @@ export function ConfirmSubmit({
                 className="btn btn-secondary"
                 onClick={() => setOpen(false)}
               >
-                Отмена
+                {t("Отмена")}
               </button>
               <button
                 ref={confirmRef}

@@ -6,6 +6,17 @@ import { requireUser } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { SLA_DAYS, type PriorityKey } from "@/lib/constants";
 import { canManageAppeal, isAssignee, isAuthor } from "@/lib/permissions";
+import { recordAudit } from "@/lib/security";
+import {
+  addBitrixTaskComment,
+  bitrix24TaskUrl,
+  completeBitrixTask,
+  createBitrixTask,
+  describeBitrix24Error,
+  findBitrixUserIdByEmail,
+  isBitrix24Configured,
+  updateBitrixTask,
+} from "@/lib/bitrix24";
 
 const DAY = 86_400_000;
 
@@ -13,10 +24,187 @@ async function loadAppeal(id: string) {
   const user = await requireUser();
   const appeal = await prisma.appeal.findUnique({
     where: { id },
-    include: { department: true },
+    include: { department: true, category: true },
   });
   if (!appeal) notFound();
   return { user, appeal };
+}
+
+/* ------------------------------------------------------------------ *
+ * Синхронизация с облачным порталом Битрикс24.
+ *
+ * Интеграция выключена по умолчанию: без BITRIX24_WEBHOOK_URL все вызовы
+ * ниже не выполняются, сеть не трогается, поведение приложения не меняется.
+ * Любая ошибка портала не должна ломать основной сценарий — она пишется
+ * в журнал безопасности и в консоль без секретов.
+ * ------------------------------------------------------------------ */
+
+type SyncActor = { id: string; email: string };
+
+const BITRIX_PRIORITY_LABEL: Record<string, string> = {
+  low: "низкий",
+  mid: "средний",
+  high: "высокий",
+};
+
+function bitrixBaseUrl(): string {
+  return process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+}
+
+/** Заголовок задачи портала: код обращения и категория. */
+function bitrixTaskTitle(appeal: { code: string; category?: { name: string } | null }): string {
+  const category = appeal.category?.name ?? "обращение";
+  return `Отклик ${appeal.code}: ${category}`.slice(0, 250);
+}
+
+/**
+ * Описание задачи. Передаётся минимум данных, нужный исполнителю:
+ * код, категория, приоритет, срок, текст обращения и ссылка обратно.
+ * Персональные данные автора (имя, почта) в портал не передаются.
+ */
+function bitrixTaskDescription(appeal: {
+  code: string;
+  id: string;
+  text: string;
+  priority: string;
+  category?: { name: string } | null;
+  deadline?: Date | null;
+}): string {
+  const excerpt = appeal.text.replace(/\s+/g, " ").slice(0, 800);
+  const lines = [
+    `Обращение ${appeal.code} · категория «${appeal.category?.name ?? "—"}»`,
+    `Приоритет: ${BITRIX_PRIORITY_LABEL[appeal.priority] ?? appeal.priority}`,
+    appeal.deadline ? `Срок: ${appeal.deadline.toLocaleDateString("ru-RU")}` : "",
+    "",
+    excerpt,
+    "",
+    `Открыть в «Отклике»: ${bitrixBaseUrl()}/appeals/${appeal.id}`,
+  ];
+  return lines.filter((line) => line !== "").join("\n").slice(0, 4000);
+}
+
+async function logBitrixSync(
+  action: string,
+  appealId: string,
+  actor: SyncActor | null,
+  meta: Record<string, unknown>,
+) {
+  await recordAudit({
+    action,
+    userId: actor?.id ?? null,
+    email: actor?.email ?? null,
+    meta: { appealId, ...meta },
+  });
+}
+
+/**
+ * Создание (или обновление) задачи портала после назначения исполнителя.
+ * Ошибка интеграции не влияет на результат назначения.
+ */
+async function syncBitrix24OnAssign(
+  appeal: {
+    id: string;
+    code: string;
+    text: string;
+    priority: string;
+    deadline?: Date | null;
+    category?: { name: string } | null;
+    bitrixTaskId?: string | null;
+  },
+  assignee: { id: string; name: string; email: string },
+  deadline: Date,
+  actor: SyncActor,
+): Promise<void> {
+  if (!isBitrix24Configured()) return;
+
+  try {
+    // Повторное назначение: задача уже есть — обновляем ответственного и срок.
+    if (appeal.bitrixTaskId) {
+      const responsibleId = (await findBitrixUserIdByEmail(assignee.email)) ?? undefined;
+      await updateBitrixTask(appeal.bitrixTaskId, {
+        responsibleId,
+        deadline,
+        status: 2,
+      });
+      await addBitrixTaskComment(
+        appeal.bitrixTaskId,
+        `Исполнитель обновлён: ${assignee.name}. Срок: ${deadline.toLocaleDateString("ru-RU")}.`,
+      );
+      await logBitrixSync("bitrix24.task_updated", appeal.id, actor, {
+        taskId: appeal.bitrixTaskId,
+        step: "assign",
+      });
+      return;
+    }
+
+    const responsibleId = await findBitrixUserIdByEmail(assignee.email);
+    const task = await createBitrixTask({
+      title: bitrixTaskTitle(appeal),
+      comment: bitrixTaskDescription({ ...appeal, deadline }),
+      responsibleId: responsibleId ?? undefined,
+      deadline,
+    });
+
+    if (!task?.id) {
+      await logBitrixSync("bitrix24.sync_failed", appeal.id, actor, {
+        step: "assign",
+        reason: "portal_returned_no_task_id",
+      });
+      return;
+    }
+
+    await prisma.appeal.update({
+      where: { id: appeal.id },
+      data: { bitrixTaskId: task.id, bitrixTaskUrl: bitrix24TaskUrl(task.id) },
+    });
+    await logBitrixSync("bitrix24.task_created", appeal.id, actor, {
+      taskId: task.id,
+      responsibleResolved: Boolean(responsibleId),
+    });
+  } catch (error) {
+    const message = describeBitrix24Error(error);
+    await logBitrixSync("bitrix24.sync_failed", appeal.id, actor, {
+      step: "assign",
+      message,
+    });
+    console.error("[bitrix24] задача не создана:", message);
+  }
+}
+
+/**
+ * Обновление состояния задачи портала при смене статуса обращения.
+ * complete — закрыть задачу в порталу; update — оставить открытой.
+ */
+async function syncBitrix24TaskState(
+  appeal: { id: string; bitrixTaskId?: string | null },
+  action: "complete" | "update",
+  note: string,
+  actor: SyncActor,
+): Promise<void> {
+  if (!isBitrix24Configured()) return;
+  if (!appeal.bitrixTaskId) return;
+
+  try {
+    if (action === "complete") {
+      await completeBitrixTask(appeal.bitrixTaskId, note);
+    } else {
+      await updateBitrixTask(appeal.bitrixTaskId, { status: 2 });
+      await addBitrixTaskComment(appeal.bitrixTaskId, note);
+    }
+    await logBitrixSync(
+      action === "complete" ? "bitrix24.task_completed" : "bitrix24.task_updated",
+      appeal.id,
+      actor,
+      { taskId: appeal.bitrixTaskId, action },
+    );
+  } catch (error) {
+    const message = describeBitrix24Error(error);
+    await logBitrixSync("bitrix24.sync_failed", appeal.id, actor, {
+      step: action,
+      message,
+    });
+    console.error("[bitrix24] состояние задачи не обновлено:", message);
+  }
 }
 
 function refresh(id: string) {
@@ -121,6 +309,10 @@ export async function assignAppeal(formData: FormData) {
   ]);
 
   refresh(id);
+
+  // Синхронизация с порталом Битрикс24: создаём задачу исполнителю.
+  // Ошибка интеграции не ломает назначение.
+  await syncBitrix24OnAssign(appeal, assignee, deadline, { id: user.id, email: user.email });
 }
 
 export async function requestClarification(formData: FormData) {
@@ -204,6 +396,14 @@ export async function rejectAppeal(formData: FormData) {
   ]);
 
   refresh(id);
+
+  // Отказ — закрываем задачу в портале с причиной.
+  await syncBitrix24TaskState(
+    appeal,
+    "complete",
+    `Обращение ${appeal.code} отклонено. Причина: ${reason}`,
+    { id: user.id, email: user.email },
+  );
 }
 
 export async function resolveAppeal(formData: FormData) {
@@ -242,6 +442,14 @@ export async function resolveAppeal(formData: FormData) {
   ]);
 
   refresh(id);
+
+  // Задача в портале закрывается вместе с обращением.
+  await syncBitrix24TaskState(
+    appeal,
+    "complete",
+    `Обращение ${appeal.code} реализовано. Итог: ${result}`,
+    { id: user.id, email: user.email },
+  );
 }
 
 export async function returnToHead(formData: FormData) {
@@ -279,6 +487,14 @@ export async function returnToHead(formData: FormData) {
   ]);
 
   refresh(id);
+
+  // Задача в портале остаётся открытой: ждём нового исполнителя.
+  await syncBitrix24TaskState(
+    appeal,
+    "update",
+    `Обращение ${appeal.code} возвращено начальнику: ${comment}`,
+    { id: user.id, email: user.email },
+  );
 }
 
 export async function replyClarification(formData: FormData) {
@@ -400,6 +616,14 @@ export async function redirectDepartment(formData: FormData) {
   ]);
 
   refresh(id);
+
+  // Обращение передано другому отделу — задача в портале закрывается.
+  await syncBitrix24TaskState(
+    appeal,
+    "complete",
+    `Обращение ${appeal.code} передано в подразделение «${target.name}».`,
+    { id: user.id, email: user.email },
+  );
   redirect("/appeals");
 }
 
@@ -454,6 +678,14 @@ export async function markDuplicate(formData: FormData) {
 
   refresh(id);
   revalidatePath(`/appeals/${original.id}`);
+
+  // Дубликат — закрываем задачу в портале.
+  await syncBitrix24TaskState(
+    appeal,
+    "complete",
+    `Обращение ${appeal.code} помечено как дубликат ${original.code}.`,
+    { id: user.id, email: user.email },
+  );
 }
 
 export async function rateAppeal(formData: FormData) {

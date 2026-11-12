@@ -3,8 +3,10 @@ import { requireUser } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { formatDateTime } from "@/lib/format";
 import { markAllRead, markRead } from "./actions";
+import { getTranslator } from "@/lib/i18n/server";
 
 export default async function NotificationsPage() {
+  const t = await getTranslator();
   const user = await requireUser();
 
   const notifications = await prisma.notification.findMany({
@@ -20,15 +22,15 @@ export default async function NotificationsPage() {
     <div>
       <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="text-[26px] font-bold leading-tight text-brand-ink">Уведомления</h1>
+          <h1 className="text-[26px] font-bold leading-tight text-brand-ink">{t("Уведомления")}</h1>
           <p className="mt-1 text-sm text-muted">
-            Внутрисистемные события · непрочитанных: {unread}
+            {t("Внутрисистемные события · непрочитанных:")} {unread}
           </p>
         </div>
         {unread > 0 ? (
           <form action={markAllRead}>
             <button type="submit" className="btn btn-secondary">
-              Прочитать всё
+              {t("Прочитать всё")}
             </button>
           </form>
         ) : null}
@@ -36,7 +38,7 @@ export default async function NotificationsPage() {
 
       <div className="card divide-y divide-line">
         {notifications.length === 0 ? (
-          <p className="px-6 py-10 text-center text-sm text-muted">Уведомлений пока нет.</p>
+          <p className="px-6 py-10 text-center text-sm text-muted">{t("Уведомлений пока нет.")}</p>
         ) : (
           notifications.map((item) => (
             <div
@@ -49,7 +51,7 @@ export default async function NotificationsPage() {
               <div>
                 <p className="text-sm text-ink">{item.message}</p>
                 <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-muted">
-                  <span>{formatDateTime(item.createdAt)}</span>
+                  <span>{formatDateTime(item.createdAt, t.locale)}</span>
                   {item.appeal ? (
                     <>
                       <span>·</span>
@@ -65,7 +67,7 @@ export default async function NotificationsPage() {
                 <form action={markRead}>
                   <input type="hidden" name="id" value={item.id} />
                   <button type="submit" className="text-xs font-medium text-link hover:underline">
-                    Прочитано
+                    {t("Прочитано")}
                   </button>
                 </form>
               ) : null}

@@ -2,7 +2,10 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { CookieBanner } from "@/components/cookie-banner";
 import { ThemeSync } from "@/components/theme-toggle";
+import { I18nProvider } from "@/components/i18n-provider";
 import { COMPANY } from "@/lib/company";
+import { getLocale, getClientLabels } from "@/lib/i18n/server";
+import { getTranslator } from "@/lib/i18n/server";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
@@ -75,19 +78,25 @@ const organizationJsonLd = {
   publisher: { "@type": "Organization", name: COMPANY.brand },
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const t = await getTranslator();
+  const locale = await getLocale();
+  const labels = await getClientLabels();
+
   return (
-    <html lang="ru" suppressHydrationWarning>
+    <html lang={locale} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
       <body>
         <a href="#main" className="skip-link">
-          Перейти к содержимому
+          {t("Перейти к содержимому")}
         </a>
-        {children}
-        <CookieBanner />
-        <ThemeSync />
+        <I18nProvider locale={locale} labels={labels}>
+          {children}
+          <CookieBanner />
+          <ThemeSync />
+        </I18nProvider>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}

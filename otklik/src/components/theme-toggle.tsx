@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useLayoutEffect } from "react";
+import { useT } from "@/components/i18n-provider";
 
 /**
  * Синхронизация темы после гидрации.
@@ -47,6 +48,7 @@ export function ThemeToggle({
   className?: string;
   variant?: "onDark" | "onSurface";
 }) {
+  const t = useT();
   function toggle() {
     const root = document.documentElement;
     const next = !root.classList.contains("dark");
@@ -75,8 +77,8 @@ export function ThemeToggle({
         className,
       ].join(" ")}
     >
-      <span className="sr-only dark:hidden">Включить тёмную тему</span>
-      <span className="sr-only hidden dark:inline">Включить светлую тему</span>
+      <span className="sr-only dark:hidden">{t("Включить тёмную тему")}</span>
+      <span className="sr-only hidden dark:inline">{t("Включить светлую тему")}</span>
       {/* Луна — предложение включить тёмную тему. */}
       <svg
         aria-hidden="true"

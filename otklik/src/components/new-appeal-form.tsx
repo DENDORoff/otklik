@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { PRIORITY_OPTIONS, TYPE_OPTIONS } from "@/lib/constants";
+import { useT } from "@/components/i18n-provider";
 
 type Category = { id: string; name: string };
 type Similar = {
@@ -14,15 +15,11 @@ type Similar = {
   excerpt: string;
 };
 
-const TYPE_HINTS: Record<string, string> = {
-  problem: "Что мешает работать: сбой, потеря времени, непонятный процесс.",
-  proposal: "Как улучшить процесс, инструмент или коммуникацию.",
-  praise: "Отметьте полезную практику, чтобы сохранить её.",
-};
+const TYPE_HINT_KEYS = ["problem", "proposal", "praise"] as const;
 
-const STEPS = ["Тип и категория", "Описание", "Срок и отправка"];
-
+const STEP_KEYS = ["Тип и категория", "Описание", "Срок и отправка"] as const;
 function SimilarList({ text }: { text: string }) {
+  const t = useT();
   const [items, setItems] = useState<Similar[] | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -61,7 +58,7 @@ function SimilarList({ text }: { text: string }) {
   if (loading) {
     return (
       <div className="mt-3 rounded border border-line bg-canvas p-3" aria-live="polite">
-        <p className="text-xs font-semibold text-muted">Ищем похожие обращения…</p>
+        <p className="text-xs font-semibold text-muted">{t("Ищем похожие обращения…")}</p>
         <div className="skeleton mt-2 h-3 w-3/4" />
         <div className="skeleton mt-2 h-3 w-1/2" />
       </div>
@@ -73,7 +70,7 @@ function SimilarList({ text }: { text: string }) {
   return (
     <div className="mt-3 rounded border border-[#FFE1A8] bg-[#FFF9ED] p-3 dark:border-[#5A4518] dark:bg-[#33270F]" aria-live="polite">
       <p className="text-xs font-semibold text-[#8A5A00] dark:text-[#F0C36B]">
-        Похожие обращения уже есть — возможно, ваше повторяет одно из них
+        {t("Похожие обращения уже есть — возможно, ваше повторяет одно из них")}
       </p>
       <ul className="mt-2 space-y-2">
         {items.map((item) => (
@@ -93,14 +90,14 @@ function SimilarList({ text }: { text: string }) {
         ))}
       </ul>
       <p className="mt-2 text-[11px] text-muted">
-        Если ваше обращение отличается — продолжайте. Дубликат начальник отдела сможет связать
-        с оригиналом.
+        {t("Если ваше обращение отличается — продолжайте. Дубликат начальник отдела сможет связать с оригиналом.")}
       </p>
     </div>
   );
 }
 
 function SubmitArea({ disabled }: { disabled: boolean }) {
+  const t = useT();
   const { pending } = useFormStatus();
   return (
     <button
@@ -115,10 +112,10 @@ function SubmitArea({ disabled }: { disabled: boolean }) {
             aria-hidden="true"
             className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-current border-t-transparent"
           />
-          Публикуем обращение…
+          {t("Публикуем обращение…")}
         </>
       ) : (
-        "Опубликовать обращение"
+        t("Опубликовать обращение")
       )}
     </button>
   );
@@ -133,6 +130,13 @@ export function NewAppealForm({
   error: string;
   action: (formData: FormData) => void | Promise<void>;
 }) {
+  const t = useT();
+  const TYPE_HINTS: Record<string, string> = {
+    problem: t("Что мешает работать: сбой, потеря времени, непонятный процесс."),
+    proposal: t("Как улучшить процесс, инструмент или коммуникацию."),
+    praise: t("Отметьте полезную практику, чтобы сохранить её."),
+  };
+  const STEPS = STEP_KEYS.map((key) => t(key));
   const [step, setStep] = useState(0);
   const [type, setType] = useState("problem");
   const [categoryId, setCategoryId] = useState("");
@@ -153,16 +157,16 @@ export function NewAppealForm({
     if (next > step) {
       if (step === 0) {
         if (!categoryId) {
-          setStepError("Выберите категорию — по ней обращение попадёт в нужный отдел.");
+          setStepError(t("Выберите категорию — по ней обращение попадёт в нужный отдел."));
           return;
         }
         if (isOther && customCategory.trim().length < 3) {
-          setStepError("Опишите свою категорию: минимум 3 символа.");
+          setStepError(t("Опишите свою категорию: минимум 3 символа."));
           return;
         }
       }
       if (step === 1 && text.trim().length < 10) {
-        setStepError("Добавьте описание: минимум 10 символов, чтобы было понятно, что произошло.");
+        setStepError(t("Добавьте описание: минимум 10 символов, чтобы было понятно, что произошло."));
         return;
       }
     }
@@ -175,25 +179,25 @@ export function NewAppealForm({
     setFileError("");
     if (!file) return;
     if (file.size > 5 * 1024 * 1024) {
-      setFileError("Файл больше 5 МБ. Выберите файл меньше или сожмите его.");
+      setFileError(t("Файл больше 5 МБ. Выберите файл меньше или сожмите его."));
       event.target.value = "";
     }
   }
 
   const errorText =
     error === "category"
-      ? "Категория недоступна. Вернитесь на шаг 1 и выберите другую."
+      ? t("Категория недоступна. Вернитесь на шаг 1 и выберите другую.")
       : error === "file"
-        ? "Вложение не принято: проверьте формат и размер до 5 МБ."
+        ? t("Вложение не принято: проверьте формат и размер до 5 МБ.")
         : error === "rate"
-          ? "Слишком много обращений подряд. Подождите несколько минут."
+          ? t("Слишком много обращений подряд. Подождите несколько минут.")
           : error
-            ? "Проверьте обязательные поля: тип, категория, описание не короче 10 символов и согласие."
+            ? t("Проверьте обязательные поля: тип, категория, описание не короче 10 символов и согласие.")
             : "";
 
   return (
     <div ref={topRef} className="scroll-mt-24">
-      <ol className="flex flex-wrap gap-x-4 gap-y-1 text-xs" aria-label="Этапы формы">
+      <ol className="flex flex-wrap gap-x-4 gap-y-1 text-xs" aria-label={t("Этапы формы")}>
         {STEPS.map((label, index) => (
           <li
             key={label}
@@ -248,7 +252,7 @@ export function NewAppealForm({
         {step === 0 ? (
           <div className="space-y-5">
             <fieldset>
-              <legend className="label">Тип обращения *</legend>
+              <legend className="label">{t("Тип обращения *")}</legend>
               <div className="grid gap-2 sm:grid-cols-3">
                 {TYPE_OPTIONS.map((option) => (
                   <label
@@ -263,7 +267,7 @@ export function NewAppealForm({
                       onChange={() => setType(option.value)}
                       className="mr-2 accent-[#ED1111]"
                     />
-                    <span className="text-sm font-semibold text-ink">{option.label}</span>
+                    <span className="text-sm font-semibold text-ink">{t(option.label)}</span>
                     <span className="mt-1 block pl-6 text-xs leading-snug text-muted">
                       {TYPE_HINTS[option.value]}
                     </span>
@@ -274,7 +278,7 @@ export function NewAppealForm({
 
             <div>
               <label className="label" htmlFor="category">
-                Категория *
+                {t("Категория *")}
               </label>
               <select
                 id="category"
@@ -282,23 +286,23 @@ export function NewAppealForm({
                 onChange={(event) => setCategoryId(event.target.value)}
                 className="input"
               >
-                <option value="">Выберите категорию</option>
+                <option value="">{t("Выберите категорию")}</option>
                 {categories.map((category) => (
                   <option key={category.id} value={category.id}>
                     {category.name}
                   </option>
                 ))}
-                <option value="__other__">Другое — своей формулировкой</option>
+                <option value="__other__">{t("Другое — своей формулировкой")}</option>
               </select>
               <p className="mt-1 text-xs text-muted">
-                По категории система направит обращение в профильный отдел.
+                {t("По категории система направит обращение в профильный отдел.")}
               </p>
             </div>
 
             {isOther ? (
               <div>
                 <label className="label" htmlFor="customCategory">
-                  Своя категория *
+                  {t("Своя категория *")}
                 </label>
                 <input
                   id="customCategory"
@@ -306,10 +310,10 @@ export function NewAppealForm({
                   onChange={(event) => setCustomCategory(event.target.value)}
                   maxLength={120}
                   className="input"
-                  placeholder="Например: доступ к оборудованию"
+                  placeholder={t("Например: доступ к оборудованию")}
                 />
                 <p className="mt-1 text-xs text-muted">
-                  Обращение попадёт в очередь «Неназначенные», администратор направит его вручную.
+                  {t("Обращение попадёт в очередь «Неназначенные», администратор направит его вручную.")}
                 </p>
               </div>
             ) : null}
@@ -320,7 +324,7 @@ export function NewAppealForm({
           <div className="space-y-5">
             <div>
               <label className="label" htmlFor="text">
-                Что произошло *
+                {t("Что произошло *")}
               </label>
               <textarea
                 id="text"
@@ -330,7 +334,7 @@ export function NewAppealForm({
                 maxLength={4000}
                 rows={6}
                 className="input resize-y"
-                placeholder="Что происходит, где и как часто? Что вы ожидали?"
+                placeholder={t("Что происходит, где и как часто? Что вы ожидали?")}
               />
               <p className="mt-1 text-xs text-muted">
                 {text.trim().length < 10
@@ -342,7 +346,7 @@ export function NewAppealForm({
 
             <div>
               <label className="label" htmlFor="proposal">
-                Предложенное решение
+                {t("Предложенное решение")}
               </label>
               <textarea
                 id="proposal"
@@ -351,7 +355,7 @@ export function NewAppealForm({
                 maxLength={4000}
                 rows={4}
                 className="input resize-y"
-                placeholder="Как можно исправить или улучшить ситуацию? Необязательно."
+                placeholder={t("Как можно исправить или улучшить ситуацию? Необязательно.")}
               />
             </div>
           </div>
@@ -361,7 +365,7 @@ export function NewAppealForm({
           <div className="space-y-5">
             <div>
               <label className="label" htmlFor="priority">
-                Приоритет
+                {t("Приоритет")}
               </label>
               <select
                 id="priority"
@@ -371,18 +375,18 @@ export function NewAppealForm({
               >
                 {PRIORITY_OPTIONS.map((option) => (
                   <option key={option.value} value={option.value}>
-                    {option.label}
+                    {t(option.label)}
                   </option>
                 ))}
               </select>
               <p className="mt-1 text-xs text-muted">
-                Срок после взятия в работу: высокий — 3 дня, средний — 7, низкий — 14.
+                {t("Срок после взятия в работу: высокий — 3 дня, средний — 7, низкий — 14.")}
               </p>
             </div>
 
             <div>
               <label className="label" htmlFor="attachment">
-                Вложение (необязательно, до 5 МБ)
+                {t("Вложение (необязательно, до 5 МБ)")}
               </label>
               <input
                 id="attachment"
@@ -393,8 +397,7 @@ export function NewAppealForm({
                 className="block min-h-11 w-full cursor-pointer rounded border border-line bg-surface px-3 py-2 text-sm text-muted file:mr-3 file:rounded file:border-0 file:bg-canvas file:px-3 file:py-1.5 file:text-sm file:font-medium file:text-ink"
               />
               <p className="mt-1 text-xs text-muted">
-                PDF, изображения, TXT, CSV, DOC(X), XLS(X), ODT/ODS. Исполняемые файлы и скрипты
-                запрещены. На демо не прикладывайте реальные данные компании.
+                {t("PDF, изображения, TXT, CSV, DOC(X), XLS(X), ODT/ODS. Исполняемые файлы и скрипты запрещены. На демо не прикладывайте реальные данные компании.")}
               </p>
               {fileError ? (
                 <p className="field-error" role="alert">
@@ -404,7 +407,7 @@ export function NewAppealForm({
             </div>
 
             <fieldset className="rounded border border-line p-4">
-              <legend className="px-1 text-sm font-semibold text-ink">Перед публикацией</legend>
+              <legend className="px-1 text-sm font-semibold text-ink">{t("Перед публикацией")}</legend>
               <label className="flex cursor-pointer items-start gap-3 text-sm text-ink">
                 <input
                   type="checkbox"
@@ -413,30 +416,29 @@ export function NewAppealForm({
                   className="mt-0.5 h-5 w-5 shrink-0 accent-[#ED1111]"
                 />
                 <span>
-                  Я согласен на обработку данных и ознакомился с{" "}
+                  {t("Я согласен на обработку данных и ознакомился с")}{" "}
                   <Link
                     href="/legal/consent"
                     target="_blank"
                     rel="noreferrer"
                     className="font-medium underline underline-offset-2"
                   >
-                    согласием
+                    {t("согласием")}
                   </Link>{" "}
-                  и{" "}
+                  {t("и")}{" "}
                   <Link
                     href="/legal/privacy"
                     target="_blank"
                     rel="noreferrer"
                     className="font-medium underline underline-offset-2"
                   >
-                    политикой конфиденциальности
+                    {t("политикой конфиденциальности")}
                   </Link>
                   . *
                 </span>
               </label>
               <p className="mt-2 text-xs text-muted">
-                Номер вида A-XXX присвоится после публикации. Автор увидит итог и сможет
-                оценить результат.
+                {t("Номер вида A-XXX присвоится после публикации. Автор увидит итог и сможет оценить результат.")}
               </p>
             </fieldset>
           </div>
@@ -445,23 +447,23 @@ export function NewAppealForm({
         <div className="mt-7 flex flex-wrap items-center gap-3 border-t border-line pt-5">
           {step > 0 ? (
             <button type="button" className="btn btn-secondary" onClick={() => goTo(step - 1)}>
-              Назад
+              {t("Назад")}
             </button>
           ) : (
             <Link href="/appeals" className="btn btn-secondary">
-              Отмена
+              {t("Отмена")}
             </Link>
           )}
 
           {step < 2 ? (
             <button type="button" className="btn btn-primary" onClick={() => goTo(step + 1)}>
-              Далее: {STEPS[step + 1]}
+              {t("Далее:")} {STEPS[step + 1]}
             </button>
           ) : (
             <SubmitArea disabled={!consent || Boolean(fileError)} />
           )}
 
-          <span className="text-xs text-muted">Шаг {step + 1} из 3</span>
+          <span className="text-xs text-muted">{t("Шаг")} {step + 1} {t("из 3")}</span>
         </div>
       </form>
     </div>
