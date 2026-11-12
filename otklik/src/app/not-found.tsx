@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { Logo } from "@/components/logo";
-import { ThemeToggle } from "@/components/theme-toggle";
 import { getTranslator } from "@/lib/i18n/server";
 
 export default async function NotFound() {
@@ -12,7 +11,9 @@ export default async function NotFound() {
           <Link href="/" aria-label={t("Отклик — на главную")}>
             <Logo />
           </Link>
-          <ThemeToggle />
+          <Link href="/login" className="btn btn-secondary normal-case">
+            {t("Войти")}
+          </Link>
         </div>
       </header>
 

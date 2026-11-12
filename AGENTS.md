@@ -34,7 +34,7 @@ D:\DW\hackathon
     ├── prisma/schema.prisma   ← схема SQLite
     ├── prisma/seed.js         ← синтетические данные (7 отделов, 24 пользователя, 19 категорий, 21 обращение)
     ├── src/app/               ← App Router: login, appeals, admin, analytics, improvements, settings, notifications, legal, data-request, api
-    ├── src/components/        ← UI: мастер, карточка, действия, модалки, бейджи, навигация, лого, cookie-баннер, переключатели темы и языка
+    ├── src/components/        ← UI: мастер, карточка, действия, модалки, бейджи, навигация, лого, cookie-баннер, блок оформления и языка
     └── src/lib/               ← auth, permissions, appeals, security (rate limit, аудит, загрузки), bitrix24, i18n, company, constants, format, db
 ```
 
@@ -95,10 +95,12 @@ npm.cmd run start -- --port 3000
   `ConfirmSubmit`; остальные — `SubmitButton` с pending-состоянием.
 - **Персональные данные**: согласие фиксируется в `User.consentVersion/consentAt`,
   запросы на доступ/удаление — `/data-request`, обработка — в админке.
-- **Тема оформления**: светлая и тёмная, переключатель в шапке. Тема — класс `.dark` на `<html>`,
+- **Тема оформления**: светлая, тёмная и «как в системе» — переключается в разделе
+  «Настройки» (`src/components/appearance.tsx`). Тема — класс `.dark` на `<html>`,
   палитра — CSS-переменные в `globals.css` (`:root` / `.dark`). Выбор в `localStorage["theme"]`
   и в cookie `theme`; приоритет у сохранённого выбора над системной настройкой.
-- **Язык интерфейса**: RU (по умолчанию) / EN / KZ. Ключ перевода — исходная русская строка,
+- **Язык интерфейса**: RU (по умолчанию) / EN / KZ, переключается в разделе «Настройки».
+  Ключ перевода — исходная русская строка,
   словари в `src/lib/i18n/{en,kz}.ts`. Сервер: `await getTranslator()` из `@/lib/i18n/server`,
   клиент: `useT()` из `@/components/i18n-provider`. Новые строки оборачивать в `t("...")`
   и сразу добавлять в оба словаря; клиентские строки — в `src/lib/i18n/client-keys.ts`.
@@ -128,7 +130,7 @@ npm.cmd run start -- --port 3000
 1. Не переименовывать продукт и не использовать «Сигнал».
 2. Не коммитить `.env`, `dev.db`, `node_modules`, `.next`, `storage/uploads`.
 3. Не обновлять TypeScript до 7 и не убирать alias `@` из `next.config.mjs`.
-4. Сохранять бренд: `#082742`, `#ED1111`, шрифты Gilroy/Montserrat, интерфейс на русском.
+4. Сохранять бренд: `#082742`, `#ED1111`, шрифт Montserrat (SIL OFL, self-host), интерфейс на русском.
    Для тёмной темы палитру менять только через токены `globals.css`, а не «в обход» них.
 5. После изменений: `npm.cmd run build`, затем прогон затронутого сценария и `npm.cmd run db:reset`.
 6. Обновлять `ИСТОРИЯ-РАБОТЫ.md` при значимых изменениях — это журнал для следующих агентов.

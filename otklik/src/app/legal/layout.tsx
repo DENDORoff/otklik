@@ -1,8 +1,6 @@
 import Link from "next/link";
 import { Logo } from "@/components/logo";
 import { SiteFooter } from "@/components/site-footer";
-import { ThemeToggle } from "@/components/theme-toggle";
-import { LanguageSwitcher } from "@/components/language-switcher";
 import { getTranslator } from "@/lib/i18n/server";
 
 export default async function LegalLayout({ children }: { children: React.ReactNode }) {
@@ -36,8 +34,6 @@ export default async function LegalLayout({ children }: { children: React.ReactN
             <Link href="/login" className="btn btn-secondary ml-1 normal-case">
               {t("Войти")}
             </Link>
-            <LanguageSwitcher />
-            <ThemeToggle />
           </nav>
         </div>
       </header>

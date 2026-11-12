@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { CookieBanner } from "@/components/cookie-banner";
-import { ThemeSync } from "@/components/theme-toggle";
+import { ThemeSync } from "@/components/appearance";
 import { I18nProvider } from "@/components/i18n-provider";
 import { COMPANY } from "@/lib/company";
 import { getLocale, getClientLabels } from "@/lib/i18n/server";
@@ -63,8 +63,9 @@ export const viewport: Viewport = {
 /**
  * Тема до первой отрисовки: без этого при перезагрузке мелькала бы светлая тема.
  * Приоритет: сохранённый выбор → системная настройка. Класс ставится на <html>.
+ * Вариант «system» — тема следует за prefers-color-scheme.
  */
-const themeScript = `(function(){try{var t=localStorage.getItem("theme");if(t!=="dark"&&t!=="light"){t=window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";}if(t==="dark"){document.documentElement.classList.add("dark");document.documentElement.style.colorScheme="dark";}}catch(e){}})();`;
+const themeScript = `(function(){try{var t=localStorage.getItem("theme");if(t!=="dark"&&t!=="light"&&t!=="system"){t="system";}var e=(t==="system")?(window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"):t;if(e==="dark"){document.documentElement.classList.add("dark");document.documentElement.style.colorScheme="dark";}else{document.documentElement.classList.remove("dark");document.documentElement.style.colorScheme="light";}}catch(e){}})();`;
 
 const organizationJsonLd = {
   "@context": "https://schema.org",

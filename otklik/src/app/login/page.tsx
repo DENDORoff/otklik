@@ -2,8 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Logo } from "@/components/logo";
-import { ThemeToggle } from "@/components/theme-toggle";
-import { LanguageSwitcher } from "@/components/language-switcher";
 import { getCurrentUser } from "@/lib/auth";
 import { login, quickLogin } from "./actions";
 import { getTranslator } from "@/lib/i18n/server";
@@ -69,14 +67,8 @@ export default async function LoginPage({
 
       <section className="flex items-center justify-center bg-canvas px-4 py-10 sm:px-6">
         <div className="w-full max-w-sm">
-          <div className="mb-6 flex items-start justify-between gap-3">
-            <div className="lg:hidden">
-              <Logo tone="dark" />
-            </div>
-            <div className="ml-auto flex items-center gap-2">
-              <LanguageSwitcher variant="onSurface" />
-              <ThemeToggle variant="onSurface" />
-            </div>
+          <div className="mb-6 lg:hidden">
+            <Logo tone="dark" />
           </div>
 
           <h2 className="text-2xl font-bold text-brand-ink">{t("Вход в систему")}</h2>

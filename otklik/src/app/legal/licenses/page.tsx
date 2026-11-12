@@ -24,37 +24,9 @@ export default async function LicensesPage() {
       </p>
 
       <h2>{t("1. Шрифты")}</h2>
-      <div className="mt-4 overflow-x-auto">
-        <table className="w-full min-w-[560px] border-collapse text-sm">
-          <thead>
-            <tr className="border-b border-line bg-canvas">
-              <th className="th">{t("Шрифт")}</th>
-              <th className="th">{t("Где используется")}</th>
-              <th className="th">{t("Лицензия")}</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr className="border-b border-line">
-              <td className="td font-semibold">Montserrat</td>
-              <td className="td">{t("Весь интерфейс")}</td>
-              <td className="td">
-                {t("SIL Open Font License 1.1. Файлы лежат в")}{" "}
-                <code>public/fonts</code>{t(", текст лицензии —")}{" "}
-                <code>public/fonts/OFL-Montserrat.txt</code>
-              </td>
-            </tr>
-            <tr className="border-b border-line">
-              <td className="td font-semibold">Gilroy</td>
-              <td className="td">{t("Не включён")}</td>
-              <td className="td">
-                {t("Коммерческий шрифт. Файлы не публикуются в репозитории; при наличии лицензии у оператора подключаются локально. Интерфейс использует Montserrat как совместимую замену.")}
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
       <p>
-        {t("Шрифты отдаются с нашего сервера, внешние запросы к Google Fonts не выполняются. Это снижает риск передачи IP-адресов третьим лицам.")}
+        {t("Весь интерфейс набран одним бесплатным шрифтом Montserrat (SIL Open Font License 1.1). Файлы шрифта и текст лицензии лежат в")}{" "}
+        <code>public/fonts</code>. {t("Шрифты отдаются с нашего сервера, внешние запросы к Google Fonts не выполняются — это снижает риск передачи IP-адресов третьим лицам.")}
       </p>
 
       <h2>{t("2. Изображения и графика")}</h2>

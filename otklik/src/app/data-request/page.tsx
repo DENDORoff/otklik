@@ -2,8 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Logo } from "@/components/logo";
 import { SiteFooter } from "@/components/site-footer";
-import { ThemeToggle } from "@/components/theme-toggle";
-import { LanguageSwitcher } from "@/components/language-switcher";
 import { COMPANY } from "@/lib/company";
 import { submitDataRequest } from "./actions";
 import { getTranslator } from "@/lib/i18n/server";
@@ -56,8 +54,6 @@ export default async function DataRequestPage({
             <Link href="/login" className="btn btn-secondary normal-case">
               {t("Войти")}
             </Link>
-            <LanguageSwitcher />
-            <ThemeToggle />
           </div>
         </div>
       </header>

@@ -2,8 +2,6 @@ import Link from "next/link";
 import { Logo } from "@/components/logo";
 import { Nav } from "@/components/nav";
 import { SiteFooter } from "@/components/site-footer";
-import { ThemeToggle } from "@/components/theme-toggle";
-import { LanguageSwitcher } from "@/components/language-switcher";
 import { logout } from "@/app/login/actions";
 import { requireUser } from "@/lib/auth";
 import { prisma } from "@/lib/db";
@@ -39,8 +37,6 @@ export default async function AppLayout({ children }: { children: React.ReactNod
           </div>
 
           <div className="ml-auto flex items-center gap-3">
-            <LanguageSwitcher />
-            <ThemeToggle />
             <Link
               href="/notifications"
               className="inline-flex min-h-11 items-center text-sm text-white/75 transition-colors hover:text-white"
@@ -56,18 +52,36 @@ export default async function AppLayout({ children }: { children: React.ReactNod
               ) : null}
             </Link>
 
-            <Link
-              href="/settings"
-              className="hidden text-right sm:block"
-              aria-label={t("Настройки профиля и уведомлений")}
-            >
-              <span className="block text-sm font-medium leading-tight text-white hover:underline">
+            {/* Имя и роль — просто подпись, а не ссылка: настройки открываются отдельной кнопкой. */}
+            <span className="hidden text-right sm:block">
+              <span className="block text-sm font-medium leading-tight text-white">
                 {user.name}
               </span>
               <span className="block text-[11px] uppercase tracking-wide text-white/55">
                 {roleLabel(user.role)}
                 {user.department ? ` · ${user.department.name}` : ""}
               </span>
+            </span>
+
+            <Link
+              href="/settings"
+              className="inline-flex min-h-11 items-center gap-2 rounded border border-white/30 px-3 py-1.5 text-[11px] uppercase tracking-wide text-white/80 transition-colors hover:border-white/70 hover:text-white"
+              aria-label={t("Настройки профиля, оформления и уведомлений")}
+            >
+              <svg
+                aria-hidden="true"
+                viewBox="0 0 24 24"
+                className="h-4 w-4"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <circle cx="12" cy="12" r="3" />
+                <path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-2.9 1.2V21a2 2 0 1 1-4 0v-.1A1.7 1.7 0 0 0 7 19.4a1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0-1.2-2.9H1a2 2 0 1 1 0-4h.1A1.7 1.7 0 0 0 2.6 7a1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.9.3H7a1.7 1.7 0 0 0 1-1.5V1a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9V7a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z" />
+              </svg>
+              <span>{t("Настройки")}</span>
             </Link>
 
             <form action={logout}>

@@ -25,7 +25,7 @@ const config: Config = {
         info: "var(--color-info)",
       },
       fontFamily: {
-        sans: ["Gilroy", "Montserrat", "system-ui", "sans-serif"],
+        sans: ["Montserrat", "system-ui", "sans-serif"],
       },
       borderRadius: {
         card: "10px",

@@ -1,7 +1,5 @@
 import Link from "next/link";
 import { Logo } from "@/components/logo";
-import { ThemeToggle } from "@/components/theme-toggle";
-import { LanguageSwitcher } from "@/components/language-switcher";
 import { getTranslator } from "@/lib/i18n/server";
 
 const NAV = [
@@ -34,8 +32,6 @@ export async function LandingHeader({ signedIn }: { signedIn: boolean }) {
         </nav>
 
         <div className="ml-auto flex items-center gap-2">
-          <LanguageSwitcher />
-          <ThemeToggle />
           <Link href={signedIn ? "/appeals" : "/login"} className="btn btn-primary normal-case">
             {t(signedIn ? "Открыть обращения" : "Войти")}
           </Link>

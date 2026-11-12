@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { requireUser } from "@/lib/auth";
+import { AppearanceSettings } from "@/components/appearance";
 import { COMPANY } from "@/lib/company";
 import { roleLabel } from "@/lib/constants";
 import { formatDateTime } from "@/lib/format";
@@ -76,6 +77,14 @@ export default async function SettingsPage({
           </Link>
           .
         </p>
+      </section>
+
+      <section className="card mt-6 p-6">
+        <h2 className="text-base font-bold text-brand-ink">{t("Оформление и язык")}</h2>
+        <p className="mt-1 text-sm text-muted">
+          {t("Тема оформления и язык интерфейса. Настройки сохраняются в браузере и действуют на всех экранах.")}
+        </p>
+        <AppearanceSettings />
       </section>
 
       <section className="card mt-6 p-6">
