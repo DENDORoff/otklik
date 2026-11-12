@@ -2,13 +2,27 @@ import Link from "next/link";
 import { requireAdmin } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { roleLabel } from "@/lib/constants";
-import { formatDate } from "@/lib/format";
-import { updateRoutingRule } from "./actions";
+import { formatDate, formatDateTime } from "@/lib/format";
+import { handleDataRequest, updateRoutingRule } from "./actions";
+
+const DATA_REQUEST_STATUS: Record<string, string> = {
+  new: "Новый",
+  in_progress: "В работе",
+  done: "Обработан",
+  rejected: "Отклонён",
+};
+
+const DATA_REQUEST_KIND: Record<string, string> = {
+  access: "Доступ к данным",
+  delete: "Удаление",
+  correct: "Исправление",
+  withdraw: "Отзыв согласия",
+};
 
 export default async function AdminPage() {
   await requireAdmin();
 
-  const [categories, departments, users, unassigned] = await Promise.all([
+  const [categories, departments, users, unassigned, dataRequests, audit] = await Promise.all([
     prisma.category.findMany({
       include: {
         routingRules: {
@@ -35,6 +49,8 @@ export default async function AdminPage() {
       include: { category: true, author: true },
       orderBy: { createdAt: "desc" },
     }),
+    prisma.dataRequest.findMany({ orderBy: [{ status: "asc" }, { createdAt: "desc" }], take: 20 }),
+    prisma.auditLog.findMany({ orderBy: { createdAt: "desc" }, take: 12 }),
   ]);
 
   return (
@@ -166,6 +182,92 @@ export default async function AdminPage() {
                 ))}
               </tbody>
             </table>
+          )}
+        </section>
+
+        <section className="card overflow-hidden lg:col-span-2">
+          <div className="border-b border-line px-5 py-4">
+            <h2 className="text-lg font-bold text-brand">Запросы по персональным данным</h2>
+            <p className="mt-1 text-xs text-muted">
+              Доступ, исправление, удаление и отзыв согласия. Срок ответа — до 10 рабочих дней.
+            </p>
+          </div>
+          {dataRequests.length === 0 ? (
+            <p className="px-5 py-8 text-sm text-muted">
+              Новых запросов нет. Форма для пользователей —{" "}
+              <Link href="/data-request" className="underline underline-offset-2">
+                /data-request
+              </Link>
+              .
+            </p>
+          ) : (
+            <ul className="divide-y divide-line">
+              {dataRequests.map((request) => (
+                <li key={request.id} className="px-5 py-4">
+                  <div className="flex flex-wrap items-center justify-between gap-3">
+                    <div>
+                      <p className="text-sm font-semibold text-ink">
+                        {DATA_REQUEST_KIND[request.kind] ?? request.kind} · {request.email}
+                      </p>
+                      <p className="mt-0.5 text-xs text-muted">
+                        {request.name} · создан {formatDateTime(request.createdAt)} ·{" "}
+                        {DATA_REQUEST_STATUS[request.status] ?? request.status}
+                      </p>
+                    </div>
+                    {request.status === "done" ? null : (
+                      <form action={handleDataRequest} className="flex items-center gap-2">
+                        <input type="hidden" name="requestId" value={request.id} />
+                        <select
+                          name="status"
+                          defaultValue="done"
+                          className="input max-w-[150px] py-1.5 text-xs"
+                        >
+                          <option value="in_progress">В работе</option>
+                          <option value="done">Обработан</option>
+                          <option value="rejected">Отклонён</option>
+                        </select>
+                        <button
+                          type="submit"
+                          className="rounded border border-line px-2.5 py-1.5 text-xs font-medium text-ink transition-colors hover:border-brand-red hover:text-link"
+                        >
+                          Сохранить
+                        </button>
+                      </form>
+                    )}
+                  </div>
+                  <p className="mt-2 max-w-3xl whitespace-pre-line text-sm text-muted">
+                    {request.message}
+                  </p>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+
+        <section className="card overflow-hidden lg:col-span-2">
+          <div className="border-b border-line px-5 py-4">
+            <h2 className="text-lg font-bold text-brand">Журнал безопасности</h2>
+            <p className="mt-1 text-xs text-muted">
+              Входы, блокировки подбора пароля, действия с данными. Пароли и тексты обращений
+              не записываются.
+            </p>
+          </div>
+          {audit.length === 0 ? (
+            <p className="px-5 py-8 text-sm text-muted">Журнал пока пуст.</p>
+          ) : (
+            <ul className="divide-y divide-line">
+              {audit.map((entry) => (
+                <li
+                  key={entry.id}
+                  className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 px-5 py-3 text-xs"
+                >
+                  <span className="font-semibold text-ink">{entry.action}</span>
+                  <span className="text-muted">{entry.email ?? "—"}</span>
+                  <span className="text-muted">{entry.ip ?? "—"}</span>
+                  <span className="text-muted">{formatDateTime(entry.createdAt)}</span>
+                </li>
+              ))}
+            </ul>
           )}
         </section>
 

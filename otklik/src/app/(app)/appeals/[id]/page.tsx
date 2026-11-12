@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { AppealActions } from "@/components/appeal-actions";
+import { ExpandableText } from "@/components/expandable-text";
 import { PriorityBadge, StatusBadge, TypeBadge } from "@/components/badges";
 import { getAppealForUser } from "@/lib/appeals";
 import { requireUser } from "@/lib/auth";
@@ -90,8 +91,14 @@ export default async function AppealPage({
 
           <section className="card p-6">
             <h1 className="text-[22px] font-bold leading-snug text-brand">
-              {appeal.category.name}
+              {appeal.customCategory ?? appeal.category.name}
             </h1>
+            {appeal.customCategory ? (
+              <p className="mt-1 text-xs text-muted">
+                Своя категория · базовая: {appeal.category.name} · направлено администратору
+                для маршрутизации
+              </p>
+            ) : null}
             <p className="mt-1 text-sm text-muted">
               {appeal.author.name}
               {appeal.author.department ? ` · ${appeal.author.department.name}` : ""} ·{" "}
@@ -100,17 +107,19 @@ export default async function AppealPage({
 
             <div className="mt-5">
               <h2 className="label">Описание</h2>
-              <p className="whitespace-pre-line text-[15px] leading-relaxed text-ink">
-                {appeal.text}
-              </p>
+              <ExpandableText
+                text={appeal.text}
+                className="text-[15px] leading-relaxed text-ink"
+              />
             </div>
 
             {appeal.type === "proposal" && appeal.proposal ? (
               <div className="mt-5">
                 <h2 className="label">Предложенное решение</h2>
-                <p className="whitespace-pre-line text-[15px] leading-relaxed text-ink">
-                  {appeal.proposal}
-                </p>
+                <ExpandableText
+                  text={appeal.proposal}
+                  className="text-[15px] leading-relaxed text-ink"
+                />
               </div>
             ) : null}
 
@@ -131,7 +140,10 @@ export default async function AppealPage({
             {appeal.result ? (
               <div className="info-block mt-5">
                 <h2 className="label">Итог рассмотрения</h2>
-                <p className="text-[15px] leading-relaxed text-ink">{appeal.result}</p>
+                <ExpandableText
+                  text={appeal.result}
+                  className="text-[15px] leading-relaxed text-ink"
+                />
                 {appeal.resolvedAt ? (
                   <p className="mt-2 text-xs text-muted">
                     Зафиксировано {formatDateTime(appeal.resolvedAt)}

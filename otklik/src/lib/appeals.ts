@@ -9,6 +9,7 @@ export type ListFilters = {
   priority?: string;
   q?: string;
   overdue?: boolean;
+  scope?: "mine" | "assigned";
 };
 
 export const appealListInclude = {
@@ -52,6 +53,9 @@ export function buildListWhere(user: ScopedUser, filters: ListFilters): Prisma.A
   if (filters.departmentId) and.push({ departmentId: filters.departmentId });
   if (filters.type) and.push({ type: filters.type });
   if (filters.priority) and.push({ priority: filters.priority });
+
+  if (filters.scope === "mine") and.push({ authorId: user.id });
+  if (filters.scope === "assigned") and.push({ assigneeId: user.id });
 
   if (filters.overdue) {
     and.push({
@@ -114,6 +118,8 @@ export function parseFilters(params: Record<string, string | string[] | undefine
     return typeof raw === "string" ? raw : "";
   };
 
+  const scopeRaw = value("scope");
+
   return {
     status: value("status") || undefined,
     categoryId: value("categoryId") || undefined,
@@ -122,5 +128,6 @@ export function parseFilters(params: Record<string, string | string[] | undefine
     priority: value("priority") || undefined,
     q: value("q") || undefined,
     overdue: value("overdue") === "1",
+    scope: scopeRaw === "mine" || scopeRaw === "assigned" ? scopeRaw : undefined,
   };
 }

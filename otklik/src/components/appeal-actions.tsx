@@ -2,6 +2,8 @@ import type { CurrentUser } from "@/lib/auth";
 import type { AppealDetail } from "@/lib/appeals";
 import { SLA_DAYS, type PriorityKey } from "@/lib/constants";
 import { canManageAppeal, isAssignee, isAuthor } from "@/lib/permissions";
+import { ConfirmSubmit } from "@/components/confirm-submit";
+import { SubmitButton } from "@/components/submit-button";
 import {
   acceptAppeal,
   assignAppeal,
@@ -64,9 +66,9 @@ export function AppealActions({
     blocks.push(
       <form key="accept" action={acceptAppeal}>
         <input type="hidden" name="appealId" value={appeal.id} />
-        <button type="submit" className="btn btn-primary w-full">
+        <SubmitButton className="btn btn-primary w-full" pendingText="Принимаем…">
           Принять в рассмотрение
-        </button>
+        </SubmitButton>
         <p className="mt-2 text-xs text-muted">
           Автор получит уведомление, обращение перейдёт в статус «На рассмотрении».
         </p>
@@ -104,9 +106,9 @@ export function AppealActions({
               className="input"
             />
           </div>
-          <button type="submit" className="btn btn-primary w-full">
+          <SubmitButton className="btn btn-primary w-full" pendingText="Назначаем…">
             Взять в работу
-          </button>
+          </SubmitButton>
         </form>
       </ActionBox>,
     );
@@ -123,9 +125,9 @@ export function AppealActions({
             className="input resize-y"
             placeholder="Какой информации не хватает?"
           />
-          <button type="submit" className="btn btn-secondary w-full">
+          <SubmitButton className="btn btn-secondary w-full" pendingText="Отправляем…">
             Отправить запрос
-          </button>
+          </SubmitButton>
         </form>
       </ActionBox>,
     );
@@ -142,9 +144,15 @@ export function AppealActions({
             className="input resize-y"
             placeholder="Причина отказа, которую увидит автор"
           />
-          <button type="submit" className="btn btn-secondary w-full">
+          <ConfirmSubmit
+            className="btn btn-secondary w-full"
+            pendingText="Отклоняем…"
+            title="Отклонить обращение?"
+            description="Автор увидит причину отказа, обращение закроется без реализации. Отменить это действие нельзя — при необходимости автор создаст новое обращение."
+            confirmLabel="Отклонить"
+          >
             Отклонить обращение
-          </button>
+          </ConfirmSubmit>
         </form>
       </ActionBox>,
     );
@@ -168,9 +176,9 @@ export function AppealActions({
             className="input resize-y"
             placeholder="Комментарий для нового отдела (необязательно)"
           />
-          <button type="submit" className="btn btn-secondary w-full">
+          <SubmitButton className="btn btn-secondary w-full" pendingText="Передаём…">
             Передать обращение
-          </button>
+          </SubmitButton>
           <p className="text-xs text-muted">
             Лимит — 3 перехода между отделами, дальше эскалация администратору.
           </p>
@@ -188,9 +196,15 @@ export function AppealActions({
             className="input"
             placeholder="Номер оригинала, например A-004"
           />
-          <button type="submit" className="btn btn-secondary w-full">
+          <ConfirmSubmit
+            className="btn btn-secondary w-full"
+            pendingText="Помечаем…"
+            title="Пометить обращение дубликатом?"
+            description="Автор получит уведомление и подпишется на обновления оригинала. Собственное обращение закроется как дубликат."
+            confirmLabel="Пометить дубликатом"
+          >
             Пометить дубликатом
-          </button>
+          </ConfirmSubmit>
           <p className="text-xs text-muted">
             Автор получит уведомление и подпишется на обновления оригинала.
           </p>
@@ -212,9 +226,9 @@ export function AppealActions({
             className="input resize-y"
             placeholder="Что сделано и какой результат достигнут?"
           />
-          <button type="submit" className="btn btn-primary w-full">
+          <SubmitButton className="btn btn-primary w-full" pendingText="Сохраняем итог…">
             Отметить выполненным
-          </button>
+          </SubmitButton>
         </form>
       </ActionBox>,
     );
@@ -232,9 +246,9 @@ export function AppealActions({
               className="input resize-y"
               placeholder="Почему не хватает данных для выполнения?"
             />
-            <button type="submit" className="btn btn-secondary w-full">
+            <SubmitButton className="btn btn-secondary w-full" pendingText="Возвращаем…">
               Вернуть с комментарием
-            </button>
+            </SubmitButton>
           </form>
         </ActionBox>,
       );
@@ -257,9 +271,9 @@ export function AppealActions({
             className="input resize-y"
             placeholder="Ваш ответ"
           />
-          <button type="submit" className="btn btn-primary w-full">
+          <SubmitButton className="btn btn-primary w-full" pendingText="Отправляем ответ…">
             Отправить ответ
-          </button>
+          </SubmitButton>
         </form>
       </div>,
     );
@@ -280,9 +294,15 @@ export function AppealActions({
             <option value="2">2 — слабо</option>
             <option value="1">1 — плохо</option>
           </select>
-          <button type="submit" className="btn btn-primary w-full">
+          <ConfirmSubmit
+            className="btn btn-primary w-full"
+            pendingText="Закрываем…"
+            title="Оценить и закрыть обращение?"
+            description="Оценка попадёт в аналитику и закроет обращение. Изменить оценку после отправки нельзя."
+            confirmLabel="Оценить и закрыть"
+          >
             Оценить и закрыть
-          </button>
+          </ConfirmSubmit>
         </form>
       </div>,
     );

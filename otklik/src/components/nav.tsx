@@ -9,16 +9,19 @@ export function Nav({ items }: { items: NavItem[] }) {
   const pathname = usePathname();
 
   return (
-    <nav className="flex flex-wrap items-center gap-1">
+    <nav aria-label="Основная навигация" className="flex flex-nowrap items-center gap-1">
       {items.map((item) => {
         const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
         return (
           <Link
             key={item.href}
             href={item.href}
+            aria-current={active ? "page" : undefined}
             className={[
-              "rounded px-3 py-1.5 text-sm transition-colors",
-              active ? "bg-white/10 text-white" : "text-white/70 hover:bg-white/5 hover:text-white",
+              "inline-flex min-h-11 items-center whitespace-nowrap rounded px-3 py-1.5 text-sm transition-colors",
+              active
+                ? "bg-white/15 font-semibold text-white"
+                : "text-white/75 hover:bg-white/10 hover:text-white",
             ].join(" ")}
           >
             {item.label}

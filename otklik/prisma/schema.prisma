@@ -39,7 +39,40 @@ model User {
   notifications      Notification[]
   ratings            Rating[]
   subscriptions      AppealSubscription[]
+  notifyEmail        Boolean             @default(true)
+  notifyInApp        Boolean             @default(true)
+  consentVersion     String?
+  consentAt          DateTime?
   createdAt          DateTime            @default(now())
+}
+
+// Запросы субъектов данных: доступ, исправление, удаление, отзыв согласия.
+model DataRequest {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  kind      String // access | delete | correct | withdraw
+  message   String
+  status    String   @default("new") // new | in_progress | done | rejected
+  createdAt DateTime @default(now())
+  handledAt DateTime?
+
+  @@index([status])
+}
+
+// Журнал безопасности и значимых действий. Не содержит паролей и текстов обращений.
+model AuditLog {
+  id        String   @id @default(cuid())
+  action    String
+  userId    String?
+  email     String?
+  ip        String?
+  userAgent String?
+  meta      String?
+  createdAt DateTime @default(now())
+
+  @@index([action])
+  @@index([createdAt])
 }
 
 model Category {
@@ -76,6 +109,7 @@ model Appeal {
   priority        String    @default("mid") // high | mid | low
   text            String
   proposal        String?
+  customCategory  String?
   departmentId    String?
   department      Department? @relation(fields: [departmentId], references: [id])
   responsibleId   String?

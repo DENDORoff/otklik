@@ -8,7 +8,17 @@ const COOKIE_NAME = "otklik_session";
 const MAX_AGE = 60 * 60 * 24 * 7;
 
 function secretKey() {
-  return new TextEncoder().encode(process.env.AUTH_SECRET ?? "otklik-dev-secret");
+  const secret = process.env.AUTH_SECRET;
+  if (!secret) {
+    if (process.env.NODE_ENV === "production") {
+      throw new Error("AUTH_SECRET не задан: сессии в production без секрета не создаются.");
+    }
+    return new TextEncoder().encode("otklik-dev-secret");
+  }
+  if (secret.length < 24) {
+    throw new Error("AUTH_SECRET слишком короткий: нужно не менее 24 символов.");
+  }
+  return new TextEncoder().encode(secret);
 }
 
 export async function createSession(userId: string) {

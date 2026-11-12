@@ -80,6 +80,8 @@ const CATEGORIES = [
   ["Корпоративная среда", "Управление"],
   ["Хранение документов", "Управление"],
   ["Прозрачность результатов", "Управление"],
+  // «Другое» — без правила: обращение попадает в очередь «Неназначенные».
+  ["Другое", null],
 ];
 
 const APPEALS = [
@@ -237,6 +239,7 @@ async function main() {
   for (const [name, deptName] of CATEGORIES) {
     const category = await prisma.category.create({ data: { name } });
     categories[name] = category;
+    if (!deptName) continue; // «Другое»: без правила маршрутизации.
     await prisma.routingRule.create({
       data: {
         categoryId: category.id,
