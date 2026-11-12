@@ -1,10 +1,11 @@
 import Link from "next/link";
 import { Logo } from "@/components/logo";
 import { SiteFooter } from "@/components/site-footer";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 export default function LegalLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex min-h-screen flex-col bg-white">
+    <div className="flex min-h-screen flex-col bg-canvas">
       <header className="border-b border-line bg-brand text-white">
         <div className="mx-auto flex min-h-16 w-full max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-3 sm:px-6">
           <Link href="/" aria-label="Отклик — на главную">
@@ -32,6 +33,7 @@ export default function LegalLayout({ children }: { children: React.ReactNode })
             <Link href="/login" className="btn btn-secondary ml-1 normal-case">
               Войти
             </Link>
+            <ThemeToggle />
           </nav>
         </div>
       </header>

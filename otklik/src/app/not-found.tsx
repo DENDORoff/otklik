@@ -1,14 +1,16 @@
 import Link from "next/link";
 import { Logo } from "@/components/logo";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 export default function NotFound() {
   return (
     <div className="flex min-h-screen flex-col">
       <header className="bg-brand text-white">
-        <div className="mx-auto flex min-h-16 max-w-6xl items-center px-4">
+        <div className="mx-auto flex min-h-16 max-w-6xl items-center justify-between px-4">
           <Link href="/" aria-label="Отклик — на главную">
             <Logo />
           </Link>
+          <ThemeToggle />
         </div>
       </header>
 
@@ -17,7 +19,7 @@ export default function NotFound() {
           <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-muted">
             Ошибка 404
           </p>
-          <h1 className="mt-2 text-[26px] font-bold leading-tight text-brand">
+          <h1 className="mt-2 text-[26px] font-bold leading-tight text-brand-ink">
             Обращение не найдено
           </h1>
           <p className="mt-3 text-sm leading-relaxed text-muted">

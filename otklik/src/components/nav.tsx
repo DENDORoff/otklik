@@ -26,7 +26,7 @@ export function Nav({ items }: { items: NavItem[] }) {
           >
             {item.label}
             {item.badge ? (
-              <span className="ml-1.5 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-brand-red px-1 text-[10px] font-bold text-white">
+              <span className="ml-1.5 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-brand-action px-1 text-[10px] font-bold text-white">
                 {item.badge}
               </span>
             ) : null}

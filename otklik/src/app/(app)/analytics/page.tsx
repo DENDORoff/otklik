@@ -15,7 +15,7 @@ function Metric({ label, value, hint }: { label: string; value: string; hint?: s
   return (
     <div className="card p-5">
       <div className="text-[11px] font-semibold uppercase tracking-wide text-muted">{label}</div>
-      <div className="mt-2 text-3xl font-bold leading-none text-brand">{value}</div>
+      <div className="mt-2 text-3xl font-bold leading-none text-brand-ink">{value}</div>
       {hint ? <div className="mt-2 text-xs text-muted">{hint}</div> : null}
     </div>
   );
@@ -98,7 +98,7 @@ export default async function AnalyticsPage() {
   return (
     <div>
       <div className="mb-5">
-        <h1 className="text-[26px] font-bold leading-tight text-brand">Аналитика</h1>
+        <h1 className="text-[26px] font-bold leading-tight text-brand-ink">Аналитика</h1>
         <p className="mt-1 text-sm text-muted">
           {user.role === "admin"
             ? "Сводка по всем обращениям компании"
@@ -142,21 +142,21 @@ export default async function AnalyticsPage() {
           <div className="text-[11px] font-semibold uppercase tracking-wide text-muted">
             Просроченные
           </div>
-          <div className="mt-2 text-3xl font-bold leading-none text-[#E40000]">{overdueCount}</div>
+          <div className="mt-2 text-3xl font-bold leading-none text-[#D40000] dark:text-[#FF7A7A]">{overdueCount}</div>
           <div className="mt-2 text-xs text-muted">дедлайн прошёл, обращение ещё в работе</div>
         </div>
         <div className="card p-5">
           <div className="text-[11px] font-semibold uppercase tracking-wide text-muted">
             Дубликаты
           </div>
-          <div className="mt-2 text-3xl font-bold leading-none text-brand">{duplicateCount}</div>
+          <div className="mt-2 text-3xl font-bold leading-none text-brand-ink">{duplicateCount}</div>
           <div className="mt-2 text-xs text-muted">повторяющиеся обращения</div>
         </div>
         <div className="card p-5">
           <div className="text-[11px] font-semibold uppercase tracking-wide text-muted">
             В работе сейчас
           </div>
-          <div className="mt-2 text-3xl font-bold leading-none text-brand">
+          <div className="mt-2 text-3xl font-bold leading-none text-brand-ink">
             {(statusCounts.in_work ?? 0) + (statusCounts.review ?? 0)}
           </div>
           <div className="mt-2 text-xs text-muted">в рассмотрении и работе</div>
@@ -165,7 +165,7 @@ export default async function AnalyticsPage() {
 
       <div className="mt-6 grid gap-5 lg:grid-cols-2">
         <section className="card p-6">
-          <h2 className="mb-4 text-lg font-bold text-brand">По типам</h2>
+          <h2 className="mb-4 text-lg font-bold text-brand-ink">По типам</h2>
           <table className="w-full">
             <thead>
               <tr className="border-b border-line">
@@ -191,7 +191,7 @@ export default async function AnalyticsPage() {
         </section>
 
         <section className="card p-6">
-          <h2 className="mb-4 text-lg font-bold text-brand">По статусам</h2>
+          <h2 className="mb-4 text-lg font-bold text-brand-ink">По статусам</h2>
           <ul className="space-y-2">
             {Object.entries(STATUS_META).map(([status, meta]) => {
               const count = statusCounts[status] ?? 0;
@@ -208,7 +208,7 @@ export default async function AnalyticsPage() {
         </section>
 
         <section className="card p-6 lg:col-span-2">
-          <h2 className="mb-4 text-lg font-bold text-brand">По категориям</h2>
+          <h2 className="mb-4 text-lg font-bold text-brand-ink">По категориям</h2>
           <ul className="space-y-3">
             {categoryRows.map((row) => (
               <li key={row.name}>
@@ -228,7 +228,7 @@ export default async function AnalyticsPage() {
         </section>
 
         <section className="card p-6 lg:col-span-2">
-          <h2 className="mb-4 text-lg font-bold text-brand">Повторяющиеся проблемы</h2>
+          <h2 className="mb-4 text-lg font-bold text-brand-ink">Повторяющиеся проблемы</h2>
           {topDuplicates.length === 0 ? (
             <p className="text-sm text-muted">Дубликатов пока нет.</p>
           ) : (
@@ -236,7 +236,7 @@ export default async function AnalyticsPage() {
               {topDuplicates.map(([name, count]) => (
                 <li key={name} className="flex items-center justify-between text-sm">
                   <span className="text-ink">{name}</span>
-                  <span className="badge bg-[#F4F4F4] text-ink">{count}</span>
+                  <span className="badge bg-subtle text-ink">{count}</span>
                 </li>
               ))}
             </ul>

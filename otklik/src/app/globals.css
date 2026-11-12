@@ -26,6 +26,38 @@
 @tailwind utilities;
 
 @layer base {
+  /* Светлая тема — значения по умолчанию. */
+  :root {
+    color-scheme: light;
+    --color-canvas: #f4f4f4;
+    --color-surface: #ffffff;
+    --color-subtle: #fafbfc;
+    --color-ink: #323a47;
+    --color-muted: #5c6675;
+    --color-line: #d1d5dd;
+    --color-info: #eff6fd;
+    --color-brand-ink: #082742;
+    --color-link: #d40000;
+    --color-skeleton: #e9ebef;
+    --color-skeleton-shine: rgba(255, 255, 255, 0.65);
+  }
+
+  /* Тёмная тема: те же токены, другая палитра. Включается классом .dark на <html>. */
+  .dark {
+    color-scheme: dark;
+    --color-canvas: #0b131c;
+    --color-surface: #141f2b;
+    --color-subtle: #1b2836;
+    --color-ink: #e4eaf2;
+    --color-muted: #9aa9bc;
+    --color-line: #2a3848;
+    --color-info: #12293f;
+    --color-brand-ink: #f2f6fb;
+    --color-link: #ff7a7a;
+    --color-skeleton: #22303f;
+    --color-skeleton-shine: rgba(255, 255, 255, 0.06);
+  }
+
   html {
     scroll-behavior: smooth;
   }
@@ -64,7 +96,7 @@
   }
 
   .card {
-    @apply rounded-card border border-line bg-white;
+    @apply rounded-card border border-line bg-surface;
   }
 
   /* Плоская панель без «коробки»: для списков и секций, где карточка не нужна. */
@@ -76,10 +108,10 @@
     @apply inline-flex min-h-11 items-center justify-center gap-2 rounded px-5 py-2.5 text-[13px] font-semibold uppercase tracking-[0.01em] transition-colors disabled:cursor-not-allowed disabled:opacity-60;
   }
   .btn-primary {
-    @apply bg-brand-red text-white hover:bg-brand-dark;
+    @apply bg-brand-action text-white hover:bg-brand-dark;
   }
   .btn-secondary {
-    @apply border border-line bg-white text-ink hover:border-muted;
+    @apply border border-line bg-surface text-ink hover:border-muted;
   }
   .btn-ghost {
     @apply text-ink hover:bg-canvas;
@@ -89,13 +121,13 @@
   }
 
   .input {
-    @apply min-h-11 w-full rounded border border-line bg-white px-3 py-2 text-sm text-ink outline-none transition-colors placeholder:text-muted focus:border-brand-red;
+    @apply min-h-11 w-full rounded border border-line bg-surface px-3 py-2 text-sm text-ink outline-none transition-colors placeholder:text-muted focus:border-brand-red;
   }
   .label {
     @apply mb-1 block text-[11px] font-semibold uppercase tracking-wide text-muted;
   }
   .field-error {
-    @apply mt-1 text-xs font-medium text-[#C00000];
+    @apply mt-1 text-xs font-medium text-[#C00000] dark:text-[#FF9A9A];
   }
 
   .badge {
@@ -113,7 +145,7 @@
     @apply rounded border border-line border-l-4 border-l-[#2F80ED] bg-info p-4;
   }
   .danger-block {
-    @apply rounded border border-line border-l-4 border-l-[#E40000] bg-white p-4;
+    @apply rounded border border-line border-l-4 border-l-[#E40000] bg-surface p-4;
   }
 
   /* Три уровня отступов: внутри 8, между 24, между секциями 64. */
@@ -128,18 +160,24 @@
   }
 
   .skip-link {
-    @apply absolute left-4 top-3 z-50 -translate-y-20 rounded bg-white px-4 py-2 text-sm font-semibold text-brand shadow transition-transform focus:translate-y-0;
+    @apply absolute left-4 top-3 z-50 -translate-y-20 rounded bg-surface px-4 py-2 text-sm font-semibold text-brand-ink shadow transition-transform focus:translate-y-0;
   }
 
   .skeleton {
-    @apply relative overflow-hidden rounded bg-[#E9EBEF];
+    @apply relative overflow-hidden rounded;
+    background-color: var(--color-skeleton);
   }
   .skeleton::after {
     content: "";
     position: absolute;
     inset: 0;
     transform: translateX(-100%);
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.65), transparent);
+    background: linear-gradient(
+      90deg,
+      transparent,
+      var(--color-skeleton-shine),
+      transparent
+    );
     animation: shimmer 1.4s infinite;
   }
   @keyframes shimmer {
@@ -149,7 +187,7 @@
   }
 
   .legal-prose h2 {
-    @apply mt-10 text-lg font-bold text-brand first:mt-0;
+    @apply mt-10 text-lg font-bold text-brand-ink first:mt-0;
   }
   .legal-prose h3 {
     @apply mt-6 text-sm font-bold text-ink;

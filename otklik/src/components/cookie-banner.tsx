@@ -35,7 +35,7 @@ export function CookieBanner() {
     <section
       aria-label="Согласие на использование файлов cookie"
       role="region"
-      className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-white shadow-[0_-8px_24px_rgba(8,39,66,0.08)]"
+      className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-surface shadow-[0_-8px_24px_rgba(8,39,66,0.08)]"
     >
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-4 px-4 py-4 sm:px-6 lg:flex-row lg:items-center lg:justify-between">
         <div className="max-w-3xl">
@@ -43,8 +43,8 @@ export function CookieBanner() {
             Только необходимые cookie — без рекламы и слежки
           </p>
           <p className="mt-1 text-xs leading-relaxed text-muted">
-            Мы используем одну сессионную cookie для входа. Аналитики, рекламных пикселей и
-            сторонних SDK нет. Подробнее —{" "}
+            Мы используем сессионную cookie для входа и cookie для запоминания выбранной темы
+            оформления. Аналитики, рекламных пикселей и сторонних SDK нет. Подробнее —{" "}
             <Link href="/legal/cookies" className="font-medium underline underline-offset-2">
               в политике cookie
             </Link>

@@ -5,7 +5,7 @@ import { COMPANY } from "@/lib/company";
 export const metadata: Metadata = {
   title: "Политика использования файлов cookie",
   description:
-    "Одна сессионная cookie для входа, локальное сохранение выбора баннера и никаких сторонних трекеров.",
+    "Сессионная cookie для входа, cookie выбора темы оформления, локальное сохранение выбора баннера и никаких сторонних трекеров.",
   alternates: { canonical: "/legal/cookies" },
 };
 
@@ -15,7 +15,7 @@ export default function CookiesPage() {
       <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-muted">
         Обновлено {COMPANY.updatedAt}
       </p>
-      <h1 className="mt-2 text-[32px] font-bold leading-tight text-brand">
+      <h1 className="mt-2 text-[32px] font-bold leading-tight text-brand-ink">
         Политика использования файлов cookie
       </h1>
       <p className="mt-3 text-sm leading-relaxed text-muted">
@@ -52,6 +52,15 @@ export default function CookiesPage() {
               <td className="td">Запоминает выбор в баннере (localStorage, не cookie)</td>
               <td className="td">до очистки браузера</td>
             </tr>
+            <tr className="border-b border-line">
+              <td className="td font-mono text-xs">theme</td>
+              <td className="td">Функциональная</td>
+              <td className="td">
+                Запоминает выбранную тему оформления (light или dark). Персональных данных не
+                содержит, выбор меняется кнопкой в шапке.
+              </td>
+              <td className="td">12 месяцев</td>
+            </tr>
           </tbody>
         </table>
       </div>
@@ -73,7 +82,9 @@ export default function CookiesPage() {
       </p>
       <p>
         Cookie можно отключить в настройках браузера. Сессионная cookie необходима для входа:
-        при её блокировке система не сможет поддерживать авторизацию.
+        при её блокировке система не сможет поддерживать авторизацию. Cookie темы оформления
+        не влияет на работу системы — без неё тема просто сбросится к светлой при следующем
+        визите.
       </p>
 
       <h2>5. Контакты</h2>

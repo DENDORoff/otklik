@@ -7,41 +7,31 @@ import {
   type TypeKey,
 } from "@/lib/constants";
 
-function metaColor(status: string) {
-  return STATUS_META[status as StatusKey] ?? { label: status, color: "#B0B8C5", text: "#323A47" };
-}
+const FALLBACK = "bg-[#B0B8C5] text-[#323A47]";
 
 export function StatusBadge({ status }: { status: string }) {
-  const meta = metaColor(status);
+  const meta = STATUS_META[status as StatusKey];
   return (
-    <span className="badge" style={{ backgroundColor: meta.color, color: meta.text }}>
-      {meta.label}
+    <span className={["badge", meta?.className ?? FALLBACK].join(" ")}>
+      {meta?.label ?? status}
     </span>
   );
 }
 
 export function PriorityBadge({ priority }: { priority: string }) {
-  const meta = PRIORITY_META[priority as PriorityKey] ?? {
-    label: priority,
-    color: "#B0B8C5",
-    text: "#323A47",
-  };
+  const meta = PRIORITY_META[priority as PriorityKey];
   return (
-    <span className="badge" style={{ backgroundColor: meta.color, color: meta.text }}>
-      {meta.label}
+    <span className={["badge", meta?.className ?? FALLBACK].join(" ")}>
+      {meta?.label ?? priority}
     </span>
   );
 }
 
 export function TypeBadge({ type }: { type: string }) {
-  const meta = TYPE_META[type as TypeKey] ?? {
-    label: type,
-    color: "#F4F4F4",
-    text: "#323A47",
-  };
+  const meta = TYPE_META[type as TypeKey];
   return (
-    <span className="badge" style={{ backgroundColor: meta.color, color: meta.text }}>
-      {meta.label}
+    <span className={["badge", meta?.className ?? FALLBACK].join(" ")}>
+      {meta?.label ?? type}
     </span>
   );
 }

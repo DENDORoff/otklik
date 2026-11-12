@@ -69,9 +69,9 @@ export function ConfirmSubmit({
             aria-modal="true"
             aria-labelledby="confirm-title"
             aria-describedby="confirm-desc"
-            className="w-full max-w-md rounded-card bg-white p-6 shadow-xl"
+            className="w-full max-w-md rounded-card bg-surface p-6 shadow-xl"
           >
-            <h2 id="confirm-title" className="text-lg font-bold text-brand">
+            <h2 id="confirm-title" className="text-lg font-bold text-brand-ink">
               {title}
             </h2>
             <p id="confirm-desc" className="mt-2 text-sm leading-relaxed text-muted">

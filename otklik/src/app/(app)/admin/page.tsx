@@ -56,7 +56,7 @@ export default async function AdminPage() {
   return (
     <div>
       <div className="mb-5">
-        <h1 className="text-[26px] font-bold leading-tight text-brand">Администрирование</h1>
+        <h1 className="text-[26px] font-bold leading-tight text-brand-ink">Администрирование</h1>
         <p className="mt-1 text-sm text-muted">
           Структура компании — записи в базе. Изменение правила маршрутизации меняет путь новых
           обращений без правки кода.
@@ -66,12 +66,12 @@ export default async function AdminPage() {
       <div className="grid gap-5 lg:grid-cols-2">
         <section className="card overflow-hidden">
           <div className="border-b border-line px-5 py-4">
-            <h2 className="text-lg font-bold text-brand">Правила маршрутизации</h2>
+            <h2 className="text-lg font-bold text-brand-ink">Правила маршрутизации</h2>
             <p className="mt-1 text-xs text-muted">Категория → подразделение-получатель</p>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full min-w-[420px]">
-              <thead className="bg-[#FAFBFC]">
+              <thead className="bg-subtle">
                 <tr className="border-b border-line">
                   <th className="th">Категория</th>
                   <th className="th">Направляется в</th>
@@ -85,7 +85,7 @@ export default async function AdminPage() {
                       <td className="td">
                         <div className="font-medium text-ink">{category.name}</div>
                         {category.routingRules.length === 0 ? (
-                          <span className="text-xs text-[#E40000]">
+                          <span className="text-xs text-[#D40000] dark:text-[#FF7A7A]">
                             нет правила — очередь «Неназначенные»
                           </span>
                         ) : null}
@@ -123,12 +123,12 @@ export default async function AdminPage() {
 
         <section className="card overflow-hidden">
           <div className="border-b border-line px-5 py-4">
-            <h2 className="text-lg font-bold text-brand">Подразделения</h2>
+            <h2 className="text-lg font-bold text-brand-ink">Подразделения</h2>
             <p className="mt-1 text-xs text-muted">Начальник отдела назначает исполнителей</p>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full min-w-[420px]">
-              <thead className="bg-[#FAFBFC]">
+              <thead className="bg-subtle">
                 <tr className="border-b border-line">
                   <th className="th">Отдел</th>
                   <th className="th">Начальник</th>
@@ -152,7 +152,7 @@ export default async function AdminPage() {
 
         <section className="card overflow-hidden lg:col-span-2">
           <div className="border-b border-line px-5 py-4">
-            <h2 className="text-lg font-bold text-brand">Очередь «Неназначенные»</h2>
+            <h2 className="text-lg font-bold text-brand-ink">Очередь «Неназначенные»</h2>
             <p className="mt-1 text-xs text-muted">
               Обращения без правила маршрутизации или без ответственного — не теряются
             </p>
@@ -161,7 +161,7 @@ export default async function AdminPage() {
             <p className="px-5 py-8 text-sm text-muted">Очередь пуста — все обращения распределены.</p>
           ) : (
             <table className="w-full">
-              <thead className="bg-[#FAFBFC]">
+              <thead className="bg-subtle">
                 <tr className="border-b border-line">
                   <th className="th">Номер</th>
                   <th className="th">Категория</th>
@@ -187,7 +187,7 @@ export default async function AdminPage() {
 
         <section className="card overflow-hidden lg:col-span-2">
           <div className="border-b border-line px-5 py-4">
-            <h2 className="text-lg font-bold text-brand">Запросы по персональным данным</h2>
+            <h2 className="text-lg font-bold text-brand-ink">Запросы по персональным данным</h2>
             <p className="mt-1 text-xs text-muted">
               Доступ, исправление, удаление и отзыв согласия. Срок ответа — до 10 рабочих дней.
             </p>
@@ -246,7 +246,7 @@ export default async function AdminPage() {
 
         <section className="card overflow-hidden lg:col-span-2">
           <div className="border-b border-line px-5 py-4">
-            <h2 className="text-lg font-bold text-brand">Журнал безопасности</h2>
+            <h2 className="text-lg font-bold text-brand-ink">Журнал безопасности</h2>
             <p className="mt-1 text-xs text-muted">
               Входы, блокировки подбора пароля, действия с данными. Пароли и тексты обращений
               не записываются.
@@ -273,14 +273,14 @@ export default async function AdminPage() {
 
         <section className="card overflow-hidden lg:col-span-2">
           <div className="border-b border-line px-5 py-4">
-            <h2 className="text-lg font-bold text-brand">Пользователи</h2>
+            <h2 className="text-lg font-bold text-brand-ink">Пользователи</h2>
             <p className="mt-1 text-xs text-muted">
               Демо-пароль всех учётных записей — demo1234
             </p>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full min-w-[640px]">
-              <thead className="bg-[#FAFBFC]">
+              <thead className="bg-subtle">
                 <tr className="border-b border-line">
                   <th className="th">Сотрудник</th>
                   <th className="th">Почта</th>

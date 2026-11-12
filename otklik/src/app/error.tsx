@@ -15,7 +15,7 @@ export default function GlobalError({
         <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-muted">
           Ошибка
         </p>
-        <h1 className="mt-2 text-[26px] font-bold leading-tight text-brand">
+        <h1 className="mt-2 text-[26px] font-bold leading-tight text-brand-ink">
           Что-то пошло не так
         </h1>
         <p className="mt-3 text-sm leading-relaxed text-muted">

@@ -63,7 +63,7 @@ export default async function AppealsPage({
     <div>
       <div className="mb-6 flex flex-wrap items-start justify-between gap-4">
         <div>
-          <h1 className="text-[26px] font-bold leading-tight text-brand">Обращения</h1>
+          <h1 className="text-[26px] font-bold leading-tight text-brand-ink">Обращения</h1>
           <p className="mt-1 text-sm text-muted">
             {user.role === "admin"
               ? "Все обращения компании"
@@ -95,7 +95,7 @@ export default async function AppealsPage({
                   className={[
                     "inline-flex min-h-11 items-center whitespace-nowrap border-b-2 px-3 text-sm transition-colors",
                     active
-                      ? "border-brand-red font-semibold text-brand"
+                      ? "border-brand-red font-semibold text-brand-ink"
                       : "border-transparent text-muted hover:border-line hover:text-ink",
                   ].join(" ")}
                 >
@@ -262,7 +262,7 @@ export default async function AppealsPage({
                   <div className="flex flex-wrap items-center gap-2">
                     <Link
                       href={`/appeals/${appeal.id}`}
-                      className="font-semibold text-brand hover:text-link"
+                      className="font-semibold text-brand-ink hover:text-link"
                     >
                       {appeal.code}
                     </Link>
@@ -277,7 +277,7 @@ export default async function AppealsPage({
                     {appeal.department?.name ?? "Неназначенные"} ·{" "}
                     {formatDate(appeal.createdAt)}
                     {state === "overdue" ? (
-                      <span className="font-semibold text-[#C00000]"> · просрочено</span>
+                      <span className="font-semibold text-[#C00000] dark:text-[#FF9A9A]"> · просрочено</span>
                     ) : null}
                   </p>
                 </li>
@@ -288,7 +288,7 @@ export default async function AppealsPage({
           {/* Таблица для широких экранов. */}
           <div className="hidden overflow-x-auto border-y border-line md:block">
             <table className="w-full min-w-[840px] border-collapse">
-              <thead className="border-b border-line bg-[#FAFBFC]">
+              <thead className="border-b border-line bg-subtle">
                 <tr>
                   <th className="th">Номер</th>
                   <th className="th">Обращение</th>
@@ -307,12 +307,12 @@ export default async function AppealsPage({
                     <tr
                       key={appeal.id}
                       className={[
-                        "border-b border-line last:border-0 transition-colors hover:bg-[#FAFBFC]",
+                        "border-b border-line last:border-0 transition-colors hover:bg-subtle",
                         state === "overdue" ? "bg-info" : "",
                       ].join(" ")}
                     >
-                      <td className="td whitespace-nowrap font-semibold text-brand">
-                        <Link href={`/appeals/${appeal.id}`} className="text-brand hover:text-link">
+                      <td className="td whitespace-nowrap font-semibold text-brand-ink">
+                        <Link href={`/appeals/${appeal.id}`} className="text-brand-ink hover:text-link">
                           {appeal.code}
                         </Link>
                       </td>
@@ -346,7 +346,7 @@ export default async function AppealsPage({
                       <td className="td whitespace-nowrap">
                         {appeal.deadline ? (
                           <span
-                            className={state === "overdue" ? "font-semibold text-[#C00000]" : ""}
+                            className={state === "overdue" ? "font-semibold text-[#C00000] dark:text-[#FF9A9A]" : ""}
                           >
                             {formatDate(appeal.deadline)}
                             {state === "overdue" ? " · просрочено" : ""}

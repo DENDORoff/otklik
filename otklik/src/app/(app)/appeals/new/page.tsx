@@ -30,7 +30,7 @@ export default async function NewAppealPage({
         <Link href="/appeals" className="text-sm text-muted hover:text-link">
           ← Все обращения
         </Link>
-        <h1 className="mt-3 text-[26px] font-bold leading-tight text-brand">Новое обращение</h1>
+        <h1 className="mt-3 text-[26px] font-bold leading-tight text-brand-ink">Новое обращение</h1>
         <p className="mt-1 text-sm text-muted">
           Три шага: что случилось, подробности, срок и отправка. Номер вида A-XXX присвоится
           автоматически.

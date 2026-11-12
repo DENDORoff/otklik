@@ -14,7 +14,7 @@ export default function LicensesPage() {
       <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-muted">
         Обновлено {COMPANY.updatedAt}
       </p>
-      <h1 className="mt-2 text-[32px] font-bold leading-tight text-brand">
+      <h1 className="mt-2 text-[32px] font-bold leading-tight text-brand-ink">
         Лицензии шрифтов, кода и изображений
       </h1>
       <p className="mt-3 text-sm leading-relaxed text-muted">
@@ -69,9 +69,9 @@ export default function LicensesPage() {
 
       <h2>3. Программные библиотеки</h2>
       <p>
-        Проект использует Next.js, React, Prisma, Tailwind CSS, jose, bcryptjs, zod,
-        date-fns и recharts. Каждая библиотека распространяется по своей открытой лицензии
-        (MIT, Apache-2.0 или BSD). Полные тексты доступны в каталоге <code>node_modules</code>{" "}
+        Проект использует Next.js, React, Prisma, Tailwind CSS, jose, bcryptjs, zod и
+        date-fns. Каждая библиотека распространяется по своей открытой лицензии (MIT,
+        Apache-2.0 или BSD). Полные тексты доступны в каталоге <code>node_modules</code>{" "}
         соответствующего пакета и на сайте проекта.
       </p>
 

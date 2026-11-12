@@ -49,9 +49,18 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#082742",
-  colorScheme: "light",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#082742" },
+    { media: "(prefers-color-scheme: dark)", color: "#0B131C" },
+  ],
+  colorScheme: "light dark",
 };
+
+/**
+ * Тема до первой отрисовки: без этого при перезагрузке мелькала бы светлая тема.
+ * Приоритет: сохранённый выбор → системная настройка. Класс ставится на <html>.
+ */
+const themeScript = `(function(){try{var t=localStorage.getItem("theme");if(t!=="dark"&&t!=="light"){t=window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";}if(t==="dark"){document.documentElement.classList.add("dark");document.documentElement.style.colorScheme="dark";}}catch(e){}})();`;
 
 const organizationJsonLd = {
   "@context": "https://schema.org",
@@ -67,7 +76,10 @@ const organizationJsonLd = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="ru">
+    <html lang="ru" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+      </head>
       <body>
         <a href="#main" className="skip-link">
           Перейти к содержимому

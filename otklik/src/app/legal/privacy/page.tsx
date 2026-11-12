@@ -15,7 +15,7 @@ export default function PrivacyPage() {
       <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-muted">
         Правовая информация · обновлено {COMPANY.updatedAt}
       </p>
-      <h1 className="mt-2 text-[32px] font-bold leading-tight text-brand">
+      <h1 className="mt-2 text-[32px] font-bold leading-tight text-brand-ink">
         Политика конфиденциальности
       </h1>
       <p className="mt-3 text-sm leading-relaxed text-muted">
@@ -137,8 +137,8 @@ export default function PrivacyPage() {
       <div className="mt-10 rounded border border-line bg-canvas p-4 text-sm">
         <p className="font-semibold text-ink">Коротко</p>
         <p className="mt-1 text-muted">
-          Только необходимые данные, один сессионный cookie, никаких сторонних трекеров.
-          Согласие можно отозвать, данные — запросить к удалению.
+          Только необходимые данные, сессионная cookie и cookie выбора темы оформления, никаких
+          сторонних трекеров. Согласие можно отозвать, данные — запросить к удалению.
         </p>
       </div>
     </article>

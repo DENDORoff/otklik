@@ -9,10 +9,7 @@ import { prisma } from "@/lib/db";
 import { canManageAppeal } from "@/lib/permissions";
 import {
   EVENT_LABELS,
-  PRIORITY_META,
   STATUS_META,
-  priorityLabel,
-  type PriorityKey,
   type StatusKey,
 } from "@/lib/constants";
 import { deadlineState, formatDate, formatDateTime } from "@/lib/format";
@@ -66,7 +63,7 @@ export default async function AppealPage({
           ← Все обращения
         </Link>
         <span className="text-line">/</span>
-        <span className="font-semibold text-brand">{appeal.code}</span>
+        <span className="font-semibold text-brand-ink">{appeal.code}</span>
         <StatusBadge status={appeal.status} />
         <TypeBadge type={appeal.type} />
         <PriorityBadge priority={appeal.priority} />
@@ -90,7 +87,7 @@ export default async function AppealPage({
           />
 
           <section className="card p-6">
-            <h1 className="text-[22px] font-bold leading-snug text-brand">
+            <h1 className="text-[22px] font-bold leading-snug text-brand-ink">
               {appeal.customCategory ?? appeal.category.name}
             </h1>
             {appeal.customCategory ? (
@@ -187,7 +184,7 @@ export default async function AppealPage({
 
           <section className="card p-6">
             <div className="mb-4 flex items-center justify-between">
-              <h2 className="text-lg font-bold text-brand">Комментарии</h2>
+              <h2 className="text-lg font-bold text-brand-ink">Комментарии</h2>
               <span className="text-xs text-muted">{appeal.comments.length}</span>
             </div>
 
@@ -201,7 +198,7 @@ export default async function AppealPage({
                       <span className="font-semibold text-ink">{comment.author.name}</span>
                       <span>{formatDateTime(comment.createdAt)}</span>
                       {comment.isClarification ? (
-                        <span className="badge bg-[#FFF6E5] text-[#8A5A00]">
+                        <span className="badge bg-[#FFF6E5] text-[#8A5A00] dark:bg-[#33270F] dark:text-[#F0C36B]">
                           Запрос уточнения
                         </span>
                       ) : null}
@@ -216,7 +213,7 @@ export default async function AppealPage({
           </section>
 
           <section className="card p-6">
-            <h2 className="mb-4 text-lg font-bold text-brand">История</h2>
+            <h2 className="mb-4 text-lg font-bold text-brand-ink">История</h2>
             <ol className="space-y-4">
               {appeal.history.map((event) => {
                 const dot =
@@ -255,7 +252,7 @@ export default async function AppealPage({
 
         <aside className="space-y-5">
           <section className="card p-5">
-            <h2 className="mb-2 text-sm font-bold uppercase tracking-wide text-brand">
+            <h2 className="mb-2 text-sm font-bold uppercase tracking-wide text-brand-ink">
               Карточка
             </h2>
             <dl>
@@ -266,16 +263,7 @@ export default async function AppealPage({
               </MetaRow>
               <MetaRow label="Исполнитель">{appeal.assignee?.name ?? "—"}</MetaRow>
               <MetaRow label="Приоритет">
-                <span
-                  className="badge"
-                  style={{
-                    backgroundColor:
-                      PRIORITY_META[appeal.priority as PriorityKey]?.color ?? "#B0B8C5",
-                    color: PRIORITY_META[appeal.priority as PriorityKey]?.text ?? "#323A47",
-                  }}
-                >
-                  {priorityLabel(appeal.priority)}
-                </span>
+                <PriorityBadge priority={appeal.priority} />
               </MetaRow>
               <MetaRow label="Создано">{formatDate(appeal.publishedAt)}</MetaRow>
               <MetaRow label="Первый ответ">
@@ -283,7 +271,7 @@ export default async function AppealPage({
               </MetaRow>
               <MetaRow label="Срок">
                 {appeal.deadline ? (
-                  <span className={state === "overdue" ? "font-semibold text-[#E40000]" : ""}>
+                  <span className={state === "overdue" ? "font-semibold text-[#D40000] dark:text-[#FF7A7A]" : ""}>
                     {formatDate(appeal.deadline)}
                     {state === "overdue" ? " · просрочено" : ""}
                   </span>
@@ -295,7 +283,7 @@ export default async function AppealPage({
           </section>
 
           <section className="card p-5">
-            <h2 className="mb-3 text-sm font-bold uppercase tracking-wide text-brand">
+            <h2 className="mb-3 text-sm font-bold uppercase tracking-wide text-brand-ink">
               Оценка автора
             </h2>
             {appeal.rating ? (

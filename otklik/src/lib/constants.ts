@@ -1,28 +1,43 @@
 export const STATUS_META = {
-  new: { label: "Новое", color: "#2F80ED", text: "#FFFFFF" },
-  review: { label: "На рассмотрении", color: "#6610F2", text: "#FFFFFF" },
-  clarification: { label: "Ожидает уточнения", color: "#FFC107", text: "#323A47" },
-  in_work: { label: "В работе", color: "#20C997", text: "#FFFFFF" },
-  implemented: { label: "Реализовано", color: "#198754", text: "#FFFFFF" },
-  closed: { label: "Закрыто", color: "#6C757D", text: "#FFFFFF" },
-  rejected: { label: "Отклонено", color: "#E40000", text: "#FFFFFF" },
-  duplicate: { label: "Дубликат", color: "#B0B8C5", text: "#323A47" },
+  new: { label: "Новое", color: "#1A5FB4", text: "#FFFFFF", className: "bg-[#1A5FB4] text-white" },
+  review: { label: "На рассмотрении", color: "#6610F2", text: "#FFFFFF", className: "bg-[#6610F2] text-white" },
+  clarification: { label: "Ожидает уточнения", color: "#FFC107", text: "#323A47", className: "bg-[#FFC107] text-[#323A47]" },
+  in_work: { label: "В работе", color: "#20C997", text: "#0B3B2E", className: "bg-[#20C997] text-[#0B3B2E]" },
+  implemented: { label: "Реализовано", color: "#198754", text: "#FFFFFF", className: "bg-[#198754] text-white" },
+  closed: { label: "Закрыто", color: "#6C757D", text: "#FFFFFF", className: "bg-[#6C757D] text-white" },
+  rejected: { label: "Отклонено", color: "#E40000", text: "#FFFFFF", className: "bg-[#E40000] text-white" },
+  duplicate: { label: "Дубликат", color: "#B0B8C5", text: "#323A47", className: "bg-[#B0B8C5] text-[#323A47]" },
 } as const;
 
 export type StatusKey = keyof typeof STATUS_META;
 
 export const PRIORITY_META = {
-  high: { label: "Высокий", color: "#E40000", text: "#FFFFFF" },
-  mid: { label: "Средний", color: "#FFC107", text: "#323A47" },
-  low: { label: "Низкий", color: "#B0B8C5", text: "#323A47" },
+  high: { label: "Высокий", color: "#E40000", text: "#FFFFFF", className: "bg-[#E40000] text-white" },
+  mid: { label: "Средний", color: "#FFC107", text: "#323A47", className: "bg-[#FFC107] text-[#323A47]" },
+  low: { label: "Низкий", color: "#B0B8C5", text: "#323A47", className: "bg-[#B0B8C5] text-[#323A47]" },
 } as const;
 
 export type PriorityKey = keyof typeof PRIORITY_META;
 
 export const TYPE_META = {
-  problem: { label: "Проблема", color: "#EFF6FD", text: "#0B5CAB" },
-  proposal: { label: "Предложение", color: "#EAF7F1", text: "#136C4A" },
-  praise: { label: "Положительный отзыв", color: "#FFF6E5", text: "#8A5A00" },
+  problem: {
+    label: "Проблема",
+    color: "#EFF6FD",
+    text: "#0B5CAB",
+    className: "bg-[#EFF6FD] text-[#0B5CAB] dark:bg-[#14283C] dark:text-[#8FC2F5]",
+  },
+  proposal: {
+    label: "Предложение",
+    color: "#EAF7F1",
+    text: "#136C4A",
+    className: "bg-[#EAF7F1] text-[#136C4A] dark:bg-[#102A1D] dark:text-[#5FD3A3]",
+  },
+  praise: {
+    label: "Положительный отзыв",
+    color: "#FFF6E5",
+    text: "#8A5A00",
+    className: "bg-[#FFF6E5] text-[#8A5A00] dark:bg-[#33270F] dark:text-[#F0C36B]",
+  },
 } as const;
 
 export type TypeKey = keyof typeof TYPE_META;

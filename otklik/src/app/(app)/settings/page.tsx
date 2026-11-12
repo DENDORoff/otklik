@@ -23,7 +23,7 @@ export default async function SettingsPage({
   return (
     <div className="mx-auto max-w-3xl">
       <div className="mb-6">
-        <h1 className="text-[26px] font-bold leading-tight text-brand">Настройки</h1>
+        <h1 className="text-[26px] font-bold leading-tight text-brand-ink">Настройки</h1>
         <p className="mt-1 text-sm text-muted">
           Управляйте уведомлениями и данными. Обязательные сообщения о ваших обращениях
           остаются в системе.
@@ -33,7 +33,7 @@ export default async function SettingsPage({
       {saved ? (
         <p
           role="status"
-          className="mb-6 border-l-4 border-[#198754] bg-[#F1F8F4] px-4 py-3 text-sm text-ink"
+          className="mb-6 border-l-4 border-[#198754] bg-[#F1F8F4] px-4 py-3 text-sm text-ink dark:border-[#3FBF7F] dark:bg-[#102A1D]"
         >
           {saved === "unsubscribed"
             ? "Необязательные уведомления отключены. Сервисные сообщения о ваших обращениях останутся."
@@ -42,7 +42,7 @@ export default async function SettingsPage({
       ) : null}
 
       <section className="card p-6">
-        <h2 className="text-base font-bold text-brand">Профиль</h2>
+        <h2 className="text-base font-bold text-brand-ink">Профиль</h2>
         <dl className="mt-4 grid gap-3 text-sm sm:grid-cols-2">
           <div>
             <dt className="label">Имя</dt>
@@ -78,7 +78,7 @@ export default async function SettingsPage({
       </section>
 
       <section className="card mt-6 p-6">
-        <h2 className="text-base font-bold text-brand">Уведомления</h2>
+        <h2 className="text-base font-bold text-brand-ink">Уведомления</h2>
         <p className="mt-1 text-sm text-muted">
           Внутрисистемные уведомления показываются в разделе «Уведомления». Почтовые на стенде
           имитируются и не отправляются.
@@ -125,7 +125,7 @@ export default async function SettingsPage({
       </section>
 
       <section className="card mt-6 p-6">
-        <h2 className="text-base font-bold text-brand">Отписка и данные</h2>
+        <h2 className="text-base font-bold text-brand-ink">Отписка и данные</h2>
         <p className="mt-1 text-sm text-muted">
           Отписаться можно одной кнопкой. Обязательные сервисные сообщения о ваших обращениях
           остаются доступными в системе — они нужны для работы процесса.

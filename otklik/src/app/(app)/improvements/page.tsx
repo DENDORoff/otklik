@@ -39,7 +39,7 @@ export default async function ImprovementsPage() {
   return (
     <div>
       <div className="mb-8 max-w-2xl">
-        <h1 className="text-[26px] font-bold leading-tight text-brand">
+        <h1 className="text-[26px] font-bold leading-tight text-brand-ink">
           Реализованные улучшения
         </h1>
         <p className="mt-2 text-sm leading-relaxed text-muted">
@@ -53,21 +53,21 @@ export default async function ImprovementsPage() {
           <dt className="text-[11px] font-semibold uppercase tracking-wide text-muted">
             Доведено до итога
           </dt>
-          <dd className="mt-1 text-3xl font-bold text-brand">{implemented}</dd>
+          <dd className="mt-1 text-3xl font-bold text-brand-ink">{implemented}</dd>
           <p className="mt-1 text-xs text-muted">из {total} обращений</p>
         </div>
         <div>
           <dt className="text-[11px] font-semibold uppercase tracking-wide text-muted">
             Доля завершённых
           </dt>
-          <dd className="mt-1 text-3xl font-bold text-brand">{share}%</dd>
+          <dd className="mt-1 text-3xl font-bold text-brand-ink">{share}%</dd>
           <p className="mt-1 text-xs text-muted">от общего потока</p>
         </div>
         <div>
           <dt className="text-[11px] font-semibold uppercase tracking-wide text-muted">
             Категорий в работе
           </dt>
-          <dd className="mt-1 text-3xl font-bold text-brand">{categories}</dd>
+          <dd className="mt-1 text-3xl font-bold text-brand-ink">{categories}</dd>
           <p className="mt-1 text-xs text-muted">маршрутизация по правилам</p>
         </div>
       </dl>
@@ -90,7 +90,7 @@ export default async function ImprovementsPage() {
                 Улучшение {String(index + 1).padStart(2, "0")} ·{" "}
                 {typeLabel(item.type)} · {formatDate(item.resolvedAt ?? item.publishedAt)}
               </p>
-              <h2 className="mt-2 text-lg font-bold leading-snug text-brand">
+              <h2 className="mt-2 text-lg font-bold leading-snug text-brand-ink">
                 {item.customCategory ?? item.category.name}
               </h2>
               <p className="mt-2 max-w-3xl text-sm leading-relaxed text-ink">{item.result}</p>
@@ -102,8 +102,8 @@ export default async function ImprovementsPage() {
         </ol>
       )}
 
-      <section className="mt-12 rounded border border-line bg-white p-6">
-        <h2 className="text-base font-bold text-brand">Как попасть в эту ленту</h2>
+      <section className="mt-12 rounded border border-line bg-surface p-6">
+        <h2 className="text-base font-bold text-brand-ink">Как попасть в эту ленту</h2>
         <p className="mt-2 text-sm leading-relaxed text-muted">
           Обращение проходит путь «Новое → На рассмотрении → В работе → Реализовано».
           Исполнитель фиксирует итог, автор оценивает результат, обращение закрывается. Именно

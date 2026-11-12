@@ -71,8 +71,8 @@ function SimilarList({ text }: { text: string }) {
   if (!items || items.length === 0) return null;
 
   return (
-    <div className="mt-3 rounded border border-[#FFE1A8] bg-[#FFF9ED] p-3" aria-live="polite">
-      <p className="text-xs font-semibold text-[#8A5A00]">
+    <div className="mt-3 rounded border border-[#FFE1A8] bg-[#FFF9ED] p-3 dark:border-[#5A4518] dark:bg-[#33270F]" aria-live="polite">
+      <p className="text-xs font-semibold text-[#8A5A00] dark:text-[#F0C36B]">
         Похожие обращения уже есть — возможно, ваше повторяет одно из них
       </p>
       <ul className="mt-2 space-y-2">
@@ -199,9 +199,9 @@ export function NewAppealForm({
             key={label}
             className={
               index === step
-                ? "font-semibold text-brand"
+                ? "font-semibold text-brand-ink"
                 : index < step
-                  ? "text-[#136C4A]"
+                  ? "text-[#136C4A] dark:text-[#5FD3A3]"
                   : "text-muted"
             }
             aria-current={index === step ? "step" : undefined}
@@ -212,7 +212,7 @@ export function NewAppealForm({
         ))}
       </ol>
       <div
-        className="mt-3 h-1.5 w-full rounded bg-[#E9EBEF]"
+        className="mt-3 h-1.5 w-full rounded bg-subtle"
         role="progressbar"
         aria-valuemin={1}
         aria-valuemax={STEPS.length}
@@ -226,12 +226,12 @@ export function NewAppealForm({
       </div>
 
       {errorText ? (
-        <div className="danger-block mt-4 text-sm text-[#C00000]" role="alert">
+        <div className="danger-block mt-4 text-sm text-[#C00000] dark:text-[#FF9A9A]" role="alert">
           {errorText}
         </div>
       ) : null}
       {stepError ? (
-        <div className="danger-block mt-4 text-sm text-[#C00000]" role="alert">
+        <div className="danger-block mt-4 text-sm text-[#C00000] dark:text-[#FF9A9A]" role="alert">
           {stepError}
         </div>
       ) : null}
@@ -253,7 +253,7 @@ export function NewAppealForm({
                 {TYPE_OPTIONS.map((option) => (
                   <label
                     key={option.value}
-                    className="cursor-pointer rounded border border-line bg-white p-3 transition-colors has-[:checked]:border-brand-red has-[:checked]:bg-[#FFF5F5]"
+                    className="cursor-pointer rounded border border-line bg-surface p-3 transition-colors has-[:checked]:border-brand-red has-[:checked]:bg-[#FFF5F5] dark:has-[:checked]:bg-[#2B1A1F]"
                   >
                     <input
                       type="radio"
@@ -390,7 +390,7 @@ export function NewAppealForm({
                 type="file"
                 accept=".pdf,.png,.jpg,.jpeg,.webp,.txt,.csv,.doc,.docx,.xls,.xlsx,.odt,.ods"
                 onChange={onFileChange}
-                className="block min-h-11 w-full cursor-pointer rounded border border-line bg-white px-3 py-2 text-sm text-muted file:mr-3 file:rounded file:border-0 file:bg-canvas file:px-3 file:py-1.5 file:text-sm file:font-medium file:text-ink"
+                className="block min-h-11 w-full cursor-pointer rounded border border-line bg-surface px-3 py-2 text-sm text-muted file:mr-3 file:rounded file:border-0 file:bg-canvas file:px-3 file:py-1.5 file:text-sm file:font-medium file:text-ink"
               />
               <p className="mt-1 text-xs text-muted">
                 PDF, изображения, TXT, CSV, DOC(X), XLS(X), ODT/ODS. Исполняемые файлы и скрипты

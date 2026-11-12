@@ -3,11 +3,11 @@ import { COMPANY, LEGAL_LINKS } from "@/lib/company";
 
 export function SiteFooter({ compact = false }: { compact?: boolean }) {
   return (
-    <footer className="border-t border-line bg-white">
+    <footer className="border-t border-line bg-surface">
       <div className="mx-auto w-full max-w-6xl px-4 py-10 sm:px-6">
         <div className="grid gap-8 md:grid-cols-[1.2fr_1fr_1fr]">
           <div>
-            <p className="text-sm font-bold text-brand">{COMPANY.product}</p>
+            <p className="text-sm font-bold text-brand-ink">{COMPANY.product}</p>
             <p className="mt-2 max-w-sm text-xs leading-relaxed text-muted">
               Внутренняя система обратной связи и предложений сотрудников. Демонстрационный
               стенд хакатона, синтетические данные из датасета.

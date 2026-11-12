@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Logo } from "@/components/logo";
 import { Nav } from "@/components/nav";
 import { SiteFooter } from "@/components/site-footer";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { logout } from "@/app/login/actions";
 import { requireUser } from "@/lib/auth";
 import { prisma } from "@/lib/db";
@@ -35,6 +36,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
           </div>
 
           <div className="ml-auto flex items-center gap-3">
+            <ThemeToggle />
             <Link
               href="/notifications"
               className="inline-flex min-h-11 items-center text-sm text-white/75 transition-colors hover:text-white"
@@ -44,7 +46,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
             >
               <span aria-hidden="true">Уведомления</span>
               {unread > 0 ? (
-                <span className="ml-1.5 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-brand-red px-1 text-[11px] font-bold text-white">
+                <span className="ml-1.5 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-brand-action px-1 text-[11px] font-bold text-white">
                   {unread}
                 </span>
               ) : null}

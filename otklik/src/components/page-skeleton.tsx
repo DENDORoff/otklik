@@ -28,7 +28,7 @@ export function PageSkeleton({
       ) : null}
 
       <div className="card overflow-hidden">
-        <div className="border-b border-line bg-[#FAFBFC] px-4 py-3">
+        <div className="border-b border-line bg-subtle px-4 py-3">
           <div className="skeleton h-4 w-full max-w-2xl" />
         </div>
         <div className="divide-y divide-line">

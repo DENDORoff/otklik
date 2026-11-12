@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Logo } from "@/components/logo";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { getCurrentUser } from "@/lib/auth";
 import { login, quickLogin } from "./actions";
 
@@ -66,11 +67,16 @@ export default async function LoginPage({
 
       <section className="flex items-center justify-center bg-canvas px-4 py-10 sm:px-6">
         <div className="w-full max-w-sm">
-          <div className="mb-8 lg:hidden">
-            <Logo tone="dark" />
+          <div className="mb-6 flex items-start justify-between gap-3">
+            <div className="lg:hidden">
+              <Logo tone="dark" />
+            </div>
+            <div className="ml-auto">
+              <ThemeToggle variant="onSurface" />
+            </div>
           </div>
 
-          <h2 className="text-2xl font-bold text-brand">Вход в систему</h2>
+          <h2 className="text-2xl font-bold text-brand-ink">Вход в систему</h2>
           <p className="mt-1 text-sm text-muted">
             Введите рабочую почту и пароль. Для демо есть быстрый вход ниже.
           </p>
@@ -112,19 +118,19 @@ export default async function LoginPage({
 
             <div id="login-status" aria-live="polite">
               {error === "rate" ? (
-                <p className="rounded border border-[#F5C2C7] bg-[#FFF5F5] px-3 py-2 text-sm text-[#C00000]">
+                <p className="rounded border border-[#F5C2C7] bg-[#FFF5F5] px-3 py-2 text-sm text-[#C00000] dark:border-[#5C2A30] dark:bg-[#2B1A1F] dark:text-[#FF9A9A]">
                   Слишком много попыток. Вход временно ограничен
                   {retryMinutes ? ` — попробуйте через ${retryMinutes} мин.` : "."} Это защита
                   от подбора пароля, данные не потеряны.
                 </p>
               ) : error === "credentials" ? (
-                <p className="rounded border border-[#F5C2C7] bg-[#FFF5F5] px-3 py-2 text-sm text-[#C00000]">
+                <p className="rounded border border-[#F5C2C7] bg-[#FFF5F5] px-3 py-2 text-sm text-[#C00000] dark:border-[#5C2A30] dark:bg-[#2B1A1F] dark:text-[#FF9A9A]">
                   Почта и пароль не совпали. Проверьте раскладку и попробуйте ещё раз.
                   {left ? ` Осталось попыток: ${left}.` : ""} Для демо пароль —{" "}
                   <strong>demo1234</strong>.
                 </p>
               ) : error === "demo" ? (
-                <p className="rounded border border-[#F5C2C7] bg-[#FFF5F5] px-3 py-2 text-sm text-[#C00000]">
+                <p className="rounded border border-[#F5C2C7] bg-[#FFF5F5] px-3 py-2 text-sm text-[#C00000] dark:border-[#5C2A30] dark:bg-[#2B1A1F] dark:text-[#FF9A9A]">
                   Демо-аккаунт недоступен. Выберите другую роль ниже.
                 </p>
               ) : null}

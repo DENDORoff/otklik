@@ -1,6 +1,7 @@
 import type { Config } from "tailwindcss";
 
 const config: Config = {
+  darkMode: "class",
   content: ["./src/**/*.{ts,tsx}"],
   theme: {
     extend: {
@@ -8,14 +9,20 @@ const config: Config = {
         brand: {
           DEFAULT: "#082742",
           red: "#ED1111",
+          // Заливка кнопок: чуть темнее фирменного красного, чтобы белый текст проходил WCAG AA.
+          action: "#E10F0F",
           dark: "#C00000",
         },
-        link: "#E40000",
-        ink: "#323A47",
-        muted: "#64748D",
-        line: "#D1D5DD",
-        canvas: "#F4F4F4",
-        info: "#EFF6FD",
+        // Семантические токены: значения заданы в globals.css и меняются в тёмной теме.
+        "brand-ink": "var(--color-brand-ink)",
+        link: "var(--color-link)",
+        ink: "var(--color-ink)",
+        muted: "var(--color-muted)",
+        line: "var(--color-line)",
+        canvas: "var(--color-canvas)",
+        surface: "var(--color-surface)",
+        subtle: "var(--color-subtle)",
+        info: "var(--color-info)",
       },
       fontFamily: {
         sans: ["Gilroy", "Montserrat", "system-ui", "sans-serif"],

@@ -36,8 +36,8 @@ function ActionBox({
 }) {
   return (
     <details className="group rounded border border-line">
-      <summary className="cursor-pointer list-none px-3 py-2 text-sm font-medium text-ink hover:bg-[#FAFBFC]">
-        <span className={tone === "danger" ? "text-[#E40000]" : ""}>{title}</span>
+      <summary className="cursor-pointer list-none px-3 py-2 text-sm font-medium text-ink hover:bg-subtle">
+        <span className={tone === "danger" ? "text-[#D40000] dark:text-[#FF7A7A]" : ""}>{title}</span>
       </summary>
       <div className="space-y-2 border-t border-line p-3">{children}</div>
     </details>
@@ -312,7 +312,7 @@ export function AppealActions({
 
   return (
     <section className="card p-5">
-      <h2 className="mb-3 text-sm font-bold uppercase tracking-wide text-brand">Действия</h2>
+      <h2 className="mb-3 text-sm font-bold uppercase tracking-wide text-brand-ink">Действия</h2>
       <div className="space-y-3">{blocks}</div>
       {manage ? (
         <p className="mt-3 text-xs text-muted">

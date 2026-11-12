@@ -16,7 +16,7 @@ export function Logo({
         <span
           className={[
             "text-[21px] font-semibold lowercase leading-none tracking-tight",
-            tone === "light" ? "text-white" : "text-brand",
+            tone === "light" ? "text-white" : "text-brand-ink",
           ].join(" ")}
         >
           отклик

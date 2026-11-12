@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Logo } from "@/components/logo";
 import { SiteFooter } from "@/components/site-footer";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { COMPANY } from "@/lib/company";
 import { submitDataRequest } from "./actions";
 
@@ -36,7 +37,7 @@ export default async function DataRequestPage({
         : error;
 
   return (
-    <div className="flex min-h-screen flex-col bg-white">
+    <div className="flex min-h-screen flex-col bg-canvas">
       <header className="border-b border-line bg-brand text-white">
         <div className="mx-auto flex min-h-16 w-full max-w-6xl items-center justify-between gap-3 px-4 sm:px-6">
           <Link href="/" aria-label="Отклик — на главную">
@@ -52,6 +53,7 @@ export default async function DataRequestPage({
             <Link href="/login" className="btn btn-secondary normal-case">
               Войти
             </Link>
+            <ThemeToggle />
           </div>
         </div>
       </header>
@@ -60,7 +62,7 @@ export default async function DataRequestPage({
         <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-muted">
           Персональные данные
         </p>
-        <h1 className="mt-2 text-[32px] font-bold leading-tight text-brand">
+        <h1 className="mt-2 text-[32px] font-bold leading-tight text-brand-ink">
           Запрос на доступ или удаление данных
         </h1>
         <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted">
@@ -69,8 +71,8 @@ export default async function DataRequestPage({
         </p>
 
         {sent ? (
-          <div className="mt-8 rounded border border-[#B7E4C7] border-l-4 border-l-[#198754] bg-[#F1FBF5] p-5">
-            <h2 className="text-base font-bold text-[#136C4A]">Запрос отправлен</h2>
+          <div className="mt-8 rounded border border-[#B7E4C7] border-l-4 border-l-[#198754] bg-[#F1FBF5] p-5 dark:border-[#2C5A3F] dark:border-l-[#3FBF7F] dark:bg-[#102A1D]">
+            <h2 className="text-base font-bold text-[#136C4A] dark:text-[#5FD3A3]">Запрос отправлен</h2>
             <p className="mt-2 text-sm leading-relaxed text-ink">
               Мы записали обращение и уведомили ответственного. Ответ придёт на указанную почту.
               Если ответа нет дольше 10 рабочих дней, напишите на{" "}
@@ -91,7 +93,7 @@ export default async function DataRequestPage({
         ) : (
           <form action={submitDataRequest} className="mt-8 space-y-5">
             {errorText ? (
-              <div className="danger-block text-sm text-[#C00000]" role="alert">
+              <div className="danger-block text-sm text-[#C00000] dark:text-[#FF9A9A]" role="alert">
                 {errorText}
               </div>
             ) : null}
@@ -217,7 +219,7 @@ export default async function DataRequestPage({
         )}
 
         <section className="mt-12 border-t border-line pt-6">
-          <h2 className="text-sm font-bold text-brand">Что произойдёт дальше</h2>
+          <h2 className="text-sm font-bold text-brand-ink">Что произойдёт дальше</h2>
           <ol className="mt-3 space-y-2 text-sm text-muted">
             <li>1. Мы подтвердим получение на указанную почту.</li>
             <li>2. Проверим, что запрос относится к вашим данным.</li>
