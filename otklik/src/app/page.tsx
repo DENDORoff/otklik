@@ -5,6 +5,7 @@ import { LandingFooter } from "@/components/landing-footer";
 import { getCurrentUser } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { getTranslator } from "@/lib/i18n/server";
+import { IconShield, IconUser, IconUsers } from "@/components/icons";
 
 const DAY = 86_400_000;
 
@@ -145,16 +146,25 @@ export default async function LandingPage() {
     {
       title: "Сотрудник",
       text: "Подаёт обращения, отслеживает статус, получает итог и оценивает результат.",
+      icon: "user",
     },
     {
       title: "Начальник отдела",
       text: "Видит поток своего отдела, назначает исполнителя, запрашивает уточнение, фиксирует итог.",
+      icon: "users",
     },
     {
       title: "Администратор",
       text: "Управляет правилами маршрутизации и справочниками, обрабатывает запросы по данным, ведёт журнал безопасности.",
+      icon: "shield",
     },
   ];
+
+  const ROLE_ICONS = {
+    user: IconUser,
+    users: IconUsers,
+    shield: IconShield,
+  } as const;
 
   const roadmap = [
     {
@@ -330,12 +340,16 @@ export default async function LandingPage() {
           <div className="mx-auto w-full max-w-6xl px-4 py-14 sm:px-6">
             <h2 className="text-[26px] font-bold leading-tight text-brand-ink">{t("Кто работает")}</h2>
             <div className="mt-8 grid gap-4 lg:grid-cols-3">
-              {roles.map((role) => (
-                <article key={role.title} className="card p-5">
-                  <h3 className="text-base font-bold text-brand-ink">{t(role.title)}</h3>
-                  <p className="mt-1.5 text-sm leading-relaxed text-muted">{t(role.text)}</p>
-                </article>
-              ))}
+              {roles.map((role) => {
+                const RoleIcon = ROLE_ICONS[role.icon as keyof typeof ROLE_ICONS];
+                return (
+                  <article key={role.title} className="card p-5">
+                    <RoleIcon className="h-5 w-5 text-muted" />
+                    <h3 className="mt-3 text-base font-bold text-brand-ink">{t(role.title)}</h3>
+                    <p className="mt-1.5 text-sm leading-relaxed text-muted">{t(role.text)}</p>
+                  </article>
+                );
+              })}
             </div>
           </div>
         </section>

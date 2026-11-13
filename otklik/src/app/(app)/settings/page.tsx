@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { requireUser } from "@/lib/auth";
 import { AppearanceSettings } from "@/components/appearance";
+import { IconBell, IconPalette, IconShield, IconUser } from "@/components/icons";
 import { COMPANY } from "@/lib/company";
 import { roleLabel } from "@/lib/constants";
 import { formatDateTime } from "@/lib/format";
@@ -44,7 +45,10 @@ export default async function SettingsPage({
       ) : null}
 
       <section className="card p-6">
-        <h2 className="text-base font-bold text-brand-ink">{t("Профиль")}</h2>
+        <h2 className="flex items-center gap-2 text-base font-bold text-brand-ink">
+          <IconUser className="h-4 w-4 text-muted" />
+          {t("Профиль")}
+        </h2>
         <dl className="mt-4 grid gap-3 text-sm sm:grid-cols-2">
           <div>
             <dt className="label">{t("Имя")}</dt>
@@ -80,7 +84,10 @@ export default async function SettingsPage({
       </section>
 
       <section className="card mt-6 p-6">
-        <h2 className="text-base font-bold text-brand-ink">{t("Оформление и язык")}</h2>
+        <h2 className="flex items-center gap-2 text-base font-bold text-brand-ink">
+          <IconPalette className="h-4 w-4 text-muted" />
+          {t("Оформление и язык")}
+        </h2>
         <p className="mt-1 text-sm text-muted">
           {t("Тема оформления и язык интерфейса. Настройки сохраняются в браузере и действуют на всех экранах.")}
         </p>
@@ -88,7 +95,10 @@ export default async function SettingsPage({
       </section>
 
       <section className="card mt-6 p-6">
-        <h2 className="text-base font-bold text-brand-ink">{t("Уведомления")}</h2>
+        <h2 className="flex items-center gap-2 text-base font-bold text-brand-ink">
+          <IconBell className="h-4 w-4 text-muted" />
+          {t("Уведомления")}
+        </h2>
         <p className="mt-1 text-sm text-muted">
           {t("Внутрисистемные уведомления показываются в разделе «Уведомления». Почтовые на стенде имитируются и не отправляются.")}
         </p>
@@ -134,7 +144,10 @@ export default async function SettingsPage({
       </section>
 
       <section className="card mt-6 p-6">
-        <h2 className="text-base font-bold text-brand-ink">{t("Отписка и данные")}</h2>
+        <h2 className="flex items-center gap-2 text-base font-bold text-brand-ink">
+          <IconShield className="h-4 w-4 text-muted" />
+          {t("Отписка и данные")}
+        </h2>
         <p className="mt-1 text-sm text-muted">
           {t("Отписаться можно одной кнопкой. Обязательные сервисные сообщения о ваших обращениях остаются доступными в системе — они нужны для работы процесса.")}
         </p>

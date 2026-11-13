@@ -5,6 +5,14 @@ import { roleLabel } from "@/lib/constants";
 import { formatDate, formatDateTime } from "@/lib/format";
 import { handleDataRequest, updateRoutingRule } from "./actions";
 import { Bitrix24Card } from "@/components/bitrix24-card";
+import {
+  IconBuilding,
+  IconFileText,
+  IconInbox,
+  IconRoute,
+  IconShield,
+  IconUsers,
+} from "@/components/icons";
 import { getTranslator } from "@/lib/i18n/server";
 
 export default async function AdminPage() {
@@ -68,7 +76,10 @@ export default async function AdminPage() {
       <div className="grid gap-5 lg:grid-cols-2">
         <section className="card overflow-hidden">
           <div className="border-b border-line px-5 py-4">
-            <h2 className="text-lg font-bold text-brand-ink">{t("Правила маршрутизации")}</h2>
+            <h2 className="flex items-center gap-2 text-lg font-bold text-brand-ink">
+              <IconRoute className="h-4 w-4 text-muted" />
+              {t("Правила маршрутизации")}
+            </h2>
             <p className="mt-1 text-xs text-muted">{t("Категория → подразделение-получатель")}</p>
           </div>
           <div className="overflow-x-auto">
@@ -125,7 +136,10 @@ export default async function AdminPage() {
 
         <section className="card overflow-hidden">
           <div className="border-b border-line px-5 py-4">
-            <h2 className="text-lg font-bold text-brand-ink">{t("Подразделения")}</h2>
+            <h2 className="flex items-center gap-2 text-lg font-bold text-brand-ink">
+              <IconBuilding className="h-4 w-4 text-muted" />
+              {t("Подразделения")}
+            </h2>
             <p className="mt-1 text-xs text-muted">{t("Начальник отдела назначает исполнителей")}</p>
           </div>
           <div className="overflow-x-auto">
@@ -154,7 +168,10 @@ export default async function AdminPage() {
 
         <section className="card overflow-hidden lg:col-span-2">
           <div className="border-b border-line px-5 py-4">
-            <h2 className="text-lg font-bold text-brand-ink">{t("Очередь «Неназначенные»")}</h2>
+            <h2 className="flex items-center gap-2 text-lg font-bold text-brand-ink">
+              <IconInbox className="h-4 w-4 text-muted" />
+              {t("Очередь «Неназначенные»")}
+            </h2>
             <p className="mt-1 text-xs text-muted">
               {t("Обращения без правила маршрутизации или без ответственного — не теряются")}
             </p>
@@ -189,7 +206,10 @@ export default async function AdminPage() {
 
         <section className="card overflow-hidden lg:col-span-2">
           <div className="border-b border-line px-5 py-4">
-            <h2 className="text-lg font-bold text-brand-ink">{t("Запросы по персональным данным")}</h2>
+            <h2 className="flex items-center gap-2 text-lg font-bold text-brand-ink">
+              <IconFileText className="h-4 w-4 text-muted" />
+              {t("Запросы по персональным данным")}
+            </h2>
             <p className="mt-1 text-xs text-muted">
               {t("Доступ, исправление, удаление и отзыв согласия. Срок ответа — до 10 рабочих дней.")}
             </p>
@@ -248,7 +268,10 @@ export default async function AdminPage() {
 
         <section className="card overflow-hidden lg:col-span-2">
           <div className="border-b border-line px-5 py-4">
-            <h2 className="text-lg font-bold text-brand-ink">{t("Журнал безопасности")}</h2>
+            <h2 className="flex items-center gap-2 text-lg font-bold text-brand-ink">
+              <IconShield className="h-4 w-4 text-muted" />
+              {t("Журнал безопасности")}
+            </h2>
             <p className="mt-1 text-xs text-muted">
               {t("Входы, блокировки подбора пароля, действия с данными. Пароли и тексты обращений не записываются.")}
             </p>
@@ -276,7 +299,10 @@ export default async function AdminPage() {
 
         <section className="card overflow-hidden lg:col-span-2">
           <div className="border-b border-line px-5 py-4">
-            <h2 className="text-lg font-bold text-brand-ink">{t("Пользователи")}</h2>            <p className="mt-1 text-xs text-muted">
+            <h2 className="flex items-center gap-2 text-lg font-bold text-brand-ink">
+              <IconUsers className="h-4 w-4 text-muted" />
+              {t("Пользователи")}
+            </h2>            <p className="mt-1 text-xs text-muted">
               {t("Демо-пароль всех учётных записей — demo1234")}
             </p>
           </div>

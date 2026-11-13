@@ -5,6 +5,7 @@ import { prisma } from "@/lib/db";
 import { formatDate } from "@/lib/format";
 import { typeLabel } from "@/lib/constants";
 import { getTranslator } from "@/lib/i18n/server";
+import { IconTrendingUp } from "@/components/icons";
 
 export const metadata: Metadata = {
   title: "Реализованные улучшения",
@@ -41,7 +42,8 @@ export default async function ImprovementsPage() {
   return (
     <div>
       <div className="mb-8 max-w-2xl">
-        <h1 className="text-[26px] font-bold leading-tight text-brand-ink">
+        <h1 className="flex items-center gap-2.5 text-[26px] font-bold leading-tight text-brand-ink">
+          <IconTrendingUp className="h-6 w-6 text-muted" />
           {t("Реализованные улучшения")}
         </h1>
         <p className="mt-2 text-sm leading-relaxed text-muted">

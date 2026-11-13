@@ -14,6 +14,7 @@ import {
 } from "@/lib/constants";
 import { deadlineState, formatDate, formatDateTime } from "@/lib/format";
 import { getTranslator } from "@/lib/i18n/server";
+import { IconHistory, IconMessage } from "@/components/icons";
 
 function MetaRow({ label, children }: { label: string; children: React.ReactNode }) {
   return (
@@ -184,7 +185,10 @@ export default async function AppealPage({
 
           <section className="card p-6">
             <div className="mb-4 flex items-center justify-between">
-              <h2 className="text-lg font-bold text-brand-ink">{t("Комментарии")}</h2>
+              <h2 className="flex items-center gap-2 text-lg font-bold text-brand-ink">
+                <IconMessage className="h-4 w-4 text-muted" />
+                {t("Комментарии")}
+              </h2>
               <span className="text-xs text-muted">{appeal.comments.length}</span>
             </div>
 
@@ -213,7 +217,10 @@ export default async function AppealPage({
           </section>
 
           <section className="card p-6">
-            <h2 className="mb-4 text-lg font-bold text-brand-ink">{t("История")}</h2>
+            <h2 className="mb-4 flex items-center gap-2 text-lg font-bold text-brand-ink">
+              <IconHistory className="h-4 w-4 text-muted" />
+              {t("История")}
+            </h2>
             <ol className="space-y-4">
               {appeal.history.map((event) => {
                 const dot =

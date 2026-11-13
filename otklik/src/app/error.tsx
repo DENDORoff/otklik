@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useT } from "@/components/i18n-provider";
+import { IconAlert } from "@/components/icons";
 
 export default function GlobalError({
   error,
@@ -14,6 +15,7 @@ export default function GlobalError({
   return (
     <div className="mx-auto flex min-h-[60vh] max-w-xl items-center px-4">
       <div className="card w-full p-8">
+          <IconAlert className="h-8 w-8 text-muted" />
         <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-muted">
           {t("Ошибка")}
         </p>

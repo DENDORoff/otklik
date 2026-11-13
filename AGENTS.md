@@ -34,7 +34,7 @@ D:\DW\hackathon
     ├── prisma/schema.prisma   ← схема SQLite
     ├── prisma/seed.js         ← синтетические данные (7 отделов, 24 пользователя, 19 категорий, 21 обращение)
     ├── src/app/               ← App Router: login, appeals, admin, analytics, improvements, settings, notifications, legal, data-request, api
-    ├── src/components/        ← UI: мастер, карточка, действия, модалки, бейджи, навигация, лого, cookie-баннер, блок оформления и языка
+    ├── src/components/        ← UI: мастер, карточка, действия, модалки, бейджи, навигация, лого, cookie-баннер, блок оформления и языка, набор иконок
     └── src/lib/               ← auth, permissions, appeals, security (rate limit, аудит, загрузки), bitrix24, i18n, company, constants, format, db
 ```
 

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Logo } from "@/components/logo";
 import { getTranslator } from "@/lib/i18n/server";
+import { IconSearch } from "@/components/icons";
 
 export default async function NotFound() {
   const t = await getTranslator();
@@ -19,6 +20,7 @@ export default async function NotFound() {
 
       <main className="mx-auto flex w-full max-w-6xl flex-1 items-center px-4 py-16">
         <div className="card w-full max-w-xl p-8">
+          <IconSearch className="h-8 w-8 text-muted" />
           <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-muted">
             {t("Ошибка 404")}
           </p>

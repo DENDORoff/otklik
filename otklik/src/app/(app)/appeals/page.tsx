@@ -6,6 +6,7 @@ import { PRIORITY_OPTIONS, STATUS_OPTIONS, TYPE_OPTIONS } from "@/lib/constants"
 import { prisma } from "@/lib/db";
 import { deadlineState, formatDate } from "@/lib/format";
 import { getTranslator } from "@/lib/i18n/server";
+import { IconDownload, IconFilter, IconPlus } from "@/components/icons";
 
 function queryString(filters: ListFilters, overrides: Record<string, string | undefined> = {}) {
   const params = new URLSearchParams();
@@ -77,9 +78,11 @@ export default async function AppealsPage({
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <a href={exportHref} className="btn btn-secondary" download>
+            <IconDownload className="h-4 w-4" />
             {t("Выгрузить CSV")}
           </a>
           <Link href="/appeals/new" className="btn btn-primary">
+            <IconPlus className="h-4 w-4" />
             {t("Новое обращение")}
           </Link>
         </div>
@@ -111,7 +114,10 @@ export default async function AppealsPage({
 
       <details open={hasFilters} className="group mb-6 border-b border-line pb-4">
         <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-3 text-sm font-semibold text-ink">
-          <span>{t("Фильтры")}{hasFilters ? t("· применены") : ""}</span>
+          <span className="inline-flex items-center gap-2">
+            <IconFilter className="h-4 w-4 text-muted" />
+            {t("Фильтры")}{hasFilters ? t("· применены") : ""}
+          </span>
           <span className="text-xs font-normal text-muted group-open:hidden">
             {t("Поиск, статус, категория, отдел")}
           </span>
