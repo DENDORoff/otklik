@@ -34,15 +34,8 @@ const securityHeaders = [
     : [{ key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains; preload" }]),
 ];
 
-/**
- * Базовый путь для статической публикации (GitHub Pages).
- * Пусто — обычный запуск на своём домене; "/repo" — сборка под проектный сайт GitHub.
- */
-const basePath = process.env.BASE_PATH || "";
-
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  basePath: basePath || undefined,
   poweredByHeader: false,
   compress: true,
   reactStrictMode: true,
