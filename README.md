@@ -4,8 +4,22 @@
 система маршрутизирует обращение в профильный отдел, начальник назначает исполнителя,
 автор видит итог и оценивает результат.
 
-**Репозиторий:** https://github.com/DENDORoff/otklik · **Код:** [`otklik/`](otklik) ·
-**Демо-стенд:** локально, `npm run dev` → `http://localhost:3000`
+**Репозиторий:** https://github.com/DENDORoff/otklik · **Код:** [`otklik/`](otklik)
+
+### Демо-стенд
+
+**🌐 https://otklik.deworld.su/** — развёрнутое демо (Vercel + Neon PostgreSQL).
+Локально: `npm run dev` → `http://localhost:3000`.
+
+Демо-аккаунты (пароль у всех — `demo1234`):
+
+| Роль | Почта | Что видит |
+|---|---|---|
+| Администратор | `admin@otklik.local` | всё + админка, правила маршрутизации, очередь «Неназначенные», журнал безопасности |
+| Сотрудник закупок | `purchase@otklik.local` | только свои обращения |
+| Сотрудник бухгалтерии | `accountant@otklik.local` | только свои обращения |
+| Начальник IT | `head.it@otklik.local` | входящие и обращения своего отдела |
+| IT-специалист | `it@otklik.local` | назначенные ему обращения |
 
 > Название «Сигнал» не используется по условиям хакатона. Рабочее имя — **«Отклик»**.
 > Все данные в проекте **синтетические** (из предоставленного датасета): реальные
@@ -19,14 +33,16 @@
 idea, the system routes it to the right department by a database rule, the head of the
 department assigns an owner and a deadline, and the author sees the outcome and rates it.
 
-- **Stack:** Next.js 15 (App Router) · React 19 · TypeScript 6 · Tailwind 3 · Prisma 6 · SQLite
-  · Server Actions · zod · jose · bcryptjs
+- **Stack:** Next.js 15 (App Router) · React 19 · TypeScript 6 · Tailwind 3 · Prisma 6 ·
+  PostgreSQL (Neon) in production, SQLite locally · Server Actions · zod · jose · bcryptjs
 - **Roles:** employee / department head / administrator — every permission is checked on the
   server, not in the UI
 - **Extras:** light & dark theme, RU/EN/KZ interface, public landing page with live stats,
   Bitrix24 integration module (disabled by default), legal & personal-data contour,
   SEO, accessibility (WCAG AA), security hardening
 - **Data:** synthetic only — 7 departments, 24 users, 19 categories, 18 routing rules, 21 appeals
+
+**Live demo:** https://otklik.deworld.su/ (Vercel + Neon PostgreSQL)
 
 ---
 
@@ -251,6 +267,19 @@ src/
 
 ## Развёртывание
 
+### Что уже запущено
+
+**🌐 https://otklik.deworld.su/** — боевое демо:
+
+| Слой | Где | Детали |
+|---|---|---|
+| Приложение | Vercel | Next.js 15, Server Actions, регион `fra1` |
+| Домен | `otklik.deworld.su` | привязан к проекту Vercel |
+| База | Neon PostgreSQL | проект `holy-rain-74457731`, ветка `production`, схема и сид применены |
+| Хранилище вложений | локальная файловая система функции | на сервере вложения живут только в рамках деплоя; для постоянного хранения — `BLOB_READ_WRITE_TOKEN` (Vercel Blob) |
+
+Значения переменных окружения для Vercel лежат в `otklik/.env.vercel` (в gitignore).
+
 ### Где можно запустить
 
 | Площадка | Подходит ли | Почему |
@@ -261,10 +290,11 @@ src/
 | GitHub Pages | нет | Pages отдаёт только файлы и не запускает Node: Server Actions, база и сессии там не работают |
 
 Приложение «Отклик» — не статический сайт: маршрутизация, авторизация и аналитика считаются
-на сервере, поэтому для полного демо нужен Node-хостинг. Для SQLite это обычный диск
-( Railway/Render: volume), для продакшена — PostgreSQL (смена одной строки `DATABASE_URL`).
+на сервере, поэтому для полного демо нужен Node-хостинг. Локально это SQLite
+(`prisma/dev.db`), на сервере — PostgreSQL (смена одной строки `DATABASE_URL` и переменной
+`DATABASE_PROVIDER`).
 
-**Для Vercel всё уже подготовлено:** схема PostgreSQL (`prisma/schema.postgres.prisma`),
+**Для Vercel всё подготовлено:** схема PostgreSQL (`prisma/schema.postgres.prisma`),
 начальная миграция (`prisma/migrations/0_init`), генерация Prisma-клиента под нужного
 провайдера в `postinstall`, адаптер хранилища вложений (Vercel Blob) и `vercel.json`.
 Пошаговая инструкция и список того, что нужно от оператора — в
@@ -273,11 +303,8 @@ src/
 ### Публичная витрина
 
 Лендинг с описанием сервиса, процессом и статистикой демо-стенда — это главная страница
-самого приложения (`/`). После деплоя на Vercel она доступна по адресу проекта, отдельной
-статической сборки не требуется.
-
-
-
+самого приложения (`/`), отдельной статической сборки не требуется:
+**https://otklik.deworld.su/**
 
 ## Что проверено
 
