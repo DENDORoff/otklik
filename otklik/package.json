@@ -11,13 +11,19 @@
     "db:seed": "prisma db seed",
     "db:reset": "prisma db push --force-reset && prisma db seed",
     "setup": "prisma generate && prisma db push && prisma db seed",
-    "build:static": "node scripts/build-static-site.mjs"
+    "build:static": "node scripts/build-static-site.mjs",
+    "postinstall": "node scripts/prisma-generate.mjs",
+    "db:migrate:pg": "prisma migrate deploy --schema prisma/schema.postgres.prisma",
+    "db:push:pg": "prisma db push --schema prisma/schema.postgres.prisma",
+    "db:seed:pg": "prisma db seed --schema prisma/schema.postgres.prisma",
+    "schema:pg": "node scripts/generate-postgres-schema.mjs"
   },
   "prisma": {
     "seed": "node prisma/seed.js"
   },
   "dependencies": {
     "@prisma/client": "^6.19.3",
+    "@vercel/blob": "^2.9.0",
     "bcryptjs": "^3.0.3",
     "date-fns": "^4.4.0",
     "jose": "^6.2.17",

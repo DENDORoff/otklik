@@ -1,13 +1,12 @@
 "use server";
 
-import { mkdir, writeFile } from "node:fs/promises";
-import path from "node:path";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { requireUser } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { COMPANY } from "@/lib/company";
+import { storeAttachment } from "@/lib/storage";
 import {
   rateLimit,
   recordAudit,
@@ -50,15 +49,13 @@ async function saveAttachment(appealId: string, file: File) {
   if (signatureError) return "file";
 
   const storedName = `${Date.now()}-${safeFileName(file.name)}`;
-  const dir = path.join(process.cwd(), "storage", "uploads");
-  await mkdir(dir, { recursive: true });
-  await writeFile(path.join(dir, storedName), buffer);
+  const storedPath = await storeAttachment(buffer, storedName);
 
   await prisma.attachment.create({
     data: {
       appealId,
       fileName: safeFileName(file.name),
-      storedPath: `storage/uploads/${storedName}`,
+      storedPath,
       mimeType: file.type || null,
       size: file.size,
     },

@@ -1,0 +1,56 @@
+# Автодеплой на Vercel
+#
+# GitHub не позволяет менять workflow-файлы токену без scope workflow,
+# поэтому этот файл нужно один раз скопировать в .github/workflows/vercel.yml.
+#
+# Нужны секреты репозитория:
+#   VERCEL_TOKEN     — токен Vercel (Settings → Tokens)
+#   VERCEL_ORG_ID    — ID организации
+#   VERCEL_PROJECT_ID— ID проекта
+#
+# Переменные окружения задаются в самом Vercel:
+#   DATABASE_URL (пул-ный), DATABASE_PROVIDER=postgresql, AUTH_SECRET,
+#   NEXT_PUBLIC_SITE_URL, при желании BLOB_READ_WRITE_TOKEN.
+
+name: Деплой на Vercel
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: otklik/package-lock.json
+
+      - name: Установить зависимости
+        working-directory: otklik
+        run: npm ci
+
+      - name: Применить миграцию и залить демо-данные
+        working-directory: otklik
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL_DIRECT }}
+          DATABASE_PROVIDER: postgresql
+        run: |
+          npm run db:migrate:pg
+          npm run db:seed:pg
+
+      - name: Задеплоить
+        working-directory: otklik
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+        run: npx vercel --prod --yes --token ${{ secrets.VERCEL_TOKEN }}

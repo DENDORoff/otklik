@@ -1,0 +1,229 @@
+// СГЕНЕРИРОВАНО АВТОМАТИЧЕСКИ: node scripts/generate-postgres-schema.mjs
+// Не редактировать вручную — правьте prisma/schema.prisma и перегенерируйте.
+// Вариант схемы для PostgreSQL (Vercel, Neon, Supabase): та же модель данных,
+// другой datasource-провайдер и миграция prisma/migrations/0_init.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Department {
+  id           String        @id @default(cuid())
+  name         String        @unique
+  headId       String?       @unique
+  head         User?         @relation("DepartmentHead", fields: [headId], references: [id])
+  members      User[]        @relation("DepartmentMembers")
+  appeals      Appeal[]
+  routingRules RoutingRule[]
+  createdAt    DateTime      @default(now())
+}
+
+model User {
+  id                 String              @id @default(cuid())
+  name               String
+  email              String              @unique
+  passwordHash       String
+  role               String              @default("employee") // employee | head | admin
+  departmentId       String?
+  department         Department?         @relation("DepartmentMembers", fields: [departmentId], references: [id])
+  headed             Department?         @relation("DepartmentHead")
+  authoredAppeals    Appeal[]            @relation("AppealAuthor")
+  responsibleAppeals Appeal[]            @relation("AppealResponsible")
+  assignedAppeals    Appeal[]            @relation("AppealAssignee")
+  history            AppealHistory[]
+  comments           Comment[]
+  notifications      Notification[]
+  ratings            Rating[]
+  subscriptions      AppealSubscription[]
+  notifyEmail        Boolean             @default(true)
+  notifyInApp        Boolean             @default(true)
+  consentVersion     String?
+  consentAt          DateTime?
+  createdAt          DateTime            @default(now())
+}
+
+// Запросы субъектов данных: доступ, исправление, удаление, отзыв согласия.
+model DataRequest {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  kind      String // access | delete | correct | withdraw
+  message   String
+  status    String   @default("new") // new | in_progress | done | rejected
+  createdAt DateTime @default(now())
+  handledAt DateTime?
+
+  @@index([status])
+}
+
+// Журнал безопасности и значимых действий. Не содержит паролей и текстов обращений.
+model AuditLog {
+  id        String   @id @default(cuid())
+  action    String
+  userId    String?
+  email     String?
+  ip        String?
+  userAgent String?
+  meta      String?
+  createdAt DateTime @default(now())
+
+  @@index([action])
+  @@index([createdAt])
+}
+
+model Category {
+  id          String        @id @default(cuid())
+  name        String        @unique
+  isActive    Boolean       @default(true)
+  appeals     Appeal[]
+  routingRules RoutingRule[]
+  createdAt   DateTime      @default(now())
+}
+
+model RoutingRule {
+  id           String     @id @default(cuid())
+  categoryId   String
+  category     Category   @relation(fields: [categoryId], references: [id])
+  departmentId String
+  department   Department @relation(fields: [departmentId], references: [id])
+  targetRole   String?
+  weight       Int        @default(0)
+  isActive     Boolean    @default(true)
+  createdAt    DateTime   @default(now())
+
+  @@unique([categoryId, departmentId])
+}
+
+model Appeal {
+  id              String    @id @default(cuid())
+  code            String    @unique
+  authorId        String
+  author          User      @relation("AppealAuthor", fields: [authorId], references: [id])
+  type            String // problem | proposal | praise
+  categoryId      String
+  category        Category  @relation(fields: [categoryId], references: [id])
+  priority        String    @default("mid") // high | mid | low
+  text            String
+  proposal        String?
+  customCategory  String?
+  departmentId    String?
+  department      Department? @relation(fields: [departmentId], references: [id])
+  responsibleId   String?
+  responsible     User?     @relation("AppealResponsible", fields: [responsibleId], references: [id])
+  assigneeId      String?
+  assignee        User?     @relation("AppealAssignee", fields: [assigneeId], references: [id])
+  status          String    @default("new")
+  deadline        DateTime?
+  duplicateOfId   String?
+  duplicateOf     Appeal?   @relation("AppealDuplicates", fields: [duplicateOfId], references: [id])
+  duplicates      Appeal[]  @relation("AppealDuplicates")
+  result          String?
+  rejectReason    String?
+  redirectCount   Int       @default(0)
+  createdAt       DateTime  @default(now())
+  publishedAt     DateTime  @default(now())
+  firstResponseAt DateTime?
+  resolvedAt      DateTime?
+  closedAt        DateTime?
+  // Привязка к задаче в облачном портале Битрикс24 (интеграция выключена по умолчанию).
+  bitrixTaskId    String?
+  bitrixTaskUrl   String?
+
+  history       AppealHistory[]
+  comments      Comment[]
+  attachments   Attachment[]
+  notifications Notification[]
+  rating        Rating?
+  subscriptions AppealSubscription[]
+
+  @@index([status])
+  @@index([departmentId])
+  @@index([authorId])
+  @@index([categoryId])
+  @@index([bitrixTaskId])
+}
+
+model AppealHistory {
+  id               String      @id @default(cuid())
+  appealId         String
+  appeal           Appeal      @relation(fields: [appealId], references: [id], onDelete: Cascade)
+  actorId          String?
+  actor            User?       @relation(fields: [actorId], references: [id])
+  event            String // published | status_changed | redirect | assigned | clarification |
+  // resolved | rejected | duplicate | rated | commented
+  fromStatus       String?
+  toStatus         String?
+  fromDepartmentId String?
+  toDepartmentId   String?
+  comment          String?
+  createdAt        DateTime    @default(now())
+
+  @@index([appealId])
+}
+
+model Comment {
+  id              String   @id @default(cuid())
+  appealId        String
+  appeal          Appeal   @relation(fields: [appealId], references: [id], onDelete: Cascade)
+  authorId        String
+  author          User     @relation(fields: [authorId], references: [id])
+  text            String
+  isClarification Boolean  @default(false)
+  createdAt       DateTime @default(now())
+
+  @@index([appealId])
+}
+
+model Attachment {
+  id         String   @id @default(cuid())
+  appealId   String
+  appeal     Appeal   @relation(fields: [appealId], references: [id], onDelete: Cascade)
+  fileName   String
+  storedPath String
+  mimeType   String?
+  size       Int      @default(0)
+  createdAt  DateTime @default(now())
+
+  @@index([appealId])
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  appealId  String?
+  appeal    Appeal?  @relation(fields: [appealId], references: [id], onDelete: Cascade)
+  event     String
+  message   String
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([userId, isRead])
+}
+
+model Rating {
+  id        String   @id @default(cuid())
+  appealId  String   @unique
+  appeal    Appeal   @relation(fields: [appealId], references: [id], onDelete: Cascade)
+  authorId  String
+  author    User     @relation(fields: [authorId], references: [id])
+  score     Int
+  comment   String?
+  createdAt DateTime @default(now())
+}
+
+model AppealSubscription {
+  id        String   @id @default(cuid())
+  appealId  String
+  appeal    Appeal   @relation(fields: [appealId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([appealId, userId])
+}
