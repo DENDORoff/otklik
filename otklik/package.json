@@ -10,7 +10,8 @@
     "db:push": "prisma db push",
     "db:seed": "prisma db seed",
     "db:reset": "prisma db push --force-reset && prisma db seed",
-    "setup": "prisma generate && prisma db push && prisma db seed"
+    "setup": "prisma generate && prisma db push && prisma db seed",
+    "build:static": "node scripts/build-static-site.mjs"
   },
   "prisma": {
     "seed": "node prisma/seed.js"
@@ -30,6 +31,7 @@
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "autoprefixer": "^10.6.2",
+    "gh-pages": "^6.3.0",
     "postcss": "^8.5.32",
     "prisma": "^6.19.3",
     "tailwindcss": "^3.4.19",

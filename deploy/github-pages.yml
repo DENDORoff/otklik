@@ -1,0 +1,88 @@
+# Статический сайт на GitHub Pages
+#
+# GitHub Pages умеет только статику, поэтому публикуется статический снимок
+# публичной части: лендинг и юридические страницы. Живое демо (Node + БД)
+# разворачивается отдельно — см. README, раздел «Развёртывание».
+#
+# Как включить:
+#   1) скопировать этот файл в .github/workflows/pages.yml
+#      (GitHub не позволяет менять workflow-файлы токену без scope workflow);
+#   2) Settings → Pages → Source: GitHub Actions;
+#   3) задать переменную репозитория DEMO_URL — адрес живого демо;
+#   4) после пуша в main сайт соберётся по адресу https://<user>.github.io/<repo>/.
+#
+# Без CI сайт публикуется вручную из ветки gh-pages:
+#   cd otklik
+#   $env:BASE_PATH = "/<repo>"; $env:DEMO_URL = "https://ваше-демо"
+#   npm run build
+#   npm run build:static
+#   npx gh-pages -d out
+
+name: Статический сайт на GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      BASE_PATH: /${{ github.event.repository.name }}
+      DEMO_URL: ${{ vars.DEMO_URL }}
+      DATABASE_URL: file:./dev.db
+      AUTH_SECRET: pages-build-secret-not-for-production
+      NEXT_TELEMETRY_DISABLED: "1"
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: otklik/package-lock.json
+
+      - name: Установить зависимости
+        working-directory: otklik
+        run: npm ci
+
+      - name: Схема и синтетические данные
+        working-directory: otklik
+        run: |
+          npx prisma generate
+          npx prisma db push
+          npx prisma db seed
+
+      - name: Сборка приложения с базовым путём
+        working-directory: otklik
+        run: npm run build
+
+      - name: Статический снимок для Pages
+        working-directory: otklik
+        run: npm run build:static
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: otklik/out
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
