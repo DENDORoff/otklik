@@ -11,15 +11,25 @@
 **🌐 https://otklik.deworld.su/** — развёрнутое демо (Vercel + Neon PostgreSQL).
 Локально: `npm run dev` → `http://localhost:3000`.
 
-Демо-аккаунты (пароль у всех — `demo1234`):
+Демо-аккаунты (пароль у всех — `demo1234`). На экране входа быстрый вход сгруппирован
+по отделам: для каждого отдела есть кнопка руководителя и кнопка сотрудника.
 
-| Роль | Почта | Что видит |
+| Отдел | Руководитель | Сотрудник |
+|---|---|---|
+| Продажи | `head.sales@otklik.local` | `sales@otklik.local` |
+| Закупки | `head.purchase@otklik.local` | `purchase@otklik.local` |
+| Проектирование | `head.design@otklik.local` | `design@otklik.local` |
+| Техотдел | `head.tech@otklik.local` | `tech@otklik.local` |
+| IT-разработка | `head.it@otklik.local` | `it@otklik.local` |
+| Сервис | `head.service@otklik.local` | `service@otklik.local` |
+| Управление | `head.admin@otklik.local` | `accountant@otklik.local` |
+
+| Роль в системе | Почта | Что видит |
 |---|---|---|
 | Администратор | `admin@otklik.local` | всё + админка, правила маршрутизации, очередь «Неназначенные», журнал безопасности |
-| Сотрудник закупок | `purchase@otklik.local` | только свои обращения |
-| Сотрудник бухгалтерии | `accountant@otklik.local` | только свои обращения |
-| Начальник IT | `head.it@otklik.local` | входящие и обращения своего отдела |
 | IT-специалист | `it@otklik.local` | назначенные ему обращения |
+
+Полный список сотрудников из датасета — в `otklik/prisma/seed.js` (24 пользователя, 7 отделов).
 
 > Название «Сигнал» не используется по условиям хакатона. Рабочее имя — **«Отклик»**.
 > Все данные в проекте **синтетические** (из предоставленного датасета): реальные

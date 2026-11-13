@@ -807,4 +807,8 @@ export const en: TranslationMap = {
   "Тёмная": "Dark",
   "Шрифты отдаются с нашего сервера, внешние запросы к Google Fonts не выполняются — это снижает риск передачи IP-адресов третьим лицам.": "Fonts are served from our own server, so no requests go to Google Fonts — this reduces the risk of leaking IP addresses to third parties.",
 "Меню профиля": "Profile menu",
+"Администратор системы": "System administrator",
+"Входим…": "Signing in…",
+"Выходим…": "Signing out…",
+"Руководитель": "Head",
 };

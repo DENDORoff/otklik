@@ -8,12 +8,13 @@ export function SubmitButton({
   pendingText,
   className = "btn btn-primary",
   disabled = false,
+  ...rest
 }: {
   children: React.ReactNode;
   pendingText?: string;
   className?: string;
   disabled?: boolean;
-}) {
+} & React.ComponentPropsWithoutRef<"button">) {
   const t = useT();
   const { pending } = useFormStatus();
   return (
@@ -23,6 +24,7 @@ export function SubmitButton({
       disabled={pending || disabled}
       aria-busy={pending}
       aria-live="polite"
+      {...rest}
     >
       {pending ? (
         <>

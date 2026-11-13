@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { Logo } from "@/components/logo";
 import { getCurrentUser } from "@/lib/auth";
 import { login, quickLogin } from "./actions";
+import { SubmitButton } from "@/components/submit-button";
 import { getTranslator } from "@/lib/i18n/server";
 
 export const metadata: Metadata = {
@@ -13,11 +14,14 @@ export const metadata: Metadata = {
   alternates: { canonical: "/login" },
 };
 
-const DEMO_ACCOUNTS = [
-  { label: "Сотрудник закупок", email: "purchase@otklik.local" },
-  { label: "Начальник закупок", email: "head.purchase@otklik.local" },
-  { label: "Начальник IT", email: "head.it@otklik.local" },
-  { label: "Администратор", email: "admin@otklik.local" },
+const DEPARTMENT_ACCOUNTS = [
+  { department: "Продажи", head: "head.sales@otklik.local", employee: "sales@otklik.local" },
+  { department: "Закупки", head: "head.purchase@otklik.local", employee: "purchase@otklik.local" },
+  { department: "Проектирование", head: "head.design@otklik.local", employee: "design@otklik.local" },
+  { department: "Техотдел", head: "head.tech@otklik.local", employee: "tech@otklik.local" },
+  { department: "IT-разработка", head: "head.it@otklik.local", employee: "it@otklik.local" },
+  { department: "Сервис", head: "head.service@otklik.local", employee: "service@otklik.local" },
+  { department: "Управление", head: "head.admin@otklik.local", employee: "accountant@otklik.local" },
 ];
 
 export default async function LoginPage({
@@ -130,9 +134,9 @@ export default async function LoginPage({
               ) : null}
             </div>
 
-            <button type="submit" className="btn btn-primary w-full">
+            <SubmitButton className="btn btn-primary w-full" pendingText={t("Входим…")}>
               {t("Войти")}
-            </button>
+            </SubmitButton>
           </form>
 
           <p className="mt-3 text-xs leading-relaxed text-muted">
@@ -153,15 +157,35 @@ export default async function LoginPage({
 
           <div className="mt-8 border-t border-line pt-5">
             <p className="label">{t("Быстрый вход для демо")}</p>
-            <div className="grid gap-2 sm:grid-cols-2">
-              {DEMO_ACCOUNTS.map((account) => (
-                <form key={account.email} action={quickLogin}>
-                  <input type="hidden" name="email" value={account.email} />
-                  <button type="submit" className="btn btn-secondary w-full normal-case">
-                    {t(account.label)}
-                  </button>
-                </form>
+            <div className="mt-2 space-y-1.5">
+              {DEPARTMENT_ACCOUNTS.map((row) => (
+                <div
+                  key={row.department}
+                  className="flex flex-wrap items-center gap-2 border-b border-line pb-1.5"
+                >
+                  <span className="w-28 shrink-0 text-[11px] font-semibold uppercase tracking-wide text-muted">
+                    {row.department}
+                  </span>
+                  <form action={quickLogin} className="min-w-[8rem] flex-1">
+                    <input type="hidden" name="email" value={row.head} />
+                    <SubmitButton className="btn btn-secondary w-full normal-case text-xs" pendingText={t("Входим…")}>
+                      {t("Руководитель")}
+                    </SubmitButton>
+                  </form>
+                  <form action={quickLogin} className="min-w-[8rem] flex-1">
+                    <input type="hidden" name="email" value={row.employee} />
+                    <SubmitButton className="btn btn-secondary w-full normal-case text-xs" pendingText={t("Входим…")}>
+                      {t("Сотрудник")}
+                    </SubmitButton>
+                  </form>
+                </div>
               ))}
+              <form action={quickLogin} className="pt-1.5">
+                <input type="hidden" name="email" value="admin@otklik.local" />
+                <SubmitButton className="btn btn-primary w-full normal-case" pendingText={t("Входим…")}>
+                  {t("Администратор системы")}
+                </SubmitButton>
+              </form>
             </div>
             <p className="mt-3 text-xs text-muted">{t("Пароль всех демо-аккаунтов: demo1234")}</p>
           </div>

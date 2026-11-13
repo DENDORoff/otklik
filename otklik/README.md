@@ -41,17 +41,22 @@ npm run dev
 
 ## Демо-доступ
 
-Пароль всех учётных записей — `demo1234`.
+Пароль всех учётных записей — `demo1234`. На странице входа — быстрый вход по отделам:
+для каждого отдела две кнопки (руководитель / сотрудник).
 
-| Роль | Почта | Что показывает |
+| Отдел | Руководитель | Сотрудник |
 |---|---|---|
-| Сотрудник | `purchase@otklik.local` | подача обращения, отслеживание, ответ на уточнение, оценка |
-| Начальник отдела | `head.purchase@otklik.local` | входящие отдела, назначение исполнителя, отказ, уточнение |
-| Начальник IT | `head.it@otklik.local` | вторая точка зрения на маршрутизацию |
-| Администратор | `admin@otklik.local` | все обращения, очередь «Неназначенные», справочники |
+| Продажи | `head.sales@otklik.local` | `sales@otklik.local` |
+| Закупки | `head.purchase@otklik.local` | `purchase@otklik.local` |
+| Проектирование | `head.design@otklik.local` | `design@otklik.local` |
+| Техотдел | `head.tech@otklik.local` | `tech@otklik.local` |
+| IT-разработка | `head.it@otklik.local` | `it@otklik.local` |
+| Сервис | `head.service@otklik.local` | `service@otklik.local` |
+| Управление | `head.admin@otklik.local` | `accountant@otklik.local` |
+| Администратор | — | `admin@otklik.local` |
 
 Быстрый вход — кнопки на странице логина. Полный список сотрудников — в разделе
-«Администрирование» под администратором.
+«Администрирование» под администратором и в `prisma/seed.js`.
 
 ## Что реализовано (MVP)
 

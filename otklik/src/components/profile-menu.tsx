@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { useT } from "@/components/i18n-provider";
 import { IconBell, IconChevronDown, IconLogOut, IconSettings } from "@/components/icons";
+import { SubmitButton } from "@/components/submit-button";
 
 /**
  * Меню профиля в шапке.
@@ -125,10 +126,10 @@ export function ProfileMenu({
           <div className="my-1 border-t border-line" role="separator" />
 
           <form action={logoutAction}>
-            <button type="submit" role="menuitem" className={itemClass}>
+            <SubmitButton className={itemClass} pendingText={t("Выходим…")} role="menuitem">
               <IconLogOut className="h-4 w-4 shrink-0 text-muted" />
               <span className="flex-1">{t("Выйти")}</span>
-            </button>
+            </SubmitButton>
           </form>
         </div>
       ) : null}
