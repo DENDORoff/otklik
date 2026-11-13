@@ -806,4 +806,5 @@ export const en: TranslationMap = {
   "Тема сохраняется в браузере и применяется до первой отрисовки страницы.": "The theme is stored in your browser and applied before the page is first painted.",
   "Тёмная": "Dark",
   "Шрифты отдаются с нашего сервера, внешние запросы к Google Fonts не выполняются — это снижает риск передачи IP-адресов третьим лицам.": "Fonts are served from our own server, so no requests go to Google Fonts — this reduces the risk of leaking IP addresses to third parties.",
+"Меню профиля": "Profile menu",
 };

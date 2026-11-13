@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Logo } from "@/components/logo";
 import { Nav } from "@/components/nav";
 import { SiteFooter } from "@/components/site-footer";
-import { IconBell, IconLogOut, IconSettings } from "@/components/icons";
+import { ProfileMenu } from "@/components/profile-menu";
 import { logout } from "@/app/login/actions";
 import { requireUser } from "@/lib/auth";
 import { prisma } from "@/lib/db";
@@ -37,52 +37,14 @@ export default async function AppLayout({ children }: { children: React.ReactNod
             <Nav items={items} />
           </div>
 
-          <div className="ml-auto flex items-center gap-3">
-            <Link
-              href="/notifications"
-              className="inline-flex min-h-11 items-center gap-2 text-sm text-white/75 transition-colors hover:text-white"
-              aria-label={
-                unread > 0 ? `Уведомления, непрочитанных: ${unread}` : t("Уведомления")
-              }
-            >
-              <IconBell className="h-4 w-4 shrink-0" />
-              <span aria-hidden="true">{t("Уведомления")}</span>
-              {unread > 0 ? (
-                <span className="inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-brand-action px-1 text-[11px] font-bold text-white">
-                  {unread}
-                </span>
-              ) : null}
-            </Link>
-
-            {/* Имя и роль — просто подпись, а не ссылка: настройки открываются отдельной кнопкой. */}
-            <span className="hidden text-right sm:block">
-              <span className="block text-sm font-medium leading-tight text-white">
-                {user.name}
-              </span>
-              <span className="block text-[11px] uppercase tracking-wide text-white/55">
-                {roleLabel(user.role)}
-                {user.department ? ` · ${user.department.name}` : ""}
-              </span>
-            </span>
-
-            <Link
-              href="/settings"
-              className="inline-flex min-h-11 items-center gap-2 rounded border border-white/30 px-3 py-1.5 text-[11px] uppercase tracking-wide text-white/80 transition-colors hover:border-white/70 hover:text-white"
-              aria-label={t("Настройки профиля, оформления и уведомлений")}
-            >
-              <IconSettings className="h-4 w-4 shrink-0" />
-              <span>{t("Настройки")}</span>
-            </Link>
-
-            <form action={logout}>
-              <button
-                type="submit"
-                className="inline-flex min-h-11 items-center gap-2 rounded border border-white/30 px-3 py-1.5 text-[11px] uppercase tracking-wide text-white/80 transition-colors hover:border-white/70 hover:text-white"
-              >
-                <IconLogOut className="h-4 w-4 shrink-0" />
-                {t("Выйти")}
-              </button>
-            </form>
+          <div className="ml-auto flex items-center gap-2">
+            <ProfileMenu
+              name={user.name}
+              role={roleLabel(user.role)}
+              department={user.department?.name ?? null}
+              unread={unread}
+              logoutAction={logout}
+            />
           </div>
         </div>
       </header>
