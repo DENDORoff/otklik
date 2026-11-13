@@ -105,6 +105,13 @@ npm.cmd run start -- --port 3000
   словари в `src/lib/i18n/{en,kz}.ts`. Сервер: `await getTranslator()` из `@/lib/i18n/server`,
   клиент: `useT()` из `@/components/i18n-provider`. Новые строки оборачивать в `t("...")`
   и сразу добавлять в оба словаря; клиентские строки — в `src/lib/i18n/client-keys.ts`.
+- **База данных**: локально — SQLite (`prisma/dev.db`, файл `DATABASE_URL="file:./dev.db"`).
+  Для сервера — PostgreSQL: своя схема `prisma/schema.postgres.prisma` (генерируется командой
+  `npm run schema:pg`), миграция `prisma/migrations/0_init`, выбор провайдера — переменная
+  `DATABASE_PROVIDER=postgresql` (её же читает `postinstall` при генерации клиента Prisma).
+  Живая база — Neon, проект `holy-rain-74457731`; строки подключения и секрет для сервера
+  лежат в `otklik/.env.vercel` (в gitignore). **В строке подключения Neon не должно быть
+  `channel_binding=require`** — драйвер Prisma его не понимает.
 
 ## Что уже проверено
 

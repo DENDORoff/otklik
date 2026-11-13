@@ -2,8 +2,12 @@ node_modules/
 .next/
 out/
 .env
+.env.local
+.env.vercel
+.env.backup
 prisma/dev.db
 prisma/dev.db-journal
 storage/uploads/
 next-env.d.ts
 *.tsbuildinfo
+.neon
