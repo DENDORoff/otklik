@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { PRIORITY_OPTIONS, TYPE_OPTIONS } from "@/lib/constants";
+import { usePendingWatchdog } from "@/lib/pending-watchdog";
 import { useT } from "@/components/i18n-provider";
 
 type Category = { id: string; name: string };
@@ -99,21 +100,37 @@ function SimilarList({ text }: { text: string }) {
 function SubmitArea({ disabled }: { disabled: boolean }) {
   const t = useT();
   const { pending } = useFormStatus();
+  const { stuck, restart } = usePendingWatchdog(pending);
+  const busy = pending && !stuck;
+  const hint = stuck ? t("Сервер не ответил. Нажмите, чтобы повторить.") : null;
   return (
     <button
       type="submit"
       className="btn btn-primary"
-      disabled={pending || disabled}
-      aria-busy={pending}
+      disabled={busy || disabled}
+      aria-busy={busy}
+      title={hint ?? undefined}
+      onClick={() => {
+        if (stuck) restart();
+      }}
     >
-      {pending ? (
-        <>
-          <span
-            aria-hidden="true"
-            className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-current border-t-transparent"
-          />
-          {t("Публикуем обращение…")}
-        </>
+      {busy || stuck ? (
+        <span className="flex flex-col items-center gap-0.5">
+          <span className="flex items-center gap-2">
+            {busy ? (
+              <span
+                aria-hidden="true"
+                className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-current border-t-transparent"
+              />
+            ) : null}
+            {busy ? t("Публикуем обращение…") : t("Опубликовать обращение")}
+          </span>
+          {hint ? (
+            <span className="max-w-[18rem] text-[11px] font-normal normal-case tracking-normal opacity-80">
+              {hint}
+            </span>
+          ) : null}
+        </span>
       ) : (
         t("Опубликовать обращение")
       )}

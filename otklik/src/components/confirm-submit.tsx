@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { useT } from "@/components/i18n-provider";
+import { usePendingWatchdog } from "@/lib/pending-watchdog";
 
 /**
  * Необратимое действие: сначала подтверждение в модальном окне,
@@ -17,6 +18,7 @@ export function ConfirmSubmit({
   confirmLabel,
   tone = "danger",
   disabled = false,
+  stuckText,
 }: {
   children: React.ReactNode;
   pendingText?: string;
@@ -26,12 +28,18 @@ export function ConfirmSubmit({
   confirmLabel: string;
   tone?: "danger" | "primary";
   disabled?: boolean;
+  stuckText?: string;
 }) {
   const t = useT();
   const { pending } = useFormStatus();
+  const { stuck, restart } = usePendingWatchdog(pending);
   const [open, setOpen] = useState(false);
   const formRef = useRef<HTMLFormElement | null>(null);
   const confirmRef = useRef<HTMLButtonElement | null>(null);
+
+  // Сервер не ответил — блокировку снимаем, действие можно повторить.
+  const busy = pending && !stuck;
+  const hint = stuck ? (stuckText ?? t("Сервер не ответил. Нажмите, чтобы повторить.")) : null;
 
   useEffect(() => {
     if (!open) return;
@@ -48,14 +56,35 @@ export function ConfirmSubmit({
       <button
         type="button"
         className={className}
-        disabled={pending || disabled}
-        aria-busy={pending}
+        disabled={busy || disabled}
+        aria-busy={busy}
+        title={hint ?? undefined}
         onClick={(event) => {
+          if (stuck) restart();
           formRef.current = event.currentTarget.form;
           setOpen(true);
         }}
       >
-        {pending ? (pendingText ?? t("Выполняем…")) : children}
+        {busy || stuck ? (
+          <span className="flex flex-col items-center gap-0.5">
+            <span className="flex items-center gap-2">
+              {busy ? (
+                <span
+                  aria-hidden="true"
+                  className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-current border-t-transparent"
+                />
+              ) : null}
+              {busy ? (pendingText ?? t("Выполняем…")) : children}
+            </span>
+            {hint ? (
+              <span className="max-w-[18rem] text-[11px] font-normal normal-case tracking-normal opacity-80">
+                {hint}
+              </span>
+            ) : null}
+          </span>
+        ) : (
+          children
+        )}
       </button>
 
       {open ? (

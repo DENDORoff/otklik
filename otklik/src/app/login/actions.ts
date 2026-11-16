@@ -14,10 +14,14 @@ const credentialsSchema = z.object({
 });
 
 async function markConsent(userId: string) {
-  await prisma.user.updateMany({
-    where: { id: userId, consentVersion: null },
-    data: { consentVersion: COMPANY.consentVersion, consentAt: new Date() },
-  });
+  try {
+    await prisma.user.updateMany({
+      where: { id: userId, consentVersion: null },
+      data: { consentVersion: COMPANY.consentVersion, consentAt: new Date() },
+    });
+  } catch {
+    // Фиксация согласия не должна блокировать вход: повторим при следующем действии.
+  }
 }
 
 async function findValidUser(email: string, password: string) {
@@ -51,9 +55,12 @@ export async function login(formData: FormData) {
   }
 
   resetRateLimit(key);
-  await recordAudit({ action: "auth.success", userId: user.id, email: user.email });
-  await markConsent(user.id);
-  await createSession(user.id);
+  // Записи идут параллельно: одна запись в базу вместо трёх подряд — вход быстрее.
+  await Promise.all([
+    recordAudit({ action: "auth.success", userId: user.id, email: user.email }),
+    markConsent(user.id),
+    createSession(user.id),
+  ]);
   redirect("/appeals");
 }
 
@@ -66,9 +73,11 @@ export async function quickLogin(formData: FormData) {
   const user = await findValidUser(email, "demo1234");
   if (!user) redirect("/login?error=demo");
 
-  await recordAudit({ action: "auth.quick_login", userId: user.id, email: user.email });
-  await markConsent(user.id);
-  await createSession(user.id);
+  await Promise.all([
+    recordAudit({ action: "auth.quick_login", userId: user.id, email: user.email }),
+    markConsent(user.id),
+    createSession(user.id),
+  ]);
   redirect("/appeals");
 }
 

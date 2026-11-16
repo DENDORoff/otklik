@@ -811,4 +811,5 @@ export const en: TranslationMap = {
 "Входим…": "Signing in…",
 "Выходим…": "Signing out…",
 "Руководитель": "Head",
+  "Сервер не ответил. Нажмите, чтобы повторить.": "The server did not respond. Click to try again.",
 };
