@@ -6,10 +6,13 @@
 
 **Репозиторий:** https://github.com/DENDORoff/otklik · **Код:** [`otklik/`](otklik)
 
-### Демо-стенд
+### Как посмотреть
 
-**🌐 https://otklik.deworld.su/** — развёрнутое демо (Vercel + Neon PostgreSQL).
-Локально: `npm run dev` → `http://localhost:3000`.
+Хакатон завершён: демо-стенд (Vercel + Neon PostgreSQL) выведен из эксплуатации,
+репозиторий оставлен как портфолио. Проект полностью работоспособен локально:
+`npm install` → `npm run db:reset` → `npm run build` → `npm run start` → `http://localhost:3000`.
+Как развернуть его заново на Vercel или любом хостинге — пошаговая инструкция в
+[`РАЗВЁРТЫВАНИЕ.md`](РАЗВЁРТЫВАНИЕ.md).
 
 Демо-аккаунты (пароль у всех — `demo1234`). На экране входа быстрый вход сгруппирован
 по отделам: для каждого отдела есть кнопка руководителя и кнопка сотрудника.
@@ -44,7 +47,7 @@ idea, the system routes it to the right department by a database rule, the head 
 department assigns an owner and a deadline, and the author sees the outcome and rates it.
 
 - **Stack:** Next.js 15 (App Router) · React 19 · TypeScript 6 · Tailwind 3 · Prisma 6 ·
-  PostgreSQL (Neon) in production, SQLite locally · Server Actions · zod · jose · bcryptjs
+  PostgreSQL in production, SQLite locally · Server Actions · zod · jose · bcryptjs
 - **Roles:** employee / department head / administrator — every permission is checked on the
   server, not in the UI
 - **Extras:** light & dark theme, RU/EN/KZ interface, public landing page with live stats,
@@ -52,7 +55,9 @@ department assigns an owner and a deadline, and the author sees the outcome and 
   SEO, accessibility (WCAG AA), security hardening
 - **Data:** synthetic only — 7 departments, 24 users, 19 categories, 18 routing rules, 21 appeals
 
-**Live demo:** https://otklik.deworld.su/ (Vercel + Neon PostgreSQL)
+**How to run:** локально за 5 минут (`npm install` → `npm run db:reset` → `npm run build` →
+`npm run start`), либо в продакшне по инструкции [`РАЗВЁРТЫВАНИЕ.md`](РАЗВЁРТЫВАНИЕ.md)
+(Vercel + любой PostgreSQL, например Neon).
 
 ---
 
@@ -295,44 +300,30 @@ src/
 
 ## Развёртывание
 
-### Что уже запущено
+### Как развернуть
 
-**🌐 https://otklik.deworld.su/** — боевое демо:
+Хакатон завершён: демо-стенд (Vercel + Neon PostgreSQL) выведен из эксплуатации, а
+репозиторий оставлен как портфолио — вместе с полной инструкцией развёртывания:
+[`РАЗВЁРТЫВАНИЕ.md`](РАЗВЁРТЫВАНИЕ.md). Там же — переменные окружения, PostgreSQL-схема,
+миграция и сид, CI через GitHub Actions, типичные ограничения площадок и аудит.
 
-| Слой | Где | Детали |
-|---|---|---|
-| Приложение | Vercel | Next.js 15, Server Actions, регион `fra1` |
-| Домен | `otklik.deworld.su` | привязан к проекту Vercel |
-| База | Neon PostgreSQL | проект `holy-rain-74457731`, ветка `production`, схема и сид применены |
-| Хранилище вложений | локальная файловая система функции | на сервере вложения живут только в рамках деплоя; для постоянного хранения — `BLOB_READ_WRITE_TOKEN` (Vercel Blob) |
-
-Значения переменных окружения для Vercel лежат в `otklik/.env.vercel` (в gitignore).
+Код проекта не привязан к конкретной площадке: локально это SQLite (`prisma/dev.db`),
+на сервере — PostgreSQL (`prisma/schema.postgres.prisma` + `prisma/migrations/0_init`);
+смена провайдера — одна переменная `DATABASE_PROVIDER` и строка подключения.
 
 ### Где можно запустить
 
 | Площадка | Подходит ли | Почему |
 |---|---|---|
-| **Vercel** | да, рекомендуется | Next.js из коробки, Server Actions, бесплатный тариф для демо |
+| **Vercel** | да, рекомендуется | Next.js из коробки, Server Actions; нужна внешняя база (схема и миграция готовы) |
 | **Render / Railway / Fly.io** | да | обычный Node-процесс + PostgreSQL или диск с SQLite |
 | **Свой VPS / контур компании** | да | полный контроль, нужен HTTPS и бэкапы |
 | GitHub Pages | нет | Pages отдаёт только файлы и не запускает Node: Server Actions, база и сессии там не работают |
 
-Приложение «Отклик» — не статический сайт: маршрутизация, авторизация и аналитика считаются
-на сервере, поэтому для полного демо нужен Node-хостинг. Локально это SQLite
-(`prisma/dev.db`), на сервере — PostgreSQL (смена одной строки `DATABASE_URL` и переменной
-`DATABASE_PROVIDER`).
-
-**Для Vercel всё подготовлено:** схема PostgreSQL (`prisma/schema.postgres.prisma`),
-начальная миграция (`prisma/migrations/0_init`), генерация Prisma-клиента под нужного
-провайдера в `postinstall`, адаптер хранилища вложений (Vercel Blob) и `vercel.json`.
-Пошаговая инструкция и список того, что нужно от оператора — в
-[`РАЗВЁРТЫВАНИЕ.md`](РАЗВЁРТЫВАНИЕ.md).
-
 ### Публичная витрина
 
-Лендинг с описанием сервиса, процессом и статистикой демо-стенда — это главная страница
-самого приложения (`/`), отдельной статической сборки не требуется:
-**https://otklik.deworld.su/**
+Лендинг с описанием сервиса, процессом и статистикой демо-данных — главная страница
+приложения (`/`): после запуска проекта статистика считается из базы.
 
 ## Что проверено
 
@@ -422,7 +413,7 @@ D:\DW\hackathon
 ├── ЗАДАЧИ.md                  ← план задач P0–P3 и фактические статусы
 ├── ЧЕК-ЛИСТ_ТЗ.md             ← покрытие ТЗ и приёмочные сценарии
 ├── ДЕМО-СЦЕНАРИЙ.md           ← защита на 6–7 минут: тайминг, клики, запасные варианты, Q&A
-├── РАЗВЁРТЫВАНИЕ.md           ← Vercel и другие площадки: что подготовлено, что нужно от оператора
+├── РАЗВЁРТЫВАНИЕ.md           ← пошаговая инструкция повторного развёртывания (Vercel + PostgreSQL/Neon)
 ├── ПРЕЗЕНТАЦИЯ.md             ← структура слайдов и тезисы
 ├── ПИТЧ-ПРЕЗЕНТАЦИЯ.pptx      ← питч-презентация (16 слайдов): проблема, решение, аудит, надёжность
 ├── ПИТЧ-ВОПРОСЫ.md            ← вероятные вопросы жюри и полные ответы
@@ -446,8 +437,8 @@ D:\DW\hackathon
 | [`ОТЧЁТ.md`](ОТЧЁТ.md) | итог: что сделано, что проверено, ограничения, чек-лист |
 | [`ТЕХНИЧЕСКАЯ-КОНЦЕПЦИЯ.md`](ТЕХНИЧЕСКАЯ-КОНЦЕПЦИЯ.md) | архитектура, данные, безопасность, интеграции, развитие |
 | [`ИНТЕГРАЦИЯ-БИТРИКС24.md`](ИНТЕГРАЦИЯ-БИТРИКС24.md) | модуль интеграции: настройка, схема, риски, план пилота |
-| [`РАЗВЁРТЫВАНИЕ.md`](РАЗВЁРТЫВАНИЕ.md) | Vercel и другие площадки: инструкция, переменные, ограничения |
-| [`deploy/vercel.yml`](deploy/vercel.yml) | workflow автодеплоя на Vercel |
+| [`РАЗВЁРТЫВАНИЕ.md`](РАЗВЁРТЫВАНИЕ.md) | пошаговая инструкция повторного развёртывания (Vercel + PostgreSQL/Neon), CI, аудит |
+| [`deploy/vercel.yml`](deploy/vercel.yml) | заготовка workflow автодеплоя на Vercel (опционально, копируется в `.github/workflows/`) |
 | [`КОНЦЕПЦИЯ.md`](КОНЦЕПЦИЯ.md) | продукт, роли, жизненный цикл, схема БД, метрики |
 | [`ЗАДАЧИ.md`](ЗАДАЧИ.md) | план P0–P3 и фактические статусы |
 | [`ЧЕК-ЛИСТ_ТЗ.md`](ЧЕК-ЛИСТ_ТЗ.md) | покрытие требований ТЗ и приёмочные сценарии |

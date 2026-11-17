@@ -11,3 +11,7 @@ storage/uploads/
 next-env.d.ts
 *.tsbuildinfo
 .neon
+
+# артефакты CLI поставщиков (Neon / Vercel)
+neon.ts
+.vercel/

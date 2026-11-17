@@ -1,12 +1,13 @@
 # Автодеплой на Vercel
 #
-# GitHub не позволяет менять workflow-файлы токену без scope workflow,
-# поэтому этот файл нужно один раз скопировать в .github/workflows/vercel.yml.
+# Опциональная заготовка: для автодеплоя по пушу в main скопируйте файл в
+# .github/workflows/vercel.yml и добавьте секреты репозитория.
 #
 # Нужны секреты репозитория:
-#   VERCEL_TOKEN     — токен Vercel (Settings → Tokens)
-#   VERCEL_ORG_ID    — ID организации
-#   VERCEL_PROJECT_ID— ID проекта
+#   VERCEL_TOKEN      — токен Vercel (Settings → Tokens)
+#   VERCEL_ORG_ID     — ID организации
+#   VERCEL_PROJECT_ID — ID проекта
+#   DATABASE_URL_DIRECT — прямой URL PostgreSQL (если нужны миграции в CI)
 #
 # Переменные окружения задаются в самом Vercel:
 #   DATABASE_URL (пул-ный), DATABASE_PROVIDER=postgresql, AUTH_SECRET,

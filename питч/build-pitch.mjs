@@ -161,22 +161,22 @@ function notes(slide, text) {
 
   // CTA-плашка
   s.addShape("roundRect", { x: 0.78, y: 5.45, w: 4.6, h: 0.62, rectRadius: 0.07, fill: { color: RED_ACTION }, line: { color: RED_ACTION } });
-  s.addText("СМОТРЕТЬ ДЕМО  →", {
+  s.addText("ОТКРЫТЬ РЕПОЗИТОРИЙ  →", {
     x: 0.78, y: 5.45, w: 4.6, h: 0.62,
-    fontFace: F.name, fontSize: 13, bold: true, color: WHITE,
+    fontFace: F.name, fontSize: 12, bold: true, color: WHITE,
     align: "center", valign: "middle", charSpacing: 1.4,
   });
-  s.addText("otklik.deworld.su", {
-    x: 5.55, y: 5.45, w: 3.6, h: 0.62,
-    fontFace: F.name, fontSize: 12, color: "9AA9BC", valign: "middle",
+  s.addText("github.com/DENDORoff/otklik", {
+    x: 5.55, y: 5.45, w: 4.2, h: 0.62,
+    fontFace: F.name, fontSize: 11.5, color: "9AA9BC", valign: "middle",
   });
 
-  s.addText("Быстрый вход по 7 отделам на экране входа · пароль всех демо-аккаунтов: demo1234", {
+  s.addText("Запуск за 5 минут: npm install → npm run db:reset → npm run build → http://localhost:3000", {
     x: 0.78, y: 6.35, w: 11.8, h: 0.3,
     fontFace: F.name, fontSize: 9, color: "64748D",
   });
   s.addText("01", { x: 12.45, y: 6.95, w: 0.5, h: 0.35, fontFace: F.name, fontSize: 13, bold: true, color: RED, align: "right" });
-  notes(s, "«Каждый отклик — до результата». Название продукта — «Отклик», «Сигнал» не используем по условиям хакатона. Демо работает на живом стенде, данные синтетические.");
+  notes(s, "«Каждый отклик — до результата». Название продукта — «Отклик», «Сигнал» не используем по условиям хакатона. Проект — портфолио; данные синтетические; запуск локальный.");
 }
 
 /* ====================== Слайд 2. Проблема ====================== */
@@ -323,7 +323,7 @@ function notes(slide, text) {
     fontFace: F.name, fontSize: 8, color: "9AA9BC", align: "center",
   });
 
-  s.addText("Демо работает на живом стенде: otklik.deworld.su", {
+  s.addText("Как запустить: npm install → npm run db:reset → npm run build → npm run start", {
     x: 0.55, y: 6.6, w: 12.2, h: 0.3,
     fontFace: F.name, fontSize: 10.5, bold: true, color: NAVY,
   });
@@ -357,7 +357,7 @@ function notes(slide, text) {
     ["05", "Права — на сервере, не в интерфейсе",
       "Проверки в Server Actions, не в UI: чужое обращение по прямой ссылке → 404. Видимость: автор — свои, начальник — свой отдел, админ — все."],
     ["06", "Реально работает, а не макет",
-      "24 маршрута, 21 обращение из датасета, светлая и тёмная темы, RU/EN/KZ, WCAG 2.1 AA — 0 нарушений, живой стенд на Vercel + Neon PostgreSQL."],
+      "24 маршрута, 21 обращение из датасета, светлая и тёмная темы, RU/EN/KZ, WCAG 2.1 AA — 0 нарушений, схема PostgreSQL с миграцией и сидом."],
   ];
   items.forEach(([n, t, d], i) => {
     const col = i % 2, row = Math.floor(i / 2);
@@ -388,11 +388,11 @@ function notes(slide, text) {
     [{ text: "Слой", options: { bold: true, color: WHITE, fill: { color: NAVY } } }, { text: "Технология", options: { bold: true, color: WHITE, fill: { color: NAVY } } }, { text: "Почему так", options: { bold: true, color: WHITE, fill: { color: NAVY } } }],
     ["Фреймворк", "Next.js 15 · React 19", "Server Components + Server Actions: права и валидация на сервере, без отдельного REST-слоя. First Load JS ~103 кБ"],
     ["Язык", "TypeScript 6", "ошибки на этапе компиляции; TS 7 ломает цепочку — намеренно не обновляем"],
-    ["База данных", "Prisma 6 · SQLite → PostgreSQL (Neon)", "одна схема: локально файл, в бою serverless-Postgres; переход — одной командой"],
+    ["База данных", "Prisma 6 · SQLite → PostgreSQL", "одна схема: локально файл, в бою — любой managed-Postgres; переход одной переменной"],
     ["Авторизация", "jose · JWT в httpOnly-cookie · bcryptjs", "подписанная сессия, sameSite=lax, ноль внешних сервисов"],
     ["Валидация", "zod", "на каждой форме и каждом Server Action, схема — единый источник прав"],
     ["Стили", "Tailwind 3 · Montserrat (self-host, SIL OFL)", "фирменный стиль ГК «Модус Трейд»; без внешних запросов к Google Fonts"],
-    ["Инфраструктура", "Vercel + Neon PostgreSQL", "автодеплой из main, serverless; данные — Neon, ветка production"],
+    ["Инфраструктура", "Vercel + PostgreSQL (например, Neon)", "serverless; автодеплой из main; Neon — один из вариантов, не привязка"],
   ];
   s.addTable(rows, {
     x: 0.55, y: 1.95, w: 12.25, h: 3.6,
@@ -532,7 +532,7 @@ function notes(slide, text) {
   });
 
   s.addShape("roundRect", { x: 0.55, y: 6.15, w: 12.2, h: 0.62, rectRadius: 0.06, fill: { color: INFO }, line: { color: "2F80ED" } });
-  s.addText("Проверено на стенде с неотвечающим server action:  1.5 с — «Ждём…»  ·  10.5 с — «Ждём…»  ·  21.5 с — кнопка снова активна", {
+  s.addText("Проверено на тестовом стенде с неотвечающим server action:  1.5 с — «Ждём…»  ·  10.5 с — «Ждём…»  ·  21.5 с — кнопка снова активна", {
     x: 0.8, y: 6.15, w: 11.7, h: 0.62,
     fontFace: F.name, fontSize: 9.5, bold: true, color: NAVY, valign: "middle",
   });
@@ -550,7 +550,7 @@ function notes(slide, text) {
     x: 0.55, y: 0.38, w: 8, h: 0.28,
     fontFace: F.name, fontSize: 9, bold: true, color: "FF6B6B", charSpacing: 2,
   });
-  s.addText("Цифры берём не с потолка —\nа из сида и живого стенда", {
+  s.addText("Цифры берём не с потолка —\nа из сида и production-сборки", {
     x: 0.55, y: 0.7, w: 12, h: 1.15,
     fontFace: F.head, fontSize: 27, bold: true, color: WHITE, lineSpacingMultiple: 1.05,
   });
@@ -577,7 +577,7 @@ function notes(slide, text) {
   const quality = [
     ["0", "нарушений контраста\n(10 страниц × 2 темы)"],
     ["~103 кБ", "First Load JS\nсредний вес маршрута"],
-    ["232–560 мс", "на прогретом стенде\n(Vercel + Neon)"],
+    ["232–560 мс", "на прогретой инсталляции\n(замеры в дни хакатона)"],
     ["418 px", "без горизонтального\nскролла"],
   ];
   quality.forEach(([n, d], i) => {
@@ -621,7 +621,7 @@ function notes(slide, text) {
       t: "ИМИТАЦИЯ (ЧЕСТНО)", tone: "mid",
       items: [
         "Email-канал: только внутрисистемные уведомления",
-        "Битрикс24: модуль собран, синхронизация проверена на макете, в стенде выключен",
+        "Битрикс24: модуль собран, синхронизация проверена на макете, в сборке выключен",
         "Справочники (отделы, люди, категории) — через сид",
         "Метрики и графики показывают поведение демо-набора, а не компании",
       ],
@@ -675,8 +675,8 @@ function notes(slide, text) {
   const open = [
     ["Email не отправляется", "→ подключить SMTP / сервис рассылок: очередь уведомлений уже пишется в БД"],
     ["Справочники меняются сидом", "→ визуальный конструктор орг-структуры: дерево отделов + версии правил (этап 2)"],
-    ["Холодный старт Vercel + Neon ~5 с", "→ прогрев функции, отдельный план Neon или Redis-кэш на чтение"],
-    ["Нет мониторинга и бэкапов", "→ Sentry + UptimeRobot + ежедневные снапшоты Neon, до первого пилота"],
+    ["Холодный старт serverless (~5 с)", "→ прогрев функции или план без scale-to-zero, кэш на чтение (Redis)"],
+    ["Нет мониторинга и бэкапов", "→ Sentry + UptimeRobot + ежедневные снапшоты базы, до первого пилота"],
     ["Юридический контур не проверен", "→ проверка юриста + уведомление РКН + назначение ответственного за ПДн"],
   ];
 
@@ -808,7 +808,7 @@ function notes(slide, text) {
     fontFace: F.name, fontSize: 11.5, valign: "middle",
   });
 
-  footer(s, 13, "Пилот готов: https://otklik.deworld.su/");
+  footer(s, 13, "Развернуть заново: РАЗВЁРТЫВАНИЕ.md в репозитории");
   notes(s, "Если жюри спросит про сроки: первый результат измерим через 4 недели в одном отделе.");
 }
 
@@ -829,7 +829,7 @@ function notes(slide, text) {
   const asks = [
     ["1", "Пилот на одном отделе", "«Закупки» как первый отдел: 20+ сотрудников, реальные категории, свои правила маршрутизации. Старт — в течение месяца."],
     ["2", "Доступ к интеграции", "Битрикс24 и структура отделов/пользователей для подключения модуля (он уже собран и проверен на макете)."],
-    ["3", "Поддержка жюри", "Продвижение до стейкхолдеров: юрист для политик ПДн, РКН, ответственный за ПДн, бэкапы Neon."],
+    ["3", "Поддержка жюри", "Продвижение до стейкхолдеров: юрист для политик ПДн, РКН, ответственный за ПДн, бэкапы базы."],
   ];
   asks.forEach(([n, t, d], i) => {
     const y = 1.95 + i * 1.35;
@@ -839,7 +839,7 @@ function notes(slide, text) {
     s.addText(d, { x: 1.4, y: y + 0.36, w: 10.9, h: 0.6, fontFace: F.name, fontSize: 10.5, color: "AEBECD", lineSpacingMultiple: 1.2 });
   });
 
-  s.addText("Ничего просить, кроме решения, мы не будем: стенд уже работает, данные синтетические, лицензии — бесплатные (MIT, SIL OFL).", {
+  s.addText("Ничего просить, кроме решения, мы не будем: проект работает локально, данные синтетические, лицензии бесплатные (MIT, SIL OFL).", {
     x: 0.55, y: 6.15, w: 12.2, h: 0.3,
     fontFace: F.name, fontSize: 10, italic: true, color: "9AA9BC",
   });
@@ -866,18 +866,18 @@ function notes(slide, text) {
     fontFace: F.name, fontSize: 12, italic: true, color: "C9D4E0",
   });
 
-  s.addShape("roundRect", { x: 0.78, y: 4.45, w: 5.0, h: 0.75, rectRadius: 0.07, fill: { color: RED_ACTION }, line: { color: RED_ACTION } });
-  s.addText("СМОТРЕТЬ ДЕМО", {
-    x: 0.78, y: 4.45, w: 5.0, h: 0.75,
+  s.addShape("roundRect", { x: 0.78, y: 4.45, w: 6.0, h: 0.75, rectRadius: 0.07, fill: { color: RED_ACTION }, line: { color: RED_ACTION } });
+  s.addText("ОТКРЫТЬ РЕПОЗИТОРИЙ", {
+    x: 0.78, y: 4.45, w: 6.0, h: 0.75,
     fontFace: F.name, fontSize: 13, bold: true, color: WHITE, align: "center", valign: "middle", charSpacing: 1.4,
   });
-  s.addText("otklik.deworld.su", {
+  s.addText("github.com/DENDORoff/otklik", {
     x: 0.78, y: 5.35, w: 6, h: 0.35,
     fontFace: F.name, fontSize: 13, color: WHITE,
   });
 
   s.addText([
-    { text: "Вход без регистрации — быстрый вход по отделам, пароль: demo1234\n", options: {} },
+    { text: "Запуск локально: npm install → npm run db:reset → npm run build → http://localhost:3000\n", options: {} },
     { text: "Репозиторий: github.com/DENDORoff/otklik · документы — в корне репозитория", options: { color: "9AA9BC" } },
   ], {
     x: 0.78, y: 5.9, w: 11.8, h: 0.75,
